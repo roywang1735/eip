@@ -1,0 +1,175 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div>&nbsp;</div>
+<form>
+   <div style='border:1px #eeeeee solid;width:500px;padding:10px;border-radius:5px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					歷程類別<br> 
+					<select id="experience_id" class="form-control" style='width:120px'>
+						<option></option>
+						<option th:each="item : ${LExperienceHistory}" th:value="${item.experience_id}" th:utext="${item.experience_name}" />
+					</select>				
+			</div>				
+		</div>
+	</div>		
+   </div>
+
+   <div  align='center' style='width:500px;'>
+	  <button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+	  <button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+	  <span sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')">
+	  	<button type="button" class="btn btn-sm btn-success" onclick="addHistory()">&#8883;新增歷程 </button>
+	  </span>	  
+   </div>
+</form> 
+<div>&nbsp;</div>   
+<div>&nbsp;</div>
+	
+<div align='left' style=''>  
+  <table id="myDataTalbe" class="display">
+	<thead>
+		<tr style='letter-spacing:3px'>
+		    <th style='width:100px'>時間</th>
+			<th style='width:120px'>歷程類別</th>
+			<th style='width:100px'>狀態</th>
+			<th style='width:200px'>內容</th>						
+			<th style='width:70px'>效期</th>
+			<th style='width:50px'>報名</th>	
+			<th style='width:50px'>更新者</th>	
+		</tr>
+	</thead>
+  </table>
+</div>  	
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script>
+$(function() {
+	$("#datepickerFrom").datepicker();
+	$("#datepickerTo").datepicker();
+});
+</script>
+
+<script th:inline="javascript">
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"iDisplayLength": 20,
+		"order": [ 0 , "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Sales/getStudentExperience",
+			data : function(d) {
+				d.student_seq  = [[${student_seq}]];
+				d.experience_id = $("#experience_id").val();
+			},		
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "createTime","className":"text-center",
+				"render" : function(data, type, full, meta) {
+					return "<span style='font-size:x-small'>"+data+"</span>";
+			    }
+			},			
+			{"data" : "experience_name","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					var bg="white";
+				/**	
+					var bg="yellow";
+					if(row.experience_id==2){
+						bg="#bbbbbb";
+					}else if(row.experience_id==4){
+						bg="#000000";						
+					}else if(row.experience_id==1){
+						bg="green";
+					}else if(row.experience_id==3){
+						bg="#2ce1d5";						
+					}else if(row.experience_id==5){
+						bg="orange";	
+					}else if(row.experience_id==7){
+						bg="#bbbbbb";
+					}else if(row.experience_id==6){
+						bg="lightskyblue";
+					}else if(row.experience_id==8){
+						bg="red";
+					}else if(row.experience_id==9){ //1日約訪
+						bg="#999999";
+					}else if(row.experience_id==10){ //60日初訪
+						bg="#999999";	
+					}
+				**/	
+					return "<span style='background-color:"+bg+";padding:1px;color:black;border-radius:3px;font-size:small;letter-spacing:1px;border:1px #aaaaaa solid'>&nbsp;"+data+"&nbsp;</span>";
+			    }				
+			},
+			{"data" : "experience_state","className":"text-center"},
+			{"data" : "experience_content"},	
+			{"data" : "validDate","className":"text-center"},
+			{"data" : "register_id","className":"text-center",
+				"render" : function(data, type, full, meta) {
+					if(data){
+						return "<A href='javascript:void(0)' onclick='registerView("+data+")' style='font-size:small;font-weight:bold;text-decoration:underline'>no."+data+"</A>";
+					}else{
+						return "-";
+					}	
+			    }				
+			},
+			{"data" : "creater","className":"text-center",
+				"render" : function(data, type, full, meta) {
+					return "<span style='font-size:x-small'>"+data+"</span>";
+			    }
+			}			
+/* 		    {"data" : "studentExperience_seq","className":"text-center",
+			     "render" : function(data, type, row, meta) {
+				               return "<A href='/Sales/studentHistoryEdit?studentExperience_seq="+data+"' style='font-size:large'>&hellip;</A>";
+			     }
+		    }	 */					
+		]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+});
+
+function registerView(Register_seq){
+		var feature = "left=0,top=0,width=1300,height=600";
+		var student_seq = [[${student_seq}]];
+	    window.open("/Sales/RegisterCombo?page=1&drop=1&pop=view&Register_seq="+Register_seq+"&student_seq="+student_seq, "", feature);    	
+} 
+
+function addHistory(){
+	  var student_seq = [[${student_seq}]];
+	  location.href="/Sales/studentHistoryEdit?student_seq="+student_seq;
+} 
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

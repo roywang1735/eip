@@ -1,0 +1,1003 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:if="${action=='copy' or action=='comment' or action=='view'}" th:include="/common/top_header"></head>
+<head th:if="${action=='popView' or action=='edit'}" th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<!--eip.FlowStatus
+(1,'暫存');
+(2,'送審');
+(3,'待上架');
+(4,'上架');
+(5,'下架');
+(6,'退件');
+(7,'刪除'); 
+-->
+
+<input type='hidden' id='actionX' th:value='${action}'>
+<input type='hidden' id='hasCourseRole' sec:authorize="hasAnyRole('cou_mgr','cou')" value='true'>
+		   <form id='form1'  th:object="${grade}" method="post">
+		        <input type="hidden" id='gradeName0' th:value="*{gradeName}">
+		        <input type="hidden" id='class_no_0' th:value="*{class_no}">
+		        <!--  
+		        <div th:if="${grade.status_code=='4' or grade.status_code=='5'}" style='margin-left:10px'>&bull;<span style='border-radius:5px;background-color:#ffffff'>&nbsp;<A href='javascript:void(0)'  onclick='openGradeStudent()' style='letter-spacing:2px;text-decoration:underline;font-weight:bold;color:blue'>訂此期別正班學生</A>&nbsp;</span></div>
+				-->
+				<div style='margin-left:50px;background-color:#7ba6b6;border:1px #cccccc solid;border-radius:10px;color:brown;padding:10px;margin-top:5px;width:910px'>					
+					<div style='color:white'>
+								<div style='display:inline-block;margin-left:20px'>
+									* 分校 
+									<select th:field="*{school_code}" class="form-control title" style='width:110px'>
+										<option value="-1" selected></option>
+										<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div style='display:inline-block'>
+									* 類別
+									<select th:field="*{category_id}" class="form-control title" style='width:105px' onchange="subjectData(this.value)">
+										<option value="-1"  selected></option>
+										<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div style='display:inline-block'>
+									* 科目
+									<select th:field="*{subject_id}" class="form-control title" style='width:250px' onchange='GetgradeNameSel(),getTeacher()'>
+										<option value="-1"  selected></option>
+										<option th:each="item : ${subjectGroup}" th:value="${item.subject_seq}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div style='display:inline-block'>
+									* 主要老師
+									<select th:field="*{teacher_id}" class="form-control title" style='width:150px' onchange='GetgradeNameSel()'>
+										<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}+'('+${item.code}+')'"/>		
+									</select>
+								</div>
+								<div style='display:inline-block;vertical-align:top'>
+									* 堂數<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此為預設該課程堂數, 不包含未來更動的停課及補課堂數, 請至下列設置: 課務>課程設置>科目!"><img src='/images/message.png' height='8px'/></A>
+									<!--<input type="text" class="form-control title" style='width:80px' th:field="*{class_no}" readonly />-->
+									<select th:field="*{class_no}" class="form-control title" style='width:80px'>
+									</select>									
+								</div>
+								<div style='display:inline-block;vertical-align:top'>
+									期別別名<input type="text" class="form-control title" style='width:90px' th:field="*{video_date}" placeholder="ex.0001A"/>
+								</div>																																									
+					</div>
+                    <div style='height:10px'></div>
+                    <div style='color:white'>																										
+								<div style='display:inline-block;vertical-align:top;margin-left:20px'>
+								     * 期別(日期)
+									<input type='text'  placeholder='&#128197;' autocomplete="off" th:field="*{class_start_date_0}" readonly style='width:140px' class='form-control title' onclick='$(this).datepicker({dateFormat: "mm/dd/yy D",});$(this).datepicker("show")'>
+								</div>
+								<div style='display:inline-block;vertical-align:top'>
+								          班別<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 若此期別老師有多個班別, 請至下列設置: 課務>課程設置>科目, 以便在此能夠正確選出班別!"><img src='/images/message.png' height='8px'/></A>
+								     <div id='gradeNameArea'><input type="text" style='width:70px' class="form-control title" th:field="*{gradeName}" readonly /></div>     
+									<!-- <input type="text" style='width:70px' class="form-control title" th:field="*{gradeName}" placeholder="A"/> -->
+								</div>								
+								<div style='display:inline-block;vertical-align:top'>
+								     * 時段
+										<select th:field="*{slot_id}" class='form-control title'>
+											<option value='-1' selected></option>
+											<option th:each="item : ${slotGroup}" th:value="${item.slot_id}" th:utext="${item.slot_name}"/>
+										</select>
+								</div>																														
+								<div style='display:inline-block;vertical-align:top'>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 上 課 時 間 <br>
+									<input type='text' style='display:inline-block;width:80px' class='form-control timeFrom title' th:field="*{timeFrom}" placeholder='ex.0800'/>
+									~
+									<input type='text' style='display:inline-block;width:80px' class='form-control timeTo title' th:field="*{timeTo}" placeholder='ex.1400'/>
+								</div>																
+
+								<div style='display:inline-block;vertical-align:top'>
+									* 上課方式
+									<select th:field="*{class_style}" class="form-control title" style='width:90px'>
+										<option value="1">班內</option>
+										<option value="3">線上</option>
+										<!-- <option value="2">Video</option> -->										
+									</select>
+								</div>
+								<div style='display:inline-block;vertical-align:top'>
+									人數上限<input type="text" class="form-control title" style='width:80px' th:field="*{upper_limit}" placeholder="ex.30"/>
+								</div>									
+								<div style='display:inline-block;vertical-align:bottom'>
+									 Video開放分校<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 預設為Video開放給全部分校,若僅為正班課程(ex.托福口說),則全部不選, 此時Video課程在該分校學員訂班時將不會顯示"><img src='/images/message.png' height='8px'/></A>&nbsp;&nbsp;<br>
+									<div id="list3" class="dropdown-check-list" tabindex="100">
+										<span class="anchor">分校多選</span>
+  										<ul class="items title"> 
+													<li th:each="item: ${LVideoOpenStr}" th:utext="${item}"></li>
+  										</ul>
+									</div>
+								</div>
+								<div style='display:inline-block;vertical-align:top'>
+									Video下架<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 預設系統會將Video課程在2年後自動下架成為[Video下架]狀態, 若無需系統下架, 請選擇[永不]"><img src='/images/message.png' height='8px'/></A>&nbsp;&nbsp;<br>
+									<select th:field="*{videoPreserve}" class="form-control title" style='width:80px'>
+										<option value="0">正常</option>
+										<option value="1">永不</option>										
+									</select>
+								</div>																																																																						
+					</div>																		
+			</div>
+			 
+					<div style='text-align:right;width:880px;margin:5px'>						
+							<div th:if="${action!='copy'}">
+							  <div sec:authorize="hasAnyRole('cou_mgr','cou')">	
+							  <!-- status_code 為0為新增時的預設值 -->					
+								<div  th:if="${grade.status_code=='0'}	or ${grade.status_code=='1'} or ${grade.status_code=='6'}">
+									<button type="button" class="btn btn-sm btn-success" style='padding:1px;font-weight:bold;color:blue;background-color:lemonchiffon;letter-spacing:3px;border-radius:10px' onclick="AddCourseStr();">&nbsp;展開課堂&nbsp;</button>
+								</div>																							
+							  </div>
+							</div>
+					</div>	
+			
+			<div style='width:1000px;padding-left:50px'><hr></div>					
+			<div id="courseList" style='width:920px;padding-left:50px;margin-top:15px'>
+				    <div style='text-align:right'  th:if="${grade.grade_seq !=null}">
+	    				<span style='padding:3px;font-weight:bold;color:darkblue;letter-spacing:1px'>
+	    					&nbsp;開課狀態 : 訂班 <A th:text="'&nbsp;'+${registerNo}+'&nbsp;'" href='javascript:void(0)'  onclick='openGradeStudent()' style='font-weight:bold;color:blue;text-decoration:underline'></A> 人	    					
+	    				</span>
+	    				<span>
+	    					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;					    					    
+				    	</span>
+				    	<span style='color:darkblue'>
+				    	    (訂期別)課程呈現起日 <input type='text' th:field="*{onSell}" readonly style='width:120px;height:35px;border:1px #dddddd solid;border-radius:3px' onclick='$(this).datepicker({dateFormat: "mm/dd/yy D",});$(this).datepicker("show")'>
+				    	</span>
+	    				<span style='color:darkblue'>
+	    					課程呈現迄日 <input type='text' th:field="*{offSell}" readonly style='width:120px;height:35px;border:1px #dddddd solid;border-radius:3px' onclick='$(this).datepicker({dateFormat: "mm/dd/yy D",});$(this).datepicker("show")'>
+	    					<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 當定期別時, 課程呈現起日(預設為該期別前60日), 此時學員便能選取該期別課程,直至課程迄日後(預設為此期別第三堂課), 則無法再自行選取!"><img src='/images/message.png' height='8px'/></A>
+	    				</span>	
+				    </div>
+
+<!-------------------------------------------------------------------------------------------------------------------->				    
+				<div th:each="Lclasses,LclassesStat:${Lclasses}" style='margin:10px;border:1px #dddddd solid;padding-top:10px;padding-left:10px;border-radius:10px'>
+				    <input type="hidden" name='class_seq' th:value="${Lclasses.class_seq}">
+				    <div> 			    
+						<div style='display:inline-block;color:black' class='selArea'>						
+							<select id='class_th' name='class_th' class='class_th_class' style='padding:5px;font-weight:bold' onchange='reArrange(this)'>
+                                <option value='-1' th:selected="${Lclasses.class_th eq '-1'}">停 課</option>
+                                <option value='1' th:selected="${Lclasses.class_th eq '1'}">第1堂</option>
+                                <option value='2' th:selected="${Lclasses.class_th eq '2'}">第2堂</option>
+                                <option value='3' th:selected="${Lclasses.class_th eq '3'}">第3堂</option>
+                                <option value='4' th:selected="${Lclasses.class_th eq '4'}">第4堂</option>
+                                <option value='5' th:selected="${Lclasses.class_th eq '5'}">第5堂</option>
+                                <option value='6' th:selected="${Lclasses.class_th eq '6'}">第6堂</option>
+                                <option value='7' th:selected="${Lclasses.class_th eq '7'}">第7堂</option>
+                                <option value='8' th:selected="${Lclasses.class_th eq '8'}">第8堂</option>
+                                <option value='9' th:selected="${Lclasses.class_th eq '9'}">第9堂</option>
+                                <option value='10' th:selected="${Lclasses.class_th eq '10'}">第10堂</option>
+                                <option value='11' th:selected="${Lclasses.class_th eq '11'}">第11堂</option>
+                                <option value='12' th:selected="${Lclasses.class_th eq '12'}">第12堂</option>
+                                <option value='13' th:selected="${Lclasses.class_th eq '13'}">第13堂</option>
+                                <option value='14' th:selected="${Lclasses.class_th eq '14'}">第14堂</option>
+                                <option value='15' th:selected="${Lclasses.class_th eq '15'}">第15堂</option>
+                                <option value='16' th:selected="${Lclasses.class_th eq '16'}">第16堂</option>
+                                <option value='17' th:selected="${Lclasses.class_th eq '17'}">第17堂</option>
+                                <option value='18' th:selected="${Lclasses.class_th eq '18'}">第18堂</option>
+                                <option value='19' th:selected="${Lclasses.class_th eq '19'}">第19堂</option>
+                                <option value='20' th:selected="${Lclasses.class_th eq '20'}">第20堂</option>
+                                <option value='21' th:selected="${Lclasses.class_th eq '21'}">第21堂</option> 
+                                <option value='22' th:selected="${Lclasses.class_th eq '22'}">第22堂</option> 
+                                <option value='23' th:selected="${Lclasses.class_th eq '23'}">第23堂</option> 
+                                <option value='24' th:selected="${Lclasses.class_th eq '24'}">第24堂</option> 
+                                <option value='25' th:selected="${Lclasses.class_th eq '25'}">第25堂</option>
+                                <option value='26' th:selected="${Lclasses.class_th eq '26'}">第26堂</option>
+                                <option value='27' th:selected="${Lclasses.class_th eq '27'}">第27堂</option>
+                                <option value='28' th:selected="${Lclasses.class_th eq '28'}">第28堂</option>
+                                <option value='29' th:selected="${Lclasses.class_th eq '29'}">第29堂</option>
+                                <option value='30' th:selected="${Lclasses.class_th eq '30'}">第30堂</option>
+                                <option value='31' th:selected="${Lclasses.class_th eq '31'}">第31堂</option> 
+                                <option value='32' th:selected="${Lclasses.class_th eq '32'}">第32堂</option> 
+                                <option value='33' th:selected="${Lclasses.class_th eq '33'}">第33堂</option> 
+                                <option value='34' th:selected="${Lclasses.class_th eq '34'}">第34堂</option> 
+                                <option value='35' th:selected="${Lclasses.class_th eq '35'}">第35堂</option>                                                                  							
+							</select>
+						</div>
+						<div style='display:inline-block'><input type='text' style='display:inline-block;width:190px;padding:0px' class='form-control' name='c_class_name' th:value='${Lclasses.class_name}' placeholder='課堂名稱'/></div>
+						<div style='display:inline-block'><input type='text' style='width:140px' readonly='readonly' name = 'c_class_date' th:value='${Lclasses.class_date}' class='form-control class_date videoEmpty'  onclick='$(this).datepicker({dateFormat: "mm/dd/yy D",});$(this).datepicker("show")' onchange='checkDay(this.value)'/></div>
+						<div style='display:inline-block'>
+							<select name='c_slot_id' class='form-control videoEmpty2' style='width:62px'>
+								<option value='-1'></option>
+                                <option value='1' th:selected="${Lclasses.slot_id eq '1'}">早</option>
+                                <option value='2' th:selected="${Lclasses.slot_id eq '2'}">午</option>
+                                <option value='3' th:selected="${Lclasses.slot_id eq '3'}">晚</option>
+							</select>						
+						</div>	
+						<div style='display:inline-block'>
+							<input type='text' style='display:inline-block;width:65px' class='form-control timeFrom videoEmpty' name='c_timeFrom' th:value='${Lclasses.time_from}' /> 
+							~
+							<input type='text' style='display:inline-block;width:65px' class='form-control timeTo videoEmpty' name='c_timeTo' th:value='${Lclasses.time_to}' />						
+						</div>					
+						<div style='display:inline-block'>
+							<select name='c_teacher_id' class="form-control videoEmpty2">
+								<option value='-1'></option>
+								<option th:selected="${item.teacher_seq eq Lclasses.teacher_id}" th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+							</select>						
+						</div>
+					</div>	
+<!------------------------------------------------------------------------------>									
+					<div>	
+					    <div style='display:inline-block;vertical-align:top;padding:2px'>
+					    	<span style='font-size:x-small;font-weight:bold;padding:1px' th:utext="${'<A href=javascript:void(0) onclick=classReceive('+LclassesStat.index+') style=color:blue;text-decoration:underline>領 取</A>'}"></span><br>					        
+					    	<input type='hidden' name='classReceiveHidden' th:value='${Lclasses.classReceiveHidden}'>
+					    	<textarea cols='38' name='classReceiveTextarea' rows='4'  th:text='${Lclasses.classReceiveTextarea}' style='font-size:x-small;background-color:#ffeeff;border-radius:3px'></textarea>
+					    </div>
+					    <!--  									    
+					    <div style='display:inline-block;padding:2px'>	
+					        <br>			        
+					    	<textarea cols='38' rows='4' name='c_class_remarkAdm' style='font-size:x-small;border-radius:3px' th:text='${Lclasses.class_remarkAdm}' placeholder='行政作業備註'></textarea>
+					    </div>
+					    -->
+					    <div style='display:inline-block;padding:2px'>
+					    	<br>
+					    	<textarea cols='38' rows='4' name='c_class_remark' style='font-size:x-small;border-radius:3px' th:text='${Lclasses.class_remark}' placeholder='學員通知備註'></textarea>
+					    </div>
+					    <div style='display:inline-block;padding:2px;vertical-align:top;margin-top:20px'>
+								上課方式
+								<select name='c_class_style' class='form-control' style='width:90px;font-size:small' onChange=" $(this).parent().parent().parent().find('.videoEmpty').val('');$(this).parent().parent().parent().find('.videoEmpty2').val('-1')">
+	                                <option value='1' th:selected="${Lclasses.class_style eq '1'}">正班</option>
+	                                <option value='2' th:selected="${Lclasses.class_style eq '2'}">Video</option>
+	                                <option value='3' th:selected="${Lclasses.class_style eq '3'}">線上</option>
+								</select>				
+						</div>
+					    <div style='display:inline-block;padding:2px;vertical-align:top;margin-top:20px'>
+								教室
+								<select name='c_classRoom' class="form-control" style='width:70px;margin-left:2px'>									
+									<option value=''></option>
+									<option th:selected="${item.name eq Lclasses.classRoom}" th:each="item : ${classRoomGroup}" th:value="${item.name}" th:utext="${item.name}"/>	
+								</select>					
+						</div>						
+						<div style='display:inline-block;padding:2px;vertical-align:top;margin-top:20px'>
+						                試聽
+								<select name='c_class_trial' class='form-control' style='width:90px;font-size:small'>
+	                                <option value='0' th:selected="${Lclasses.class_trial eq '0'}">不試聽</option>
+	                                <option value='1' th:selected="${Lclasses.class_trial eq '1'}">可試聽</option>
+								</select>						
+						</div>						    
+					    </div>						    					    
+					</div>	
+				</div>
+			</div>
+			<div style='width:1000px;padding-left:50px'><hr></div>
+			<div sec:authorize="hasAnyRole('cou_mgr','cou')">	
+				 <div th:if="${action=='edit'}" style='width:900px;padding-left:50px;text-align:right;'><button type="button" class="btn btn-sm btn-success" onclick="additionalClass()" style='border-radius:10px;padding:2px;letter-spacing:3px;font-weight:bold;color:blue;background-color:lemonchiffon'>&nbsp;&plus;增加課堂&nbsp;</button></div>
+			</div>						  
+<!-------------------------------------------------------------------------------------------------------------------->  
+                  
+			<div align="center" style='width:1000px' sec:authorize="hasAnyRole('cou_mgr','cou')">	
+				<div th:if="${grade.status_code=='0' or grade.status_code=='1' or grade.status_code=='6' or action=='copy'}" style='border-radius:5px;text-align:center;width:300px;padding:5px'> 				    										
+					<button type="button" id='draftButton' class="btn btn-sm btn-info">暫存草稿</button>&nbsp;&nbsp;
+					<button type="button" id='sendButton' class="btn btn-sm btn-primary">送審</button>&nbsp;&nbsp;&nbsp;
+					<span th:if="${grade.grade_seq !=null}">
+						<button type="button" id='deleteButton' class="btn btn-sm btn-danger">刪除</button>&nbsp;&nbsp;&nbsp;
+				    </span>
+				</div> 
+				
+				<div th:if="${grade.status_code=='2' and action=='popView'}" style='border-radius:5px;text-align:center;width:300px;padding:5px'> 				    													    										
+					<button type="button" id='approveButton' class="btn btn-sm btn-info">審核通過</button>&nbsp;&nbsp;&nbsp;
+					<button type="button" id='returnButton' class="btn btn-sm btn-danger">退件</button>&nbsp;&nbsp;&nbsp;
+				</div>
+				
+				<div th:if="${grade.status_code=='3' and action=='edit'}" style='border-radius:5px;text-align:center;width:300px;padding:5px'> 				    													    										
+					<button type="button" id='activeButton' class="btn btn-sm btn-info">上架</button>&nbsp;&nbsp;&nbsp;
+					<button type="button" id='returnButton' class="btn btn-sm btn-danger">退件</button>&nbsp;&nbsp;&nbsp;
+				</div>
+				
+				<div th:if="${action=='edit'}">
+					<div th:if="${grade.status_code=='4'}" style='display:inline-block;border-radius:5px;text-align:center;width:200px;padding:5px'> 				    													    										
+						<button type="button" id='atciveUpdateButton' class="btn btn-sm" style='background-color:red;color:white'>上架中修改儲存</button>&nbsp;&nbsp;
+						<button type="button" id='inactiveButton' class="btn btn-sm btn-danger">下架</button>&nbsp;&nbsp;&nbsp;
+					</div>				
+				</div>
+				
+				<div th:if="${action=='edit'}">
+					<div th:if="${grade.status_code=='5'}" style='display:inline-block;border-radius:5px;text-align:center;width:200px;padding:5px'> 				    													    										
+						<button type="button" id='reAtciveUpdateButton' class="btn btn-sm" style='background-color:red;color:white'>已下架重上架</button><A href="#" style='margin-left:1px' class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 正班下架後重新上架, 系統行程在晚上仍會判讀最後一堂課是否截止, 來決定是否下架!"><img src='/images/message.png' height='8px'/></A>
+					</div>				
+				</div>				
+			</div>
+			
+			<div align="left" style='width:1000px' sec:authorize="hasAnyRole('adm_mgr,adm')">			    													    										
+				<div th:if="${grade.status_code=='4'}" style='border-radius:5px;text-align:center;width:300px;padding:5px'>													    										
+					<button type="button" id='commentButton' class="btn btn-sm btn-info">行政修改儲存</button><A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此按鈕僅儲存:領取講義及書籍 / 備註 / 教室!"><img src='/images/message.png' height='9px'/></A>&nbsp;&nbsp;&nbsp;
+				</div>															  	
+			</div>
+			
+			<input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+			<input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}"/>	
+			<input type='hidden' name='status_code' id='status_code'> 
+			<div th:if="${action!='copy'}"><input type="hidden" th:field="*{grade_seq}"/></div>
+			<input type="hidden" id='action' th:value='${action}'/>
+								
+		</form>
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+
+<!-------------------------------------------->
+
+   
+<!--------------------------------------------> 
+<script th:inline="javascript">
+$(document).ready(function() {
+	//
+	$("#class_no").html(
+	);
+	//顯示該課程總堂數
+	var class_no_0 = $("#class_no_0").val();
+	if(class_no_0){
+		$("#class_no").html("<option value='"+class_no_0+"'>"+class_no_0+"</option>");
+	}
+	
+	if($('#hasCourseRole').val()=='true'){
+		$(".title").attr("disabled",false);
+	}else{
+		$(".title").attr("disabled",true);
+	}
+	
+	checkDay(0);
+	//GetgradeNameSel();
+	
+	$('.class_th_class').each(
+		function(){ 
+			if($(this).val()==[[${class_th_point}]]){
+				$(this).parent().parent().parent().css({backgroundColor:'#DAFFE1'});
+				$(this).focus();
+			}
+		}
+	)	
+	
+})
+
+//班別
+function GetgradeNameSel() {	
+	var subject_id = $("#subject_id").val();
+	var teacher_id = $("#teacher_id").val();
+	$("#gradeNameArea").html("<select style='width:100px' class='form-control title'></select>");
+	if(subject_id !='-1' && teacher_id !='-1'){
+		 $.ajax({
+			url : "/Course/GetgradeNameSel",
+			data : {
+				subject_id : subject_id,
+				teacher_id : teacher_id,
+				gradeName  : $("#gradeName0").val()
+			},
+			dataType : "text",
+			success : function(data) {	
+				if(data!=''){
+					$("#gradeNameArea").html(data);
+				}
+				GetTotalClassNoSel('');
+			}
+		 });
+	}
+}		 
+
+//總堂數
+ function GetTotalClassNoSel(thisObj) {	
+	    var gradeName = thisObj.value;
+		var subject_id = $("#subject_id").val();
+		var teacher_id = $("#teacher_id").val();
+		if(subject_id !='-1' && teacher_id !='-1'){		 
+			 $.ajax({
+					url : "/Course/GetTotalClassNoSel",
+					data : {
+						subject_id : subject_id,
+						teacher_id : teacher_id,
+						gradeName  : gradeName
+					},
+					dataType : "text",
+					success : function(data) {	
+						if(data!=''){
+							$("#class_no").html(data);
+							//$("#class_no").val(data);
+						}
+					}
+			}); 
+	    }
+}
+	
+function checkDay(initValue){
+		var x = document.getElementsByName("c_class_date");
+		for (i = 0; i < x.length; i++) {
+			if(x[i].value.substring(11,14) !=$("#class_start_date_0").val().substring(11,14)){
+			    x[i].style.backgroundColor = "#ffb3b3";		    
+		    }else{
+			    x[i].style.backgroundColor = "";
+		    }
+		    var suspension_date = x[i].value.substring(0,11);
+	    
+		    if(initValue!=0){
+				//國定假日
+			    $.ajax({
+					url : "/Course/suspensionCheck",
+					data : {
+						suspension_date : suspension_date
+					},		    	
+			        dataType : "text",
+			        success : function(data) 
+			        {
+						if(data=='1'){
+							alert(suspension_date+"為國定假日,請確認是否可排課");
+						}
+			        }
+			    })
+		    }
+					    
+		}
+}
+ 
+function submitAction(){ 
+	
+	//比對課堂相加是否正確
+	var str_ori = '';
+	var str_now = '';
+	var list = [];
+	var class_no = $("#class_no").val();
+	$('.class_th_class').each(
+			function(){ 				 
+				if($(this).val()>0){
+					list.push($(this).val());
+				}				
+			}
+	)
+	
+	list.sort((a,b)=>a-b); // sort by asc	
+	for(var i=0;i<class_no;i++){
+			str_now += list[i];
+	}	
+		
+	for(var x=1;x<=class_no;x++){
+		str_ori += x;
+	}
+
+	if(str_now != str_ori){
+		alert("課堂設定(第x堂)有誤!")
+		return;
+	}
+	
+	
+	
+	
+
+	if($("#addDate").val()){
+		var addDate = $("#addDate").val().substring(6,10)+$("#addDate").val().substring(0,2)+$("#addDate").val().substring(3,5);
+		var LastClass = [[${LastClass}]].substring(6,10)+[[${LastClass}]].substring(0,2)+[[${LastClass}]].substring(3,5);
+		if(addDate<=LastClass){
+			alert("不成功! 請確認增加課堂日期須晚於最後一堂課");
+			return;
+		}
+	}
+	
+	//送出前移除Disable
+	$('.class_th_class').each(function(){
+		$(this).removeAttr("disabled");
+	})
+
+    var form = $('#form1')[0];  
+    var formData = new FormData(form);
+    $.ajax({
+        url:'/Course/gradeSave',
+        type : "POST",
+        data : formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        success : function(data) 
+        {
+        	if($("#action").val()=='popView' || $("#action").val()=='edit'){
+				location.href = "/common/closeAndReload";
+        	}else if($("#action").val()=='copy'){
+        		location.href = "/Course/CourseSetting";
+        	}
+        },
+        error: function(data) 
+        {
+            alert("儲存不成功!");
+        }
+    })
+};
+
+function submitAction2(){
+    var form = $('#form1')[0];
+    var formData = new FormData(form);
+    $.ajax({
+        url:'/Course/gradeCommentSave',
+        type : "POST",
+        data : formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        success : function(data) 
+        {
+        	if($("#actionX").val()=='popView' || $("#action").val()=='edit'){
+        		location.href = "/common/closeAndReload";
+        	}else{
+        		location.href = "/Adm/classRemark";
+        	}	
+        },
+        error: function(data) 
+        {
+            alert("不成功!");
+        }
+    })
+};
+
+	$("#draftButton").click(function() {
+		if(checkInput()){
+			$("#status_code").val("1");
+			submitAction();
+		}
+	});
+	
+	$("#sendButton").click(function() {
+	  if(checkClassMeet()){		
+		$('#sendButton').attr('disabled',true);
+		if(checkInput()){		
+			$("#status_code").val("3");
+			submitAction();
+		}else{
+			$('#sendButton').attr('disabled',false);
+		}
+	  }	
+	});	
+	
+	$("#approveButton").click(function() {
+			$("#status_code").val("3");
+			submitAction();
+	});
+
+	$("#returnButton").click(function() {
+			$("#status_code").val("6");
+			submitAction();
+	});	
+	
+	$("#activeButton").click(function() {
+			$("#status_code").val("4");
+			submitAction();
+	});
+
+	$("#reAtciveUpdateButton").click(function() {
+		if(confirm("重新上架已下架課程?")){
+			$("#status_code").val("4");
+			submitAction();
+		}	
+	});	
+	
+
+	$("#inactiveButton").click(function() {
+		if(confirm("***** 手動下架? 確定課堂已結束! *****\n目前在上架狀態,手動下架後, 需通知相關學員!")){
+			$("#status_code").val("5");
+			submitAction();
+		}	
+	});
+	
+	$("#deleteButton").click(function() {
+		if(confirm("確定刪除此筆資料?")){
+			$("#status_code").val("7");
+			submitAction();
+		}	
+	});
+	
+	$("#atciveUpdateButton").click(function() {
+		if(checkClassMeet()){
+			if(checkInput()){
+			  if(confirm("目前在上架狀態下, 修改儲存完畢後, 需通知相關學員!")){
+				  $("#status_code").val("8");
+				  submitAction();
+			  }	
+			}
+		}	
+	});		
+		
+	
+
+//備註修改
+	$("#commentButton").click(function() {
+		    $("#status_code").val("8");
+		    if(confirm("目前在上架狀態下, 修改儲存完畢後, 需通知相關學員!")){
+			   submitAction2();
+		    }   
+	});
+
+
+	function checkInput(){		
+		if($("#school_code").val()==-1){alert("請填寫[分校]!"); return false;}
+		if($("#category_id").val()==-1){alert("請填寫[類別]!"); return false;}
+		if($("#subject_id").val()==-1){alert("請填寫[科目]!"); return false;}
+		if($("#teacher_id").val()==-1){alert("請填寫[老師]!"); return false;}
+		if($("#class_start_date").val()==''){alert("請填寫[期別]!"); return false;}
+		if($("#slot_id").val()==-1){alert("請填寫[時段]!"); return false;}
+		if($("#timeFrom").val()=='' || $("#timeTo").val()==''){alert("請填寫[上課時間]!"); return false;}
+		if($("#class_no").val()==-1){alert("請填寫[堂數]!"); return false;}
+		if($("#class_style").val()==-1){alert("請填寫[上課方式]!"); return false;}
+		if(!$("#onSell").val() || $("#onSell").val()==''){alert("尚未點選[課堂設置] 或 未填寫[課程呈現起日]!"); return false;}
+		if($("#offSell").val()==''){alert("請填寫[課程呈現迄日]!"); return false;}
+		for(var i=0;i<document.getElementsByName("c_class_date").length;i++){
+			if(document.getElementsByName("c_class_style")[i].value==1 && document.getElementsByName("c_class_date")[i].value==''){alert("實體課程,請填寫課堂時間!"); return false;}
+		}
+		return true;
+	}	
+	
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id,
+					needSession : 0
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject_id").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+	function AddCourseStr() {		
+		if($("#class_no").val()==''){
+			alert("請填寫[堂數]!");
+		}else if($("#teacher_id").val()==-1){
+			alert("請填寫[老師]!");
+		}else if($("#slot_id").val()==-1){
+			alert("請填寫[時段]!");
+		}else if($("#timeFrom").val()=='' || $("#timeTo").val()==''){
+			alert("請填寫[上課時間]!");
+		}else if($("#class_start_date_0").val()==''){
+			alert("請填寫[期別]!");	
+		}else{			
+			$.ajax({
+				url : "/Course/checkGradeDuplicate",
+				data : {
+					school_code : $("#school_code").val(),
+					category_id : $("#category_id").val(),
+					subject_id  : $("#subject_id").val(),
+					teacher_id  : $("#teacher_id").val(),
+					slot_id     : $("#slot_id").val(),
+					gradeName   : $("#gradeName").val(),
+					class_start_date_0 : $("#class_start_date_0").val(),
+					class_style : $("#class_style").val()
+				},
+				dataType : "text",
+				success : function(data){
+					if(data=='duplicate'){
+						alert("此期別課程已經存在!");
+					}else{
+						AddCourseStr2();
+					}
+				}
+			});
+		}	
+			
+		function AddCourseStr2() {	
+			var classNo = document.getElementsByName("classReceiveTextarea").length;
+			if(classNo!=0){
+				if(!confirm("請確認目前已設定的課堂將會清空並重新設置?")){
+					return;
+				}
+			}	
+				$.ajax({
+					url : "/Course/AddCourseStr",
+					data : {
+						school_code : $("#school_code").val(),
+						category_id : $("#category_id").val(),
+						subject_id  : $("#subject_id").val(),
+						teacher_id  : $("#teacher_id").val(),
+						class_date  : $("#class_start_date_0").val(),
+						slot_id     : $("#slot_id").val(),
+						gradeName   : $("#gradeName").val(),
+						timeFrom    : $("#timeFrom").val(),
+						timeTo      : $("#timeTo").val(),
+						class_no    : $("#class_no").val(),
+						class_makeup: $("#class_makeup").val(),
+						class_style : $("#class_style").val()
+					},
+					dataType : "text",
+					success : function(data) {
+						$("#courseList").html(data);
+					}
+				});
+		}
+	}	
+	
+	function autoDateFill(){
+//日期		
+		var datePick;
+		var date2;
+		var dateOnSell;
+		var shortName="";
+		if($("#class_start_date").val()=='' || $("#timeFrom").val()=='' || $("#timeTo").val()==''){
+			alert("請填寫[期別] 及[上課時間], 並重新點選[課程設置] !"); 
+		}else{
+		 $('.class_date').each(function(i){
+		   if(i==0){
+			   datePick=$(this).val();
+			   shortName = datePick.substring(11,14);
+			   date2 = new Date(datePick.substring(6,10)+"-"+datePick.substring(0,2)+"-"+datePick.substring(3,5));
+		       //上架日期	   
+			   dateOnSell = new Date(datePick.substring(6,10)+"-"+datePick.substring(0,2)+"-"+datePick.substring(3,5));
+			   dateOnSell.setDate(dateOnSell.getDate() - 60);
+			   	   var monthStr = dateOnSell.getMonth()+1;
+				   if(monthStr<10){monthStr = "0"+monthStr;}
+				   var dateStr  = dateOnSell.getDate();
+				   if(dateStr<10){dateStr = "0"+dateStr;}
+			   $("#onSell").val(monthStr+"/"+dateStr+"/"+dateOnSell.getFullYear());
+			   
+			   //下架日期(只有一堂)
+			   if($('.class_date').length==1){
+				   $("#offSell").val(datePick.substring(0,2)+"/"+datePick.substring(3,5)+"/"+datePick.substring(6,10));
+			   }			   
+		   }else{			   
+		       //各課堂日期	   
+			   date2.setDate(date2.getDate() + 7);
+				   var monthStr = date2.getMonth()+1;
+				   if(monthStr<10){monthStr = "0"+monthStr;}
+				   var dateStr  = date2.getDate();
+				   if(dateStr<10){dateStr = "0"+dateStr;}
+				   
+			   //下架日期
+			   if($('.class_date').length==2 && i==1){ //只有兩堂
+				   $("#offSell").val(monthStr+"/"+dateStr+"/"+date2.getFullYear());
+			   }else{ //3堂或多於3堂使用第三堂的時間
+				   if(i==2){
+				   		$("#offSell").val(monthStr+"/"+dateStr+"/"+date2.getFullYear());
+				   }		
+			   }
+			   
+			   this.value=monthStr+"/"+dateStr+"/"+date2.getFullYear()+" "+shortName;
+		   }
+		   
+		 })
+			checkDay(1);
+		} 
+
+//時段		
+		 var slowPick;
+		 $('.slot_id').each(function (i){
+		   if(i==0){	
+			   slowPick = $(this).val();
+		   }else{
+			   this.value = slowPick;
+		   }		   
+		 })  
+		 
+//起訖時間	
+
+		 var fromPick;
+		 var toPick;
+		 $('.timeFrom').each(function (i){
+		   if(i==0){	
+			   fromPick = $(this).val();
+		   }else{
+			   this.value = fromPick;
+		   }		   
+		 })
+		 
+		 $('.timeTo').each(function (i){
+		   if(i==0){	
+			   toPick = $(this).val();
+		   }else{
+			   this.value = toPick;
+		   }		   
+		 })		 
+	}
+
+    jQuery(function ($) {	
+        var checkList = $('.dropdown-check-list');
+        checkList.on('click', 'span.anchor', function(event){
+            var element = $(this).parent();
+
+            if ( element.hasClass('visible') )
+            {
+                element.removeClass('visible');
+            }
+            else
+            {
+                element.addClass('visible');
+            }
+        });
+    });
+
+
+	function openGradeStudent() {
+		var feature = "width=1100,height=500";
+		var class_style = "1";//實體
+		var school_code = "";
+		var grade_seq = $("#grade_seq").val();
+	    window.open("/Course/openGradeStudent?registerNo="+[[${registerNo}]]+"&grade_seq="+grade_seq,"",feature);
+	}
+	
+    function classReceive(TextareaTH){
+ 		var feature = "left=200,top=200,width=450,height=250";
+ 	    window.open("/Course/classReceive?TextareaTH="+TextareaTH, "", feature);    	
+    }	
+  
+	function additionalClass(){
+		if($('.class_th_class').length==0){
+			alert("請先設定[課堂設置]!");
+		}else{
+			var class_th=0; //預設值, 若上方皆為停課, 則用此初始值
+			$('.class_th_class').each(
+				function(){ 
+					if(Number($(this).val())>0 && Number($(this).val())>Number(class_th)){
+						class_th = $(this).val();					
+					}
+				}				
+			)
+			$.ajax({
+				url : "/Course/AddCourseStr_2",
+				data : {
+					school_code : $("#school_code").val(),
+					category_id : $("#category_id").val(),
+					subject_id  : $("#subject_id").val(),
+					teacher_id  : $("#teacher_id").val(),
+					slot_id     : $("#slot_id").val(),
+					gradeName   : $("#gradeName").val(),
+					timeFrom    : $("#timeFrom").val(),
+					timeTo      : $("#timeTo").val(),
+					class_style : $("#class_style").val(),
+					class_th    : class_th,
+					class_no    : $("#class_no").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#courseList").append(data);
+				}
+			});
+		}	
+	}
+
+/**	
+	function reArrange(thisId){
+	    //點選停課 		
+    	if(parseInt($(thisId).val(),10)<0){ 
+    		$(thisId).attr('disabled',true);
+			var class_th_ori = parseInt($(thisId).parent().parent().find("#class_th_ori").val(),10); //點選的原來堂數
+			//此堂區塊
+			$('.selArea').each(
+					//若大於停課堂數,則減1 
+					function(){ 
+						if(parseInt($(this).find("#class_th").val(),10)>class_th_ori){
+							var class_th_seq = $(this).find("#class_th_seq").val();
+							var new_class_th = parseInt($(this).find("#class_th").val(),10)-1;
+						    var str =
+						    	"<input type='hidden' id='class_th_seq' name='class_th_seq' value='"+class_th_seq+"'>"+
+						    	"<input type='hidden' id='class_th_ori' name='class_th_ori' value='"+new_class_th+"'>"+
+								"<select id='class_th' name='class_th' class='class_th_class' style='padding:5px;font-weight:bold' onchange='reArrange(this)'>"+
+									"<option value='"+new_class_th+"'>第 "+new_class_th+" 堂</option>"+
+									"<option value='-"+new_class_th+"'>停 課</option>"+
+								"</select>";
+							$(this).html(str)	
+						}
+					}
+			)
+		//點選復課	
+    	}else{
+    		var class_th_ori_0 = $(thisId).parent().parent().find("#class_th_ori").val().replace('-',''); //點選的原來堂數轉為正值
+    		var class_th_ori = parseInt(class_th_ori_0,10);
+			$('.selArea').each(
+					//若大於停課堂數且不為原來的停課,則加1 
+					function(){ 
+						if(parseInt($(this).find("#class_th").val(),10)>=class_th_ori && parseInt($(this).find("#class_th_ori").val(),10)>0){
+							var class_th_seq = $(this).find("#class_th_seq").val();
+							var new_class_th = parseInt($(this).find("#class_th").val(),10)+1;
+						    var str =
+						    	"<input type='hidden' id='class_th_seq' name='class_th_seq' value='"+class_th_seq+"'>"+
+						    	"<input type='hidden' id='class_th_ori' name='class_th_ori' value='"+new_class_th+"'>"+
+								"<select id='class_th' name='class_th' class='class_th_class' style='padding:5px;font-weight:bold' onchange='reArrange(this)'>"+
+									"<option value='"+new_class_th+"'>第 "+new_class_th+" 堂</option>"+
+									"<option value='-"+new_class_th+"'>停 課</option>"+
+								"</select>";
+							$(this).html(str)	
+						}
+					}
+			)
+    		
+    	}			
+	}
+**/	
+	function checkClassMeet() {
+		var settingNo = 0;
+		$('.class_th_class').each(
+			function(){ 
+				if(parseInt($(this).val(),10)>0){
+					settingNo = settingNo+1;
+				}
+			}				
+		)
+		if($('#class_no').val()>settingNo){
+			alert("目前編輯的總堂數-->"+settingNo+", 不得小於[預設堂數]-->"+$('#class_no').val());
+			return false;
+		}else{
+			return true;
+		}		
+	}
+	
+	//刪除課堂, 以下課堂改變
+	function del_Rearrange(class_th){
+		$('.class_th_class').each(
+			function(){
+				if(parseInt($(this).val(),10)>class_th){
+					var newClassth = parseInt($(this).val(),10)-1;
+					var newClassth_seq = parseInt($(this).parent().find("#class_th_seq").val(),10)-1;
+					$(this).append($("<option></option>").attr("value",newClassth).text('第 '+newClassth+' 堂'));
+					//alert("old_seq"+$(this).parent().find("#class_th_seq").val());
+					$(this).parent().find("#class_th_seq").val(newClassth_seq);
+					//alert("new_seq"+$(this).parent().find("#class_th_seq").val());
+					$(this).val(parseInt($(this).val(),10)-1);
+				}	
+			}
+		)				
+	}
+	
+	function getTeacher(){
+		$.ajax({
+			url : "/Course/getSubjectTeacherSel",
+			data : {
+				subject_id  : $("#subject_id").val()
+			},
+			dataType : "text",
+			success : function(data) {
+				$('#teacher_id').html(data);
+			}
+		});		
+		
+		
+	}
+</script>
+
+<style>
+.dropdown-check-list{
+display: inline-block;
+width: 100%;
+}
+.dropdown-check-list:focus{
+outline:0;
+}
+.dropdown-check-list .anchor {
+width: 98%;
+position: relative;
+cursor: pointer;
+display: inline-block;
+padding-top:5px;
+padding-left:5px;
+padding-bottom:5px;
+border:1px #ccc solid;
+}
+.dropdown-check-list .anchor:after {
+position: absolute;
+content: "";
+border-left: 2px solid black;
+border-top: 2px solid black;
+padding: 5px;
+right: 10px;
+top: 20%;
+-moz-transform: rotate(-135deg);
+-ms-transform: rotate(-135deg);
+-o-transform: rotate(-135deg);
+-webkit-transform: rotate(-135deg);
+transform: rotate(-135deg);
+}
+.dropdown-check-list .anchor:active:after {
+right: 8px;
+top: 21%;
+}
+.dropdown-check-list ul.items {
+padding: 2px;
+display: none;
+margin: 0;
+border: 1px solid #ccc;
+border-top: none;
+}
+.dropdown-check-list ul.items li {
+list-style: none;
+}
+.dropdown-check-list.visible .anchor {
+color: #0094ff;
+}
+.dropdown-check-list.visible .items {
+display: block;
+}
+</style>
+
+

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+ 	
+&nbsp;<p> 
+<div style='text-align:left;letter-spacing:10px;font-weight:bold'>&nbsp;&#10149;待訂期別</div>
+
+    <form>	
+     	<input type='hidden' id='eip_grade_seq' th:value='${eip_grade_seq}'>
+     	<input type='hidden' id='gradeId' th:value='${gradeId}'>						
+	  <div class="css-table" style="border-spacing:1px;background-color:white;margin-top:5px;margin-left:20px">
+		<div class="tr" style='background-color:orange;color:white;font-size:small;font-weight:bold'>
+			<div class="td2" style='width:70px;padding:2px;text-align:center;border-radius:2px'>開課分校</div>
+			<div class="td2" style='width:70px;text-align:center;border-radius:2px'>性 質</div>
+			<div class="td2" style='width:230px;text-align:center;border-radius:2px'>期 別</div>
+			<div class="td2" style='width:50px;text-align:center;border-radius:2px'>時 段</div>			
+			<div class="td2" style='width:100px;text-align:center;border-radius:2px'>老 師</div>
+			<div class="td2" style='width:80px;text-align:center;border-radius:2px'>狀 態</div>
+			<div class="td2" style='width:100px;text-align:center;border-radius:2px'>專 員</div>		
+			<div class="td2" style='width:100px;text-align:center;border-radius:2px'>訂 期 別</div>
+			<div class="td2" style='width:50px;text-align:center;border-radius:2px'>內 容</div>
+		</div>
+	  </div>
+	  <div id='gradeToSelDiv' class="css-table" style="border-spacing:1px;background-color:white;margin-left:20px">
+	    <!-------->
+	    
+	    <!-------->
+	  </div>
+
+	  
+     <div style='width:860px' align='center'>
+		 <button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設"/>&nbsp;&nbsp;&nbsp;&nbsp;
+     </div>	  
+    </form>
+&nbsp;<p>
+&nbsp;<p>    
+<script>
+
+
+    function refreshParent(gradeATimeStr) {
+        if(confirm("確定選取此課程?")){
+			$.ajax({
+				url : "/Sales/set_gradeJL",
+				data : {
+					gradeATime : $("#gradeATime").val(),
+					eip_grade_seq : $("#eip_grade_seq").val(),
+					gradeId : $("#gradeId").val()
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        }	
+	}
+    
+	function openGrade(data) {
+ 		var feature = "width=1000,height=800";
+ 	    window.open("/Course/newCourse?action=popView&grade_seq="+data, "", feature);
+ 	} 
+	
+	$("#btnSave").click(function() {
+		    	refreshParent(); 
+	})
+	
+
+
+$(document).ready(
+
+	function(){
+		GetGradeToSelect()();
+	}	
+)
+
+	function GetGradeToSelect(){
+			
+		 $.ajax({
+			url : "/Sales/getGradeToSelectJL",
+			data : {
+				eip_grade_seq : $("#eip_grade_seq").val()
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#gradeToSelDiv").html(data);
+			    $( document ).tooltip(
+			    	 {
+			    	    content: function(){
+			    	          return "<div style='text-align:center;font-weight:bold;letter-spacing:5px;background-color:green;color:white'> 課表排程 </div>"+$(this).attr('title');
+			    	    }
+			    	 }
+			    );				
+
+				//$("[data-toggle=tooltip]").tooltip();
+			}
+		 });
+	}
+	
+</script>
+
+
+
+
+

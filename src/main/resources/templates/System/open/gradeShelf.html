@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div id='myDataTalbe' class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/open/eipStructure">eip架構</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/open/systemAnalysis">訂單改報</a></li> 
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/open/gradeShelf">上下架</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/open/gradeRefund">退費</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/open/admFlow">行政流程</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/open/makeUpNo">Video點數</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/open/projectDef">科目用途</a></li>
+  </ul>
+</div>   
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<img src='/css/sa/gradeShelf.jpg' style='width:800px'>
+<script>
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

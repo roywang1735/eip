@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+	 	
+	<div>						
+			<div align='center' style='margin-top:30px'>
+				<div class="css-table" style=''>
+					<div class="tr">
+					    <div class="th3" style='font-weight:bold;color:white;background-color:#3e7e99;padding:2px;text-align:center;letter-spacing:10px;border-right:1px #ffffff solid'>原科目<span style='letter-spacing:0px;font-size:xx-small'>( 勾選欲更換科目 )</span></div><div class="th3"></div><div class="th3" style='font-weight:bold;color:white;background-color:#3e7e99;padding:2px;text-align:center;letter-spacing:10px'>更換科目</div>	
+					</div>    				
+					<div class="tr">
+					    <div class="td" style='padding:3px;text-align:left;vertical-align:top;width:250px;height:200px;border:1px #dddddd solid' th:utext='${subjectStr}'>
+					    	
+					    </div>
+					    <div class="td" style='vertical-align:middle;padding:3px'><img src='/images/exchange4.png' height='15px'/></div>					    
+					    <!------------------------------->
+						<div class="td" id='newSubject' style='width:400px;border:1px #dddddd solid;background-color:#ffefff;font-weight:bold;padding:5px'>								
+								<div style='text-align:right'><button type="button" class="btn btn-sm btn-success" style='padding:2px' onclick="Add()">新增</button></div>
+								<div class="tr">				
+									<div class="td" style='padding:3px'>
+										<select id='category' style="width:120px" class="form-control" onchange="subjectData(this.value,this)">
+											<option value="" disabled selected>~ 類別 ~</option>
+											<option th:each="item : ${categoryGroup}"
+												th:value="${item.category_seq}" th:utext="${item.name}" />
+										</select>
+									</div>
+									<div>&nbsp;&nbsp;</div>
+									<div class="td" style="width:200px;background-color:#ffefff">
+										<select class='subjectSel form-control'>
+											<option value="" disabled selected>~ 科目 ~</option>
+										</select>
+									</div>						
+								</div>														
+						</div>
+					</div>			
+				</div>
+				<div style='height:10px'></div>
+				<div class="css-table" id='addMoneyArea'>		
+					<div class="tr">
+						<div class="th" style='color:red'>
+							&starf;&nbsp;(應繳總金額增加) : 需補價差
+						</div>
+						<div class="td">
+							<input type='text' id='addMoney' class="form-control" style="width:100px" placeholder='ex.1000'>
+						</div>
+						<div class="th">
+							元
+						</div>												
+					</div>
+				</div>	
+                <div>
+					<button type="button" class="btn btn-primary" onclick="subjectChange();">換 課</button>
+				</div>
+			</div>	  
+	</div>
+	
+	
+<div style='display:none' id='otherStr'>
+	  <div class='td2'>&nbsp;</div>	
+	  <div class='td2' style='padding:1px;width:50px'>
+		<input type='text' class='originPrice' value='$$$'  style='width:100%;border:1px dotted #FEF8F8;background-color:#FEF8F8;text-align:right' readonly>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:50px'>
+		<input type='text' class='salePrice' name='salePrice' style='width:100%;border:0px;text-align:right' readonly>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:50px'>
+		<input type='text' class='hrPrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:150px'>
+		<input type='text' class='counselingPrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+		<div class='counselingName'></div>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:150px'>
+		<input type='text' class='lagnappePrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+		<div class='lagnappeName'></div>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:50px'>
+		<input type='text' class='handoutPrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:50px'>
+		<input type='text' class='homeworkPrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:150px'>
+		<input type='text' class='mockPrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+		<div class='mockName'></div>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:50px'>
+		<input type='text' class='coursePrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+	  </div>	
+	  <div class='td2' style='padding:1px;width:150px'>
+		<input type='text' class='outPublisherPrice' style='width:100%;border:0px;background-color:#FEF8F8;text-align:right' readonly>
+		<div class='outPublisherName'></div>
+	  </div>
+</div>
+
+<script th:inline="javascript" type="text/javascript">
+ 	$(document).ready(function() { 
+ 		if([[${newReg}]]){
+ 			$("#addMoneyArea").hide();
+ 		}
+ 	})
+ 	
+	function Add() {		
+		  var data =
+			"<div class='tr'>"+				
+				"<div class='td' style='padding:3px'>"+
+					"<select id='category' style='width:120px' class='form-control' onchange='subjectData(this.value,this)'>"+
+						"<option value='' disabled selected>~ 類別 ~</option>";
+					    var theList = [[${categoryGroup}]];
+					    for(i=0;i< theList.length;i++) {
+					    	data +="<option value='"+theList[i].category_seq+"'>"+theList[i].name+"</option>";
+					    }						
+					data +=	
+					"</select>"+
+				"</div>"+
+				"<div>&nbsp;&nbsp;</div>"+
+				"<div class='td' style='width:200px;background-color:#ffefff'>"+
+					"<select class='subjectSel form-control'>"+
+						"<option value='' disabled selected>~ 科目 ~</option>"+
+					"</select>"+
+				"</div>"+						
+			"</div>";			  
+		  $("#newSubject").append(data);	  
+	}
+ 	
+ 	
+    function subjectData(category_id,thisObj) {
+	   if (category_id) {			
+		  $.ajax({
+			url : "/Course/getSubjectOption",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {				
+				$(thisObj).parent().parent().find('.subjectSel').html(data);
+			}
+		 });
+	   }
+    }
+    
+    
+    
+    //subject-Name@subject-Price@Register_comboSale_seq^subject-Seq@HrPrice_R@CounselingPrice_R@LagnappePrice_R@HandoutPrice_R@HomeworkPrice_R@MockPrice_R@	        
+    function subjectChange() {
+    	        //移除舊的 
+                var class_comboSale_id = "com"+[[${comboSale_id}]]; 
+                var upperLayer = $('.'+class_comboSale_id,opener.document).parent(); //上一層
+                var Register_comboSale_seq_off=""; //欲移除的科目Register_comboSale_seq
+                var subString_on = new Array();
+				$(".ori_subjectId").each(						
+					function() {
+						/**
+						if($(this).prop("checked")){
+							Register_comboSale_seq_off +="<input type='hidden' name='Register_comboSale_seq_off' value='"+$(this).val()+"'>"; //subject_seq@Register_comboSale_seq 
+							var subjectNeedRemove = "#com"+[[${comboSale_id}]]+"sub"+$(this).val().split("@")[0];
+							$(subjectNeedRemove,opener.document).remove();
+						}
+						**/
+						if(!$(this).prop("checked")){
+							subString_on.push($(this).val());
+						}else{//欲移除的項目
+							Register_comboSale_seq_off +="<input type='hidden' name='Register_comboSale_seq_off' value='"+$(this).val().split("^")[0].split("@")[2]+"@"+$(this).val().split("^")[1].split("@")[0]+"'>"; //subject_seq@Register_comboSale_seq 
+						}
+						//var subjectNeedRemove = "#com"+[[${comboSale_id}]]+"sub"+subject_seq;
+						//$(subjectNeedRemove,opener.document).parent().remove(); //移除原先所有項目
+					}
+				)
+				//移除原先所有項目
+				$('.'+class_comboSale_id,opener.document).each(						
+						function() {
+							$(this).remove();
+						}
+				);		
+				
+				
+    	        //加入新的    
+    	        var newStr = Register_comboSale_seq_off; //將欲移除替換後塞入
+    	        var validSel = 0;
+				$(".subjectSel").each(						
+					function(){ 
+						var subjectSelStr= $(this).val();
+						if(subjectSelStr){
+							validSel = 1;
+							var subjectSelStr_0  = subjectSelStr.split("^")[0];
+							var subjectSelStr_1  = subjectSelStr.split("^")[1];
+							var subjectSelStr_0a = subjectSelStr_0.split("@")[0]; //subject name
+							var subjectSelStr_0b = subjectSelStr_0.split("@")[1]; //subject price
+	
+							newStr +=
+							//"<div class='tr' class='com940' id='com940sub22' style='font-size:small;font-weight:bold;height:20px;background-color:#FEF8F8'>"+
+							"<div class='tr "+class_comboSale_id+"' style='font-size:small;font-weight:bold;height:20px;background-color:#FEF8F8'>"+				
+							  "<div class='td2' style='padding:1px;width:250px;text-align:left;font-size:small'>"+
+								"<input type='hidden' id='replaceFrom' name='replaceFrom' value='1'>"+ //設為1代表這是更新的科目
+								"<input type='hidden' id='add' name='add' value=''>"+
+								"<input type='hidden' name='comboSale_seq' value='"+[[${comboSale_id}]]+"'>"+
+								"<input type='hidden' id='subject_seq' name='subject_seq' value='"+subjectSelStr_1+"'>&nbsp;&nbsp;&nbsp;&nbsp;<span id='Subject_name' style='color:darkblue'>"+subjectSelStr_0a+"</span>"+
+								"<input type='hidden' name='freeChoice' value='1'>"+
+							 "</div>";
+							 newStr += $("#otherStr").html().replace('$$$',subjectSelStr_0b); //原價
+							 newStr +="</div>";
+						}	 
+					}
+				)
+				
+				//加入原先未移除的部分
+				for(var x=0;x<subString_on.length;x++){
+					validSel = 1;
+					var subjectSelStr_0  = subString_on[x].split("^")[0];
+					var subjectSelStr_1  = subString_on[x].split("^")[1];
+					var subjectSelStr_0a = subjectSelStr_0.split("@")[0]; //subject name
+					var subjectSelStr_0b = subjectSelStr_0.split("@")[1]; //subject price
+
+					newStr +=
+					//"<div class='tr' class='com940' id='com940sub22' style='font-size:small;font-weight:bold;height:20px;background-color:#FEF8F8'>"+
+					"<div class='tr "+class_comboSale_id+"' style='font-size:small;font-weight:bold;height:20px;background-color:#FEF8F8'>"+				
+					  "<div class='td2' style='padding:1px;width:250px;text-align:left;font-size:small'>"+
+						"<input type='hidden' id='replaceFrom' name='replaceFrom' value='0'>"+ //設為1代表這是更新的科目
+						"<input type='hidden' id='add' name='add' value=''>"+
+						"<input type='hidden' name='comboSale_seq' value='"+[[${comboSale_id}]]+"'>"+
+						"<input type='hidden' id='subject_seq' name='subject_seq' value='"+subjectSelStr_1+"'>&nbsp;&nbsp;&nbsp;&nbsp;<span id='Subject_name' style='color:darkblue'>"+subjectSelStr_0a+"</span>"+
+						"<input type='hidden' name='freeChoice' value='1'>"+
+					 "</div>";
+					 newStr += $("#otherStr").html().replace('$$$',subjectSelStr_0b); //原價
+					 newStr +="</div>";					
+				}
+				 
+				if(validSel==1){
+					upperLayer.find('#comboSaleName').after(newStr);    	          	        
+					var addMoney = "0";
+					if($("#addMoney").val()){
+						if($("#addMoney").val()<0){
+							alert("輸入金額須大於零");
+							return;
+						}
+						addMoney = $("#addMoney").val();
+					}
+					
+					window.opener.SumOriginPrice(addMoney);				
+					window.close();
+				}else{
+					 alert("請選擇更換科目!");
+				}   	
+	}
+</script>
+
+
+

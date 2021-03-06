@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/Teacher">老師</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting3">課表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/MockSetting">模考</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/CourseSale/CounselingCost">充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/BillBoard">國定假日</a></li>    	
+	</ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+		    &#10074;<div class="td" style=""><A href='/Course/MockSetting'>銷售</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Course/testSubjectSetting'>考科</A></div><div class="td" style="width:20px"></div>  	    
+	</div>
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+		<div style='width:500px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='letter-spacing:2px'>
+					<th style='width:100px'>類別</th>
+					<th style='width:300px'>回</th>
+					<th style='width:100px'>細項</th>		
+				</tr>
+			</thead>
+		  </table>
+	   </div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	  		
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	
+<script>
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Course/getTestRound",
+			data : function(d) {		
+			},
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "category_name","className" : "text-center"},
+			{"data" : "name","className" : "text-left"},
+			{"data" : "testRound_seq","className":"text-center",
+			     "render" : function(data,type,row,meta) {
+		               return "<A href='javascript:void(0)' onclick='' style='font-size:large;text-decoration:underline;color:blue'>&hellip;</A>";
+	             }					
+			}			
+		 ]
+	});
+	$("#btnQuery").click(function() {
+		table.ajax.reload();
+	});
+});
+
+function testSubjectEdit(testSubject_seq){
+	var feature = "width=600,height=400,left=400,top=100";
+	   	window.open("/Course/testSubjectEdit?testSubject_seq="+testSubject_seq,"",feature);		
+}
+
+</script>
+
+

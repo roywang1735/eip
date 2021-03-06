@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Other/bookSetting">物品設置</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Other/bookSetting">書籍</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href="/Other/otherLagnappe">其他贈品</A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+
+  <div style='border:1px #ffffff solid;width:300px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					類別<br> 
+					<select id="category_id" class="form-control" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px'>
+					狀態<br> 
+					<select id="active" class="form-control" style='width:100px'>
+						<option value='1'>啟用</option>
+						<option value='0'>停用</option>
+					</select>				
+			</div>							
+		</div>
+	</div>						
+  </div>
+	<div align='center' style='width:300px'>
+		<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+		<span sec:authorize="hasAnyRole('adm','adm_mgr','approve_mgr')">
+			<button type="button" class="btn btn-sm btn-success" onclick="bookSettingEdit('')">&#8883;新增書籍 </button>
+		</span>
+	</div>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+		<div style='width:1000px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='letter-spacing:2px'>
+					<th>Seq.</th>
+					<th>類別</th>
+					<th>名稱</th>
+					<th>定價</th>
+					<th>售價</th>
+					<th>ISBN</th>
+					<th>出版</th>
+					<th>更新者</th>
+					<th>更新時間</th>									
+				</tr>
+			</thead>
+		  </table>
+	   </div>
+	   	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"searching" : false,
+			"order": [ 0, "desc" ],
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Other/getBooks",
+				data : function(d) {
+					d.category_id   = $("#category_id").val();
+					d.active   = $("#active").val();
+				},
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "books_seq","className" : "text-center"},
+				{"data" : "category_name","className" : "text-center"}, 					
+				{"data" : "bookName",
+				     "render" : function(data, type, row, meta) {
+			               return "<a href='javascript:void(0)'  onclick='bookSettingEdit("+row.books_seq+")' style='color:blue;text-decoration:underline'>"+data+"</A>";
+		             }					
+				},
+				{"data" : "originPrice","className" : "text-right"},
+				{"data" : "sellPrice","className" : "text-right"},
+				{"data" : "isbn"},
+			    {"data" : "publisher"},
+				{"data" : "updater","className" : "text-center"},
+				{"data" : "update_time","className" : "text-center"}			    
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			table.ajax.reload();
+		});
+	});
+	
+	function bookSettingEdit(books_seq){
+ 		var feature = "top=0,left=350,width=700,height=550";
+ 	    window.open("/Other/bookSettingEdit?books_seq="+books_seq, "", feature);
+ 	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+
+</script>

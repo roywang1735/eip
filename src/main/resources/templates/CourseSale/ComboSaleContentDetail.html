@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee solid;
+}
+</style>
+
+<body style='background-color:#eeeeee'>
+
+			<div class="css-table" style="background-color:#ffffff;border-spacing: 3px; width: 90%;">
+<!-- 名稱 -->
+				<div class="tr">
+					<div class="td dashedline" align='center' style="padding:5px">
+						<div style='background-color:#ffeeff'>
+						  <div class="tr"> 
+						    <div class="th" style='color:blue;font-weight:bold' th:text="${comboSale.category_name}"></div>
+						    <div class="th" style='color:blue;font-weight:bold'> : </div>
+						    <div class="th" style='color:blue;font-weight:bold' th:utext="${comboSale.name}"></div>
+						   </div> 
+						</div>
+					</div>
+				</div>
+<!-- 課程 -->				
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>課程</div>
+									<div class='td' style='width:100px;font-size:x-small'>原價</div>
+									<div class='td' style='width:100px;font-size:x-small'>售價</div>					
+								</div>
+								<div th:each="comboSale_subject:${comboSale_subject}">
+								<div class='tr' style="padding:5px;height:20px;">
+									<!------------------->
+			                          <div class='td' th:utext="${comboSale_subject.subject_name}" style='width:200px;font-weight: bold; color:darkblue;background-color:#ffeeff;border: 1px #eeeeee solid; padding-top:2px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_subject.origin_price}" style='width:100px;border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_subject.sale_price=='-1'?'-':comboSale_subject.sale_price}" style='width:100px;border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>						
+									<!------------------->
+								</div>
+								<div>
+									      <div th:utext="${comboSale_subject.gradeStr}"></div>
+								</div>
+								</div>					    
+				         </div> 
+				   </div>
+				</div>	
+
+<!-- 教材 -->	
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>教材</div>
+									<div class='td' style='width:100px;font-size:x-small'></div>
+									<div class='td' style='width:100px;font-size:x-small'></div>					
+								</div>
+								<div class='tr' th:each="comboSale_material:${comboSale_material}"  style="padding: 5px;height:20px;">
+									<!------------------->
+			                          <div class='td' th:text="${comboSale_material.material_name}" style='font-weight: bold; color:darkblue;background-color:#ffeeff; border: 1px #eeeeee solid; padding-top:2px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_material.origin_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>
+								      <div class='td' th:text="${comboSale_material.sale_price=='-1'?'-':comboSale_material.sale_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'>750</div>	
+									<!------------------->
+								</div>					    
+				         </div> 
+				   </div>
+				</div>		
+<!-- 模考 -->	
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>模考</div>
+									<div class='td' style='width:100px;font-size:x-small'></div>
+									<div class='td' style='width:100px;font-size:x-small'></div>					
+								</div>
+								<div class='tr' th:each="comboSale_mock:${comboSale_mock}"  style="padding: 5px;height:20px;">
+									<!------------------->
+			                          <div class='td' th:text="${comboSale_mock.mock_name}" style='font-weight: bold; color:darkblue;background-color:#ffeeff; border: 1px #eeeeee solid; padding-top:2px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_mock.origin_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>
+								      <div class='td' th:text="${comboSale_mock.sale_price=='-1'?'-':comboSale_mock.sale_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'>750</div>	
+									<!------------------->
+								</div>					    
+				         </div> 
+				   </div>
+				</div>
+<!-- 輔導 -->	
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>輔導 </div>
+									<div class='td' style='width:100px;font-size:x-small'></div>
+									<div class='td' style='width:100px;font-size:x-small'></div>					
+								</div>
+								<div class='tr' th:each="comboSale_counseling:${comboSale_counseling}"   style="padding:5px;height:20px;">
+									<!------------------->
+			                          <div class='td' th:text="${comboSale_counseling.counseling_name}" style='font-weight: bold; color:darkblue;background-color:#ffeeff;border: 1px #eeeeee solid; padding-top:2px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_counseling.origin_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>
+								      <div class='td' th:text="${comboSale_counseling.sale_price=='-1'?'-':comboSale_counseling.sale_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'>750</div>	
+									<!------------------->
+								</div>					    
+				         </div> 
+				   </div>
+				</div>
+
+<!-- 贈品 -->				
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>贈品 </div>
+									<div class='td' style='width:100px;font-size:x-small'></div>
+									<div class='td' style='width:100px;font-size:x-small'></div>					
+								</div>
+								<div class='tr' th:each="comboSale_lagnappe:${comboSale_lagnappe}"   style="padding:5px;height:20px;">
+									<!------------------->
+			                          <div class='td' th:text="${comboSale_lagnappe.lagnappe_name}" style='font-weight: bold; color:darkblue;background-color:#ffeeff;border: 1px #eeeeee solid; padding-top:2px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_lagnappe.origin_price}" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>
+								      <div class='td' th:text="${comboSale_lagnappe.sale_price=='-1'?'-'comboSale_lagnappe.sale_price" style='border: 1px ffeeff solid; padding-top:5px; border-top:0px'>750</div>	
+									<!------------------->
+								</div>											    
+				         </div> 
+				   </div>
+				</div>
+<!-- 他項 -->				
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>他項 </div>
+									<div class='td' style='width:100px;font-size:x-small'></div>
+									<div class='td' style='width:100px;font-size:x-small'></div>					
+								</div>			    
+				         </div> 
+				   </div>
+				</div>
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:150px;font-size:x-small'>
+										補課數
+									</div>				
+								</div>			    
+				         </div> 
+				   </div>
+				</div>				
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:150px;font-size:x-small'>
+										原價<div style='font-size:small; color:blue; width:100px;'  th:text="${comboSale.origin_price}"></div>	
+									</div>
+									<div class='td' style='width:150px;font-size:x-small'>
+									          售價<div style='font-size:small; color:blue; width:100px;'  th:text="${comboSale.sale_price=='-1'?'-':comboSale.sale_price}"></div>	
+									</div>				
+								</div>			    
+				         </div> 
+				   </div>
+				</div>							
+			</div>
+&nbsp;<p>
+&nbsp;<p>
+
+<script>
+	function openFreeChoice(subject_id) {
+		var feature = "height=100,left=300,width=600,height=300";
+	    window.open("/CourseSale/FreeChoice?subject_id="+subject_id, "", feature);
+	} 	
+</script>	
+
+<script>
+	function gradeInfo() {
+		var feature = "height=100,left=300,width=600,height=300";
+	    window.open("/Course/gradeInfo", "", feature);
+	} 	
+</script>		
+
+

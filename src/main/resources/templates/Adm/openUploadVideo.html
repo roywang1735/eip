@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<!DOCTYPE html>
+
+<body style="background-color:#ffffff">
+  <div align='center'>
+&nbsp;<p>
+	<div style="padding:3px;width:98%;font-size:small;color:red;font-weight:bold;text-align:left">
+ 	* Video點名檔案 : 分校-日期  例 : TPXC-20190106.xlsx<br>
+ 	* 上傳檔案最大為 : 1MB 
+	</div>
+&nbsp;<p>
+&nbsp;<p>
+  
+    <form id='form1' action="#" th:action="@{/Adm/uploadVideo}" method="post" enctype="multipart/form-data">
+       <div align="center" style="padding:20px;border:1px solid #DDDDDD;width:300px;background-color:lightseagreen;border-radius:10px">
+          <input type="file" name="file" />
+       </div>   
+       <button type="button" id='sendButton' class="btn btn-sm btn-primary">上 傳</button>&nbsp;&nbsp;&nbsp;
+    </form>
+  </div>
+
+  &nbsp;<p>
+  &nbsp;<p>
+
+</body>
+
+<script>
+	$("#sendButton").click(function() {
+		$('#sendButton').attr('disabled',true);
+		$("#form1").submit();
+	});
+</script>
+
+
+<div th:if="${message}" style='text-align:left;font-weight:bold'>
+    <h5 th:utext="${message}"/>
+</div>

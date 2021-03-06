@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<body style=''>		
+ 					<input type='hidden' id='TextareaTH' th:value='${TextareaTH}'>
+                                &nbsp;<p>
+								<div id="css-table" class="css-table" style="margin: 0px auto;">
+									<div class="tr">
+										<div class="td" >
+											<select id='material_seq' style="font-weight:bold;width:100px" class="form-control" onchange="materialSel(this.value)">
+												<option value="-1" selected></option>
+												<option value="1">書 籍 </option>
+												<option value="2">講 義</option>
+											</select>
+										</div>
+									</div>
+                                    &nbsp;<br>
+									<div class="tr">
+										<div class="td" align='center' id='2part'>				
+										</div>
+									</div> 
+									&nbsp;<p>                                    
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button" class="btn-xs btn-warning" onclick="refreshParent();">&nbsp;加 入&nbsp;</button>
+										</div>
+									</div>
+								</div>
+
+
+
+
+<script>
+
+function materialSel(material_seq) {
+	//書籍
+	if(material_seq==1) {			
+		$.ajax({
+			url : "/Other/getBooksOption",
+			dataType : "text",
+			success : function(data) {
+				$("#2part").html("<select id='meterialDiv' style='font-size:small;width:300px' class='form-control'>"+data+"</select>");
+			}
+		});
+	}else if(material_seq==2) {			
+		$("#2part").html("<input type='text' id='meterialInput' style='border-radius:3px;width:300px;border:1px #bbbbbb solid;padding:5px'>");
+	}
+}
+
+function refreshParent() {
+	var TextareaTH = $("#TextareaTH").val();
+	var oldStr = window.opener.document.getElementsByName("classReceiveTextarea")[TextareaTH].value;
+	var oldHidden = window.opener.document.getElementsByName("classReceiveHidden")[TextareaTH].value;
+	var Secondpart;
+	if($("#material_seq").val()==1){		
+		window.opener.document.getElementsByName("classReceiveTextarea")[TextareaTH].value= oldStr + '[書籍] '+$('#meterialDiv :selected').text()+'\n';
+		Secondpart = $("#meterialDiv").val();
+	}else if($("#material_seq").val()==2){
+		window.opener.document.getElementsByName("classReceiveTextarea")[TextareaTH].value= oldStr + '[講義] '+$('#meterialInput').val()+'\n';
+		Secondpart = $("#meterialInput").val();
+	}
+	window.opener.document.getElementsByName("classReceiveHidden")[TextareaTH].value= oldHidden + "@"+$("#material_seq").val()+"#"+Secondpart;
+	
+	
+	window.close();
+}
+</script>
+
+
+

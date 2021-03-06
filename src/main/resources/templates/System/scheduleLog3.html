@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/scheduleLog">排程</a></li> 
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/loginLog">登入</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/serverLog">系統</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog'>正班上下架</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/schedule_videoOff'>Video下架</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/schedule_rollCall'>缺席行程</A></div><div class="td" style="width:20px"></div>	    
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog2'>科目</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog2a'>套裝</A></div><div class="td" style="width:20px"></div>	    
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/scheduleLog3'>費用分攤</A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>  
+<div>&nbsp;</div>   
+  <div style='width:400px;padding:10px;border-radius:5px;margin-top:20px' id='myDataTalbe'>  
+	<div class="css-table" style="font-weight:bold;border:1px #dddddd solid;background-color:aliceblue">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;width:120px'>
+				&bull; 費用分攤月報表
+			</div>
+			<div class="td2" style='padding:5px;width:170px;color:darkorange;vertical-align:bottom'>
+			    <img src='/images/clock.png'/ style='width:16px'> AM 6:01 / 每月1日
+			</div>										
+		</div>	
+	</div>	
+  </div>
+  
+<div>&nbsp;</div>
+
+
+<script type="text/javascript">
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

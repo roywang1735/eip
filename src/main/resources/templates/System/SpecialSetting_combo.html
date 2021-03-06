@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/SpecialSetting_combo'>單科/套裝</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/SpecialSetting_grade'>期別</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/SpecialSetting_subject'>科目</A></div><div class="td" style="width:20px"></div>
+	</div>
+</div> 
+
+	
+<form name="myForm" action="" method="post">
+<div class="css-table">
+<div class="tr">
+ <div class="td" style='vertical-align:middle'>
+ <div>&nbsp;</div>
+  <div style='border:1px #eeeeee solid;width:500px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					狀態<br> 
+					<select id="FlowStatus" class="form-control" style='width:120px'>
+						<option></option>
+						<option th:each="item : ${flowStatusGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${FlowStatus_code == item.code}"/>
+					</select>
+			</div>
+		
+			<div class="td2" style='padding:5px'>
+					類別<br> 
+					<select id="category" class="form-control">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${category_id == item.category_seq}" />
+					</select>
+			</div>
+			<div class="td2" style='padding:5px'>
+					組合<br> 
+					<select id="isCombo" class="form-control">
+					    <option value=''></option>
+						<option value='1' th:selected="${isCombo == 1}">套裝</option>
+                        <option value='0' th:selected="${isCombo == 0}">單科</option>
+					</select>
+			</div>						
+		</div>
+	</div>
+   </div>
+  </div> 
+  </div>
+  </div> 			
+
+  <div  align='center' style='width:500px'>
+			<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+  </div>
+</form>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<!--DataTables的表格-->
+<table id="myDataTalbe" class="display" style='width:1000px'>
+	<thead>
+		<tr style='letter-spacing:2px'>
+			<th style='width:60px'>刪除</th>
+			<th style='width:60px'>狀態</th>
+			<th style='width:65px'>類別</th>
+			<th style='width:330px'>單科/套裝名稱</th>
+			<th style='width:400px'>科目</th>
+			<th style='width:70px'>建立者</th>
+			<th style='width:70px'>更新</th>
+		</tr>
+	</thead>
+</table>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script>
+	$(function() {
+		$("#datepickerFrom").datepicker();
+		$("#datepickerTo").datepicker();
+	});
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+ 	$(document).ready(function() {
+ 			if(![[${sessionState}]]){
+ 				$('myDataTalbe').DataTable().state.clear();
+ 				window.location.replace(window.location.href+((window.location.search)?"&":"?")+"sessionState=keep")
+ 			} 		
+ 		var comboName='';
+		let table = $('#myDataTalbe').DataTable({
+			dom: "<'row'<'col-sm-3'l><'col-sm-3'f><'col-sm-6'p>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
+			"iDisplayLength": 15,
+			"stateSave" : true, 
+			"columnDefs": 
+  				[
+      				{"targets": 5,"className": "text-right"},
+      				{"targets": 6,"className": "text-right"}
+				],			
+			"order": [0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/CourseSale/getComboSale",
+				data : function(d) {
+					d.category_id  = $("#category").val();
+					d.FlowStatus_code  = $("#FlowStatus").val();
+					d.isCombo      = $("#isCombo").val();
+				},					
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [
+			   {data: "comboSale_seq","className" : "text-center",
+				   "render" : function(data, type, row, meta) {
+			 				return data+"</A><br><A href='javascript:void(0)'  onclick=comboDisable("+data+")><img src='/images/delete5.png' height='11px'/></A>";
+				    }				   
+			   },			   
+			   {"data" : "flowStatus_name","className" : "text-center",
+					"render" : function(data, type, row, meta) {
+						if(row.flowStatus_code=='3'){
+							return data+"&nbsp;<img src='/images/wait.gif' height='15px'/>";
+						}else{
+							return data;
+						}	
+					}				   
+			   }, 
+			   {"data" : "category_name","className":"text-center",				  
+				   "render" : function(data, type, row, meta){
+					   if(row.schedule_time){
+						   if(row.flowStatus_code=='1' || row.flowStatus_code=='2' || row.flowStatus_code=='3' || row.flowStatus_code=='6'){
+						   		return data+"<br><img src='/images/clock.png' height='13px' title='待跑行程 : 時間到時,系統會將[待上架]-->[上架]'/><span style='font-size:x-small;color:orange;font-weight:bold'> "+row.schedule_time+"</span>";
+						   }		
+					   }else{
+						   return data;		
+					   }		
+				   }				   
+			   }, 
+			   {"data" : "name",
+				  "render" : function(data, type, row, meta) {
+					if(row.isCombo==1){
+						if(data!=comboName){
+							comboName = data;
+							return "<span style='font-weight:bold'>[ "+data+" ]</font>";
+						}else{
+							return "<span style='font-weight:bold'>? [ "+data+" ]</font>"; //同套裝名用淺色代表前一版
+						}	
+					}else{
+						return data;
+					}
+				  }	
+	           },
+			   {"data" : "subjectStr",
+				  "render" : function(data, type, row, meta) {
+						return data;
+				  }	
+			   }, 
+			   {"data" : "creater","className" : "text-center",
+					  "render" : function(data, type, row, meta) {
+							return "<span style='font-size:xx-small'>"+data+"</span>";
+					  }
+			   }, 
+			   {"data" : "update_time","className" : "text-center",
+				  "render" : function(data, type, row, meta) {
+						return "<span style='font-size:xx-small'>"+data+"</span>";
+				  }
+			   }
+			]
+		});
+		
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	}); 
+ 	
+ 	
+	function comboDisable(data){
+		if(confirm("此套裝無人報名?\n確定刪除此筆資料?")){
+			$.ajax({
+				url : "/Course/comboDisable",
+				data : {
+					comboSale_seq : data
+				},
+				dataType : "text",
+				success : function(data) {	
+					alert("取消完成, 此單科/套裝已不存在!");
+					window.location.reload(true);
+				}
+			});
+		}	
+	} 
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>

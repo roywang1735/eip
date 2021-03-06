@@ -1,0 +1,597 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:if="${pop!='1'}" th:include="/common/top_header"></head>
+<head th:if="${pop=='1'}" th:include="/common/top_header_noMenu"></head>
+
+<div th:if="${newId!='Y' and pop!='1'}">
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+	        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>		
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+		</ul>
+	</div>
+	
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td"  style="background-color:#eeeeee" th:utext="'<A href=/Sales/StudentProfile?student_seq='+${student_seq}+'>基本資料</A>'"></div><div class="td" style="width:15px"></div>
+		    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/Rotation?student_seq='+${student_seq}+'>輪值</A>'"></div><div class="td" style="width:15px"></div>	    
+		    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/studentContract?student_seq='+${student_seq}+'>合約書</A>'"></div><div class="td" style="width:15px"></div>
+		    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/JL_History?student_seq='+${student_seq}+'>政龍資料</A>'"></div>		    
+		</div>
+	</div>
+</div>
+<div>&nbsp;</div>
+
+<div style='background-color:#fbfbfb;padding:5px 50px' id='myDataTalbe'>
+<form id='form1' action="#" th:action="@{/Sales/StudentSave}" th:object="${student}" method="post" enctype="multipart/form-data">
+  <input type='hidden' th:value="${student.student_seq}" id='student_seq' name='student_seq'>
+  <input type='hidden' name ='commentThis' id='commentThis'>
+	<div th:utext="${degree_str}" style='margin:5px;background-color:#ffffff;padding:1px;text-align:center;width:200px;border-radius:5px;font-size:medium;font-weight:bold;border:1px #eeeeee solid'></div>
+  <div class="css-table" style=''>
+	<div class="tr" style=''>
+		    <div class="td" style='padding:2px;width:280px'>
+		       <div style='font-weight:bold;letter-spacing:10px'>&#8226;基本資料</div> 
+		       <div style='background-color:#ECFFE8;padding:10px;height:170px;vertical-align:bottom;border-radius:10px'>	
+		    		<span><img id="preview_progressbarTW_img" th:src="@{${'/images/'+fileName}}" style='border 0px #ffffff solid;width:160px' /></span>
+		       </div>
+			   <div style='background-color:#ECFFE8'><input type="file" id='progressbarTWInput' name="file" /></div>  			       	
+			   <div>&nbsp;</div>
+			  
+			  <div style='border:1px #eeeeee solid;width:280px;border-radius:10px;background-color:#ECFFE8'>     
+				<div class="css-table" style='padding:6px'>		
+					<div class="tr">
+						<div class="td2" style='height:23px;width:120px;text-align:right'>學號</div>
+						<div class="td2" style='padding:1px'>
+							 <input type="text" maxlength="50" style="height:25px;background-color:#ffefff;width:100px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{student_no}" readonly/>
+						</div>
+					</div>		
+					<div style='height:3px'></div>
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>&starf;姓名</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text"maxlength="50" style="height:25px;width:100px;border-radius:5px;border:1px #cccccc solid" th:field="*{ch_name}"/>
+						</div>
+					</div>
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>&starf;密碼(6-10位)</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="password" id='drowssap' name='drowssap' maxlength="10" style="height:25px;width:100px;border-radius:5px;border:1px #cccccc solid" th:value="*{passwd}"/>
+						</div>
+					</div>						
+					<div style='height:3px'></div>
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>身分</div>
+						<div class="td2" style='padding:2px'>
+							<select th:field="*{identity}" style='width:90px;border-radius:5px'>
+								<option value="0">潛在學生</option>
+								<option value="1">正式學生</option>										
+							</select>			
+						</div>
+					</div>
+					<div style='height:3px'></div>				
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>特殊身分</div>
+						<div class="td2" style='padding:2px'>
+							<select th:field="*{special_idn}" style='width:90px;border-radius:5px'>
+								<option value="0">無</option>
+								<option value="1">皇親國戚</option>
+								<option value="2">清寒學生</option>
+								<option value="3">工讀生</option>										
+							</select>			
+						</div>
+					</div>
+					<div style='height:3px'></div>
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>性別</div>
+						<div class="td2" style='padding:2px'>
+							<select th:field="*{sex}" style='width:40px;border-radius:5px'>
+								<option value=""></option>
+								<option value="1">男</option>
+								<option value="0">女</option>										
+							</select>			
+						</div>
+					</div>
+					<div style='height:3px'></div>
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>英文名</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" maxlength="50" style="height:25px;width:100px;border-radius:5px;border:1px #cccccc solid" th:field="*{en_name}"/>
+						</div>
+					</div>
+					<div style='height:3px'></div>	
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>生日</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" maxlength="50" style="height:25px;width:100px;border-radius:5px;border:1px #cccccc solid" th:field="*{birthday}"/>
+						</div>
+					</div>				
+					<div style='height:3px'></div>
+					<div class="tr">
+					    <div class="td2" style='height:23px;text-align:right'>Video點數</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" maxlength="3" style="height:25px;background-color:#ffefff;width:30px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{makeUpTotal}" readonly/>
+						</div>
+					</div>																								
+				</div>				
+		      </div>		    
+		    </div>
+			<div class="td" style='padding-left:10px'>
+			  <div style='font-weight:bold;letter-spacing:10px'>&#8226;通訊資料</div> 
+			  <div style='border:1px #eeeeee solid;width:900px;padding:10px;border-radius:10px;background-color:#ECFFE8'>  
+				<div class="css-table">			
+					<div class="tr">
+						<div class="td2" style='text-align:right'>身分證</div>
+						<div class="td2">
+							 <input type="text"  maxlength="10" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{idn}" />
+						</div>
+						<div class="td2" style='text-align:right'>&starf;學生手機</div>
+						<div class="td2">
+							 <input type="text"  maxlength="200" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{mobile_1}" />
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;&nbsp;&nbsp;目前單位</div>
+						<div class="td2">
+							 <input type="text"  maxlength="50" style="width:200px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{category}" />
+						</div>						
+					</div>
+					<div style='height:5px'></div>
+					<div class="tr">
+						<div class="td2" style='text-align:right'><img src='/images/fb.png' style='width:15px'></div>
+						<div class="td2">
+						     <input type="text" th:field="*{fb}" style='width:150px;height:30px;border-radius:5px;border:1px #cccccc solid'/>
+						</div>
+						<div class="td2" style='text-align:right'><img src='/images/line.png' style='width:15px'></div>
+						<div class="td2">
+							 <input type="text" th:field="*{line}" style='width:150px;height:30px;border-radius:5px;border:1px #cccccc solid'/>
+						</div>					
+						<div class="td2" style='text-align:right'>協辦人</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" th:field="*{cowork}" style='width:150px;height:30px;border-radius:5px;border:1px #cccccc solid'/>
+						</div>													
+					</div>						
+					<div style='height:5px'></div>
+					<div class="tr">
+						<div class="td2" style='text-align:right'>準備考試</div>
+						<div class="td2">
+							 <input type="text"  maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{exam}" />
+						</div>
+						<div class="td2" style='text-align:right'>出國/時間</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{abroad_date}" />
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;&nbsp;&nbsp;&starf;email1</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:250px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{email_1}" />
+						</div>						
+					</div>
+					<div style='height:5px'></div>		
+					<div class="tr">
+						<div class="td2" style='text-align:right'>介紹人姓名</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{agent_studentName}" />
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;介紹人學號</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{agent_studentNo}" />
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;&nbsp;&nbsp;email2</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:250px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{email_2}" />
+						</div>																							
+					</div>
+					<div style='height:5px'></div>	
+					<div class="tr">
+						<div class="td2" style='text-align:right'>媽姓名</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_2_name}" />
+						</div>
+						<div class="td2" style='text-align:right'>媽手機</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_2_mobile}" />
+						</div>					
+						<div class="td2" style='text-align:right'>從何得知</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" maxlength="200" style="width:250px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{derived}" />
+						</div>							
+					</div>
+					<div style='height:5px'></div>
+					<div class="tr">
+						<div class="td2" style='text-align:right'>媽<img src='/images/line.png' style='width:15px'></div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_2_line}" />
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;媽email</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_2_email}" />
+						</div>					
+						<div class="td2" style='text-align:right'>地址1</div>
+						<div class="td2">
+							 <input type="text" maxlength="200" style="width:320px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{address_1}" />
+						</div>							
+					</div>
+					<div style='height:5px'></div>					
+					<div class="tr">
+						<div class="td2" style='text-align:right'>爸姓名</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_1_name}" />
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;&nbsp;&nbsp;爸手機</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_1_mobile}" />
+						</div>					
+						<div class="td2" style='text-align:right'>地址2</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" maxlength="200" style="width:320px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{address_2}" />
+						</div>														
+					</div>
+					<div style='height:5px'></div>	
+					<div class="tr">
+						<div class="td2" style='text-align:right'>爸<img src='/images/line.png' style='width:15px'></div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="background-color:#f9f9f9;width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_1_line}" />
+						</div>
+						<div class="td2" style='text-align:right'>爸email</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:150px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{parent_1_email}" />
+						</div>					
+						<div class="td2" style='text-align:right'>自訂</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" readonly style="background-color:#ffefff;width:250px;height:30px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{col_5}" />
+						</div>													
+					</div>				
+					<div style='height:5px'></div>						
+					<div class="tr">
+						<div class="td2" style='text-align:right'>&starf;上課分校</div>
+						<div class="td2" style='padding:2px'>
+							<select th:field="*{school_code}" style='width:90px;border-radius:5px'>
+								<option value="-1" selected></option>
+								<option th:selected="${item.code}" th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />
+							</select>			
+						</div>
+						<div class="td2"></div><div class="td2"></div>
+						<!--  
+					    <div class="td2" style='text-align:right'>上課分校2</div>
+						<div class="td2" style='padding:2px'>
+							<select th:field="*{school_code2}" style='width:90px;border-radius:5px'>
+								<option value="-1" selected></option>
+								<option th:selected="${item.code}" th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />
+							</select>			
+						</div>
+						-->
+						<div class="td2" style='text-align:right'>自訂</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" readonly style="background-color:#ffefff;width:250px;height:30px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{col_6}" />
+						</div>													
+					</div>
+					<div style='height:5px'></div>		
+					<div class="tr">
+						<div class="td2" style='text-align:right'>建立者</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" style="height:30px;background-color:#ffefff;width:100px;border-radius:5px;border:1px #ECFFE8 solid " th:field="*{creater}" readonly/>
+						</div>						
+						<div class="td2" style='text-align:right'>建檔日期</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" style="height:30px;background-color:#ffefff;width:150px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{create_time}" readonly/>
+						</div>
+						<div class="td2" style='text-align:right'>自訂</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" readonly style="background-color:#ffefff;width:250px;height:30px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{col_7}" />
+						</div>													
+					</div>
+					<div style='height:5px'></div>	
+					<div class="tr">
+						<div class="td2" style='text-align:right'>更新人員</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" style="height:30px;background-color:#ffefff;width:100px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{updater}" readonly/>
+						</div>									
+						<div class="td2" style='text-align:right'>更新時間</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" style="height:30px;background-color:#ffefff;width:150px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{update_time}" readonly/>
+						</div>
+						<div class="td2" style='text-align:right'>自訂</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" readonly style="background-color:#ffefff;width:250px;height:30px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{col_8}" />
+						</div>													
+					</div>
+					<div style='height:5px'></div>	
+					<div class="tr">
+						<div class="td2" style='text-align:right'>[更新紀錄]</div>
+						<div class="td2">&nbsp;<A  href='javascript:void(0)'  onclick='openStudentRecord()' style='font-size:large;text-decoration:underline'>&hellip;</A></div>
+						<div class="td2"></div>
+						<div class="td2"></div>
+						<div class="td2" style='text-align:right'>自訂</div>
+						<div class="td2" style='padding:2px'>
+							 <input type="text" readonly style="background-color:#ffefff;width:250px;height:30px;border-radius:5px;border:1px #ECFFE8 solid" th:field="*{col_9}" />
+						</div>													
+					</div>	
+					<div>&nbsp;</div>																		
+				</div>
+			  </div>    
+			</div>
+     </div>
+   </div>
+
+    	 
+	
+<div class="css-table" th:object="${student_degree}" id='highSchool'>	
+  <div class="td2" style='vertical-align:top'>
+	         <div style='font-weight:bold;letter-spacing:5px;font-size:small;text-align:left'>&#8226;資料(高中部)</div> 
+			 <div style='border:1px #eeeeee solid;padding:5px;border-radius:5px;background-color:#FFFACD'> 
+				<div class="css-table" style='width:400px'>
+				    <div style='height:8px'></div>			
+					<div class="tr">
+						<div class="td2" style='text-align:right'>&starf;學校 / 校區</div>
+						<div class="td2">
+							 <input type="text"  th:field="*{schoolArea}" maxlength="10" style="width:140px;height:30px;border-radius:5px;border:1px #cccccc solid"  />
+						</div>
+						<div class="td2" style='text-align:right'>&starf;升 / 年級</div>
+						<div class="td2">
+							 <input type="text"  th:field="*{student_degree}" maxlength="200" style="width:70px;height:30px;border-radius:5px;border:1px #cccccc solid" />
+						</div>
+					</div>
+					<div style='height:5px'></div>
+					<div class="tr">
+						<div class="td2" style='text-align:right'>&starf;國際部</div>
+						<div class="td2" th:utext="${internation_str}"></div>
+						<div class="td2" style='text-align:right'></div>
+						<div class="td2" style='text-align:right'></div>
+					</div>						
+				</div>
+			 </div>
+	         <div style='height:10px'></div>
+	         <div style='font-weight:bold;letter-spacing:5px;font-size:small;text-align:left'>&#8226;緊急聯絡人(高中部)</div>		 	
+			 <div style='border:1px #eeeeee solid;padding:5px;border-radius:5px;background-color:#FFFACD'>				   
+				<div class="css-table" style='width:400px'>
+				    <div style='height:8px'></div>			
+					<div class="tr">
+						<div class="td2" style='text-align:right'>&starf;姓名</div>
+						<div class="td2">
+							 <input type="text"  maxlength="10" style="width:120px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{urg_name}" />
+						</div>
+						<div class="td2" style='text-align:right'>&starf;關係</div>
+						<div class="td2">
+							 <input type="text"  maxlength="200" style="width:120px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{urg_relation}" />
+						</div>
+					</div>
+					<div style='height:8px'></div>
+					<div class="tr">
+						<div class="td2" style='text-align:right'>&starf;<img src='/images/line.png' style='width:15px'>&nbsp;</div>
+						<div class="td2">
+							 <input type="text" th:field="*{urg_line}" style='width:120px;height:30px;border-radius:5px;border:1px #cccccc solid'/>
+						</div>
+						<div class="td2" style='text-align:right'>&nbsp;&nbsp;&nbsp;email</div>
+						<div class="td2">
+							 <input type="text" maxlength="50" style="width:180px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{urg_email}" />
+						</div>							
+					</div>
+					<div style='height:8px'></div>
+					<div class="tr">
+						<div class="td2" style='text-align:right'>&starf;手機</div>
+						<div class="td2">
+							 <input type="text"  maxlength="10" style="width:120px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{urg_mobile}" />
+						</div>
+						<div class="td2" style='text-align:right'>電話</div>
+						<div class="td2">
+							 <input type="text"  maxlength="200" style="width:120px;height:30px;border-radius:5px;border:1px #cccccc solid" th:field="*{urg_tel}" />
+						</div>
+					</div>
+					<div style='height:8px'></div>												
+				</div>		   							
+	         </div>
+  </div>	         
+  <div class="th">&nbsp;</div>
+  <div class="td" style='vertical-align:top'>
+	<div style='font-weight:bold;letter-spacing:5px;font-size:small;text-align:left'>&#8226;諮詢狀況記錄(高中部)</div> 
+	  <div style='background-color:#FFFACD;width:718px;padding:10px;border-radius:5px'>
+	        <div style='height:8px'></div>	
+	        <div >1. TOEFL / IELTS 成績 &nbsp;&nbsp;&rarr;&nbsp;
+		        	<input type='text' th:field="*{a1}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	R<input type='text' th:field="*{a2}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	L<input type='text' th:field="*{a3}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	S<input type='text' th:field="*{a4}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	W<input type='text' th:field="*{a5}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	<input type='text' th:field="*{a6}" style='width:90px;border-radius:5px;border:1px #cccccc solid' placeholder='考試日期'>
+	        </div>
+	        <div style='height:8px'></div>			
+	        <div style='color:text-align:center'>2. SAT 成績 &nbsp;&nbsp;&rarr;&nbsp;
+		        	<input type='text' th:field="*{b1}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	R<input type='text' th:field="*{b2}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	M<input type='text' th:field="*{b3}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	Essay<input type='text' th:field="*{b4}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	<input type='text' th:field="*{b5}" style='width:90px;border-radius:5px;border:1px #cccccc solid' placeholder='考試日期'>
+	        </div>	
+	        <div style='height:8px'></div>		
+	        <div style=''>3. ACT 成績 &nbsp;&nbsp;&rarr;&nbsp;
+		        	<input type='text' th:field="*{c1}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	R<input type='text' th:field="*{c2}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	L<input type='text' th:field="*{c3}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	S<input type='text' th:field="*{c4}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	W<input type='text' th:field="*{c5}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	Essay<input type='text' th:field="*{c6}" style='width:40px;border-radius:5px;border:1px #cccccc solid'>分&nbsp;&nbsp;
+		        	<input type='text' th:field="*{c7}" style='width:90px;border-radius:5px;border:1px #cccccc solid' placeholder='考試日期'>	        	
+	        </div>
+	        <div style='height:8px'></div>	
+	        <div style=''>
+	        		4. 申請國家 / 排名 / 科系<input type='text' th:field="*{apply}" style='width:300px;border-radius:5px;border:1px #cccccc solid'>
+	        </div>
+	        <div style='height:8px'></div>
+	        <div style=''>
+	                5. TOEFL / IELTS 目標成績 <input type='text' th:field="*{target1}" style='width:150px;border-radius:5px;border:1px #cccccc solid'>&nbsp;&nbsp;
+	                SAT / ACT 目標成績 <input type='text' th:field="*{target2}" style='width:150px;border-radius:5px;border:1px #cccccc solid'>
+	        </div>
+	        <div style='height:8px'></div>		        			
+		</div>				  							
+	  </div>
+</div>
+ <div>&nbsp;</div> 	    
+ <div align='left'>     	   
+	<div class="css-table" style='width:1120px'>
+	    <div style='height:5px'></div>
+	    <div class="tr">	    
+	        <div class="td" style='width:500px;text-align:left'><span style='font-weight:bold;letter-spacing:10px'>&#8226;備註全紀錄</span></div>		    
+	        <div class="td" style='width:20px'>&nbsp;</div>
+	        <div class="td" style='width:450px;text-align:left'><span style='font-weight:bold;letter-spacing:10px'>&#8226;交接待辦事項</span><span style='font-size:small'><img src='/images/edit.png' height='12px'/> <A href='javascript:void(0)'  onclick='openHandover()' title='新增交接事項' style='font-weight:bold;color:blue;text-decoration:underline'>Add</A></span></div>
+	        <div class="td" style='width:50px'>&nbsp;</div>
+	        <div class="td" style='width:100px;text-align:left'><span style='font-weight:bold;letter-spacing:2px'>&#8226;QRcode</span></div>		    
+	    </div>		
+	    <div class="tr">		      
+	        <div class="td" style='width:500px;text-align:center;vertical-align:top'>
+	           <div th:utext='${student.remarkTotal}' style='font-size:xx-small;padding:3px;letter-spacing:1px;text-align:left;width:500px;height:300px;border:1px #aaaaaa solid;border-radius:5px;margin-top:1px;overflow:auto' readonly></div>
+	        </div>
+	        <div class="td" style='width:20px'>&nbsp;</div>   	    
+	        <div class="td" style='width:500px;text-align:center;vertical-align:top'>
+	           <div id='handover' th:utext="*{handover}" style='font-size:xx-small;padding:3px;letter-spacing:1px;text-align:left;width:500px;height:300px;border:1px #aaaaaa solid;border-radius:5px;margin-top:1px;overflow:auto' readonly></div>		           
+	        </div>	        
+	        <div class="td" style='width:50px'>&nbsp;</div>
+	        <div class="td" style='width:100px;text-align:center;vertical-align:top'>
+	        	<div>&nbsp;</div>
+	        	<img th:src="@{${'/images/QRcode/'+student_no+'.png'}}" style='border 0px #ffffff solid;width:40px' />
+	        </div>
+	    </div>
+	</div>
+  </div>
+</form>
+</div>	
+    <div sec:authorize="hasAnyRole('sal','sal_mgr','cou','cou_mgr','approve_mgr')" style='background-color:#ffffff;padding:2px;text-align:center'>
+	  <button type="button" id="btnSave" class="btn btn-lg btn-primary" style='padding:2px'>&nbsp;&nbsp;&nbsp;&nbsp;儲&nbsp;&nbsp;存&nbsp;&nbsp;&nbsp;&nbsp;</button>
+    </div>  	
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+		 	 	
+		 
+<script th:inline="javascript"> 
+$(document).ready(function() {
+	 if([[${message}]]){
+		 alert([[${message}]]);
+	 }
+	 //給定預設上課學校
+	 if($('#school_code').val()==-1){
+	 	$('#school_code').val([[${principalSchool}]]);
+	 }	
+	 showVisibility();
+})
+
+function showVisibility(){
+	if($("input[name='degree']:checked").val()==2){
+		$('#highSchool').css('display','');
+	}else{
+		$('#highSchool').css('display','none');
+	}
+	
+}
+
+function checkStudentProfile_DirtyRead(){
+	$.ajax({
+		url : "/Sales/checkStudentProfile_DirtyRead",
+		data : {
+			ch_name : $("#ch_name").val(),
+			mobile_1 : $("#mobile_1").val(),
+			update_time :  $("#update_time").val()			
+		},
+		dataType : "text",
+		success : function(data) {
+			alert(data);
+			return data;
+		}
+	});
+}
+	$("#btnSave").click(function() {
+		var fixed = 0;
+		if($("#ch_name").val()==''){
+	    	alert("請填寫姓名!");
+		}else if(!(/^09[0-9]{8}$/.test($("#mobile_1").val()))){
+				alert("學生手機未填或格式有誤!");
+		}else if($("#school_code").val()=='-1'){
+			alert("請填寫 [ 上課分校 ]");
+		}else if($("#email_1").val()==''){
+			alert("請填寫 [ email1 ]");
+		}else if($("#drowssap").val()=='' || $("#drowssap").val().length<6 || $("#drowssap").val().length>10){
+			alert("請填寫6-10位 [ 密碼 ]");						
+		}else if($('input[name="degree"]:checked').val()==2){
+			if($("#schoolArea").val()==''){
+				alert("請填寫[ 學校 / 校區 ]");
+			}else if($("#student_degree").val()==''){
+				alert("請填寫 [ 升 / 年級 ]");
+			}else if($("#urg_name").val()==''){
+				alert("請填寫 [ 緊急聯絡人-姓名 ]");
+			}else if($("#urg_relation").val()==''){
+				alert("請填寫 [ 緊急聯絡人-關係 ]");	
+			}else if($("#urg_line").val()==''){
+				alert("請填寫 [ 緊急聯絡人-Line ]");
+			}else if($("#urg_mobile").val()==''){
+				alert("請填寫 [ 緊急聯絡人-手機 ]");				
+			}else{
+				fixed = 1;			
+			}	
+		}else{
+			fixed = 1;
+		}
+		if(fixed==1){
+			$.ajax({
+				url : "/Sales/checkStudentProfile_DirtyRead",
+				data : {
+					ch_name : $("#ch_name").val(),
+					mobile_1 : $("#mobile_1").val(),
+					update_time : $("#update_time").val(),
+					student_seq : $("#student_seq").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					if(data=='existNew'){
+						fixed = 0;
+						alert("⚡⚡  網站目前已有更新版本存在,請按F5,重新載入後,再行更改 ⚡⚡");
+					}else if(data=='duplicate'){
+						fixed = 0;
+						alert("⚡⚡  新增不成功, 此學員已存在於系統 ⚡⚡");
+					}else{
+						$("#form1").submit();
+					}	
+				}
+			});		
+		}
+	});
+
+	
+ 	function openGradeToSelect(eip_grade_seq,gradeId) { 
+ 		var feature = "width=950,height=500";
+ 	    window.open("/Sales/openGradeToSelectJL?eip_grade_seq="+eip_grade_seq+"&gradeId="+gradeId, "", feature);
+ 	}
+ 	
+ 	function openHandover() {
+ 		var feature = "width=500,height=270,top=100,left=1000";
+ 	    window.open("/Sales/openHandover","",feature);
+ 	}  
+ 	
+		$("#progressbarTWInput").change(function(){
+		  readURL(this);
+		});
+
+	function readURL(input){
+	  if(input.files && input.files[0]){
+	    var reader = new FileReader();
+	    reader.onload = function (e) {
+	       $("#preview_progressbarTW_img").attr('src', e.target.result);
+	    }
+	    reader.readAsDataURL(input.files[0]);
+	  }
+	}
+    function openStudentRecord(){
+    	var student_seq = $("#student_seq").val();
+ 		var feature = "left=10,top=100,width=1400,height=500";
+ 	    window.open("/Sales/openStudentRecord?student_seq="+student_seq, "", feature);    	
+    }
+    
+    $("#titleWidth").width(170+$("#myDataTalbe").width()<1300?1300:300+$("#myDataTalbe").width());
+</script>

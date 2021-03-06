@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li class="active"><a href="/Course/CourseSetting">課程設置</a></li>
+		<li><a href="/Course/SubjectSetting">科目</a></li>
+	</ul>
+</div>
+&nbsp;
+<p>
+<div class="row">
+	<div class="col-md-11">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">新增課程</h3>
+			</div>
+
+		<form id='form1' action="#" th:action="@{/Course/courseSave}" th:object="${course}" method="post">
+				<div class="panel-body">
+					<div class="row" style="background-color: #ffffff">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-2"
+									style="color: darkbrown; font-weight: bold;">基本資料</div>
+								&nbsp;
+								<p>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<select th:field="*{school}" class="form-control">
+										<option value="" disabled selected>分校</option>
+										<option th:each="item : ${schoolGroup}"
+											th:value="${item.code}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" th:field="*{issue_date}"
+										placeholder="期別 Ex.180321" />
+								</div>
+								<div class="col-md-2">
+									<select th:field="*{category}" class="form-control"
+										onchange="subjectData(this.value)">
+										<option value="-1"  selected>類別</option>
+										<option th:each="item : ${categoryGroup}"
+											th:value="${item.category_seq}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-3">
+									<select th:field="*{subject}" class="form-control">
+										<option value=""  selected>科目</option>
+									</select>
+								</div>							
+							</div>
+							<div class="row">
+								&nbsp;<br>
+								<div class="col-md-2"
+									style="color: darkbrown; font-weight: bold;">設置班級及課堂</div>
+								&nbsp;
+								<p>
+							</div>
+							<div class="row">
+								<div class="col-md-2" align='center'>
+									<select id="teacher" class="form-control">
+										<option value="" disabled selected>加入老師</option>
+										<option th:each="item : ${teacherGroup}"
+											th:value="${item.teacher_seq}" th:utext="${item.name}+'('+${item.code}+')'"/>
+									</select>
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control" id="className"
+										placeholder="班級名稱" />
+								</div>	
+								<div class="col-md-2" align='center'>
+									<select id="class_no" class="form-control">
+										<option value="" disabled selected>堂數</option>
+										<option value="1">1堂</option>
+										<option value="2">2堂</option>
+										<option value="3">3堂</option>
+										<option value="4">4堂</option>
+										<option value="5">5堂</option>
+										<option value="6">6堂</option>
+										<option value="7">7堂</option>
+										<option value="8">8堂</option>
+										<option value="9">9堂</option>
+										<option value="10">10堂</option>
+										<option value="11">11堂</option>
+										<option value="12">12堂</option>
+										<option value="13">13堂</option>
+										<option value="14">14堂</option>
+										<option value="15">15堂</option>
+										<option value="16">16堂</option>
+										<option value="17">17堂</option>
+										<option value="18">18堂</option>
+										<option value="19">19堂</option>
+										<option value="20">20堂</option>
+									</select>
+								</div>
+								<div class="col-md-2" align='center'>
+									<select id="class_no" class="form-control">
+										<option value="" disabled selected>補課章</option>
+										<option value="1">1堂</option>
+										<option value="2">2堂</option>
+										<option value="3">3堂</option>
+										<option value="4">4堂</option>
+										<option value="5">5堂</option>
+										<option value="6">6堂</option>
+										<option value="7">7堂</option>
+										<option value="8">8堂</option>
+										<option value="9">9堂</option>
+										<option value="10">10堂</option>
+									</select>
+								</div>								
+								<div class="col-md-2">
+									<button type="button" class="btn btn-sm btn-success" onclick="AddCourseStr();">加入課堂設置</button>
+								</div>															
+							</div>															
+
+
+							<div class="row col-md-12" id="courseList">
+								&nbsp;<br>
+<!--------------------------------------------------------------------------->
+
+
+<!--------------------------------------------------------------------------->										
+							
+							</div>
+						</div>
+						<div align="right">
+						    &nbsp;<p>
+							<button type="button" id='draftSave' class="btn btn-sm btn-info">暫存草稿</button>
+							&nbsp;&nbsp;
+							<button type="button" class="btn btn-sm btn-danger" onclick="">送審</button>
+							&nbsp;&nbsp;
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+	</div>
+</div>
+
+<script>
+/* 	function getDate(clickDiv) {
+		$(clickDiv).datepicker();
+		$(clickDiv).datepicker('show');
+	} */
+
+
+function timeselector(clickDiv){
+		$(clickDiv).timeselector();
+}
+</script>	
+
+<script>
+
+	$("#draftSave").click(function() {
+		$("#form1").submit();
+	});
+
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+	function AddCourseStr() {
+		if (true) {
+			$.ajax({
+				url : "/Course/AddCourseStr",
+				data : {
+					teacher : $("#teacher").val(),
+					class_no : $("#class_no").val(),
+					className : $("#className").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#courseList").append(data);
+				}
+			});
+		}
+	}	
+</script>

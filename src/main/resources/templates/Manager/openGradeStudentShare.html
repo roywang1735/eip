@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header_noMenu"></head>
+
+<body style='background-color:#ffffff'>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+	  <div id='message' align='center'></div>
+	  <div id='info' style='text-align:left;margin-left:50px'></div>
+      <div align='center'>
+		  <div class='css-table' style='border-spacing:1px;width:1010px;border:1px #ffffff solid'>
+			<div class='tr' style='background-color:#7ba6b6;color:white;font-size:small;font-weight:bold'>
+				<div class='td2' style='width:30px;text-align:center;border-radius:2px;vertical-align:bottom'>No.</div>
+				<div class='td2' style='width:100px;padding:0px;text-align:center;border-radius:2px;vertical-align:bottom'>學號</div>
+				<div class='td2' style='width:100px;text-align:center;border-radius:2px;vertical-align:bottom'>姓名</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px;vertical-align:bottom'>實收</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>人事<br>管銷</div>		
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>其他<br>贈品</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>講義<br>印製</div>	
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>作業<br>批改</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px;vertical-align:bottom'>模考</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>課程<br>收入</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>訂班<br>狀態</div>
+				<div class='td2' style='width:70px;text-align:center;border-radius:2px'>上課<br>方式</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px'>選課<br>分校</div>
+			</div>
+		  </div>
+		  <div class='css-table' id='shareRecord' style='border-spacing:1px;width:1010px;border:1px #dddddd solid'></div>	  
+	  </div>	  
+
+		
+			
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+
+<script th:inline="javascript">
+	$(document).ready(
+		function(){	
+			GetGradeToSelect();
+		}	
+	)
+
+	function GetGradeToSelect(){	
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:18px'/> 讀 取 中");
+		});
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});		
+		 $.ajax({
+			url : "/Course/getGradeStudentShare",
+			data : {
+				grade_id    : [[${grade_seq}]],
+				gradeName	: [[${gradeName}]]		
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#info").html(data.split("@")[0]);
+				$("#shareRecord").html(data.split("@")[1]);
+			}
+		 });
+	}
+
+ 	function getCostChange(grade_id,student_no) {
+ 		var feature = "width=1050,height=500";
+ 	    window.open("/Course/getCostChange?grade_id="+grade_id+"&student_no="+student_no,"",feature);
+ 	}		
+</script>
+
+
+

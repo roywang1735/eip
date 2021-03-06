@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<body style=''> 
+&nbsp;<p>
+       
+	  <div class="css-table" style="border-spacing:2px;margin-left:10px">
+	    <div class="tr" style='background-color:#888888;font-size:small'>
+	        <div class="th" style='color:#ffffff;text-align:center;width:350px'>優 惠</div>
+	        <div class="th" style='color:#ffffff;text-align:center;width:500px'>備 註</div>
+	    </div>	  
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:3px;background-color:white;width:350px;border-bottom:1px solid #dddddd' th:utext="${registerPromoStr}"></div>
+			<div class="td2" style='padding:3px;background-color:white;width:500px;border-bottom:1px solid #dddddd' th:utext="${commentStr}"></div>      
+		</div>
+		<div>&nbsp;</div> 
+	  </div> 
+
+
+

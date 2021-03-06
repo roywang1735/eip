@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+ 	
+&nbsp;<p>
+&nbsp;<p>
+
+ <form id='form1' th:action="@{/Course/mockSetSave}" method="post">
+ <input type="hidden" id='dateSel' name='dateSel' th:value='${dateSel}'/>	
+ <input type="hidden" id='school_id' name='school_id' th:value='${school_id}'/>
+ <input type="hidden" id='category_id' name='category_id' th:value='${category_id}'/>
+ <input type="hidden" id='testMethod' name='testMethod' value='1' />			
+		<div style='background-color:#ffeeff;margin-left:20px;width:350px;font-size:small;padding:10px'>
+			<div class="td2" style='width:350px;padding:2px;text-align:left;border-radius:3px'>
+					<div style='padding:5px'>
+					   <span style='font-weight:bold;color:#999999'>分 校 : </span>&nbsp;
+					   <span th:text='${school_name}'></span>&nbsp;
+					</div>
+					<div style='padding:5px'>
+					   <span style='font-weight:bold;color:#999999'>日 期 : </span>&nbsp;
+					   <span th:text='${dateSel}'></span>&nbsp;
+					</div>										
+					<div style='padding:5px'>
+					   <span style='font-weight:bold;color:#999999'>* 時 段 : </span>&nbsp;
+					   <span style='font-weight:bold;color:blue'><input type='checkbox' name='slot' value='1'>早</span>&nbsp;
+					   <span style='font-weight:bold;color:blue'><input type='checkbox' name='slot' value='2'>午</span>&nbsp;
+					   <span style='font-weight:bold;color:blue'><input type='checkbox' name='slot' value='3'>晚</span>
+					</div>		
+			</div>
+		</div>
+  		<div style='margin-left:20px;width:350px' align='center'>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設" />
+  		</div>
+</form>	  
+<script>
+$("#btnSave").click(function() {
+
+  if($('#school_id').val()==0){
+		alert("請選取分校!")
+  }else{
+	var url = $("#form1").attr('action');
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: $("#form1").serialize(),
+        success: function(data)
+        {
+			window.close();
+			window.opener.location.href="/Adm/GmatMockSet1?school_id="+$('#school_id').val();
+        }
+    });
+  }  
+	e.preventDefault(); 	
+}) 
+</script>
+
+
+

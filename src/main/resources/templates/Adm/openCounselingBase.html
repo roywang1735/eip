@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Adm/counselingBaseSave}" method="post">
+  <input type="hidden" name='counselingBaseTitle_seq' th:value = "${counselingBaseTitle_seq}">
+  <input type="hidden" name='setDate' th:value = "${setDate}">
+  <div align='center' style=''>
+    <div th:utext = ${settingDate} style='font-weight:bold'></div>
+	<div class="css-table" style='border:1px #dddddd solid;font-weight:bold'>
+		<div class="tr" th:if="${Limit == null}">
+		    <div class="td2" style='padding:12px;border-bottom:1px #dddddd solid;background-color:#ffffec;vertical-align:middle;color:#777777'>選擇<br>時段</div>
+		    <div class="td2" style='vertical-align:middle;border-bottom:1px #dddddd solid;padding:10px'>
+		        <input type='checkbox' name='slot' value='1' style='height:20px;width:20px'>&nbsp;早&nbsp;&nbsp;
+		        <input type='checkbox' name='slot' value='2' style='height:20px;width:20px'>&nbsp;午&nbsp;&nbsp;
+		        <input type='checkbox' name='slot' value='3' style='height:20px;width:20px'>&nbsp;晚   	
+		    </div>
+		</div>
+		<div class="tr" th:if="${Limit1 != null}">
+		    <div class="td2" style='padding:12px;width:80px;;border-bottom:1px #dddddd solid;background-color:#ffffec;vertical-align:middle;color:#777777'>人數<br>限制</div>
+		    <div class="td2" style='text-align:left;width:200px;vertical-align:middle;border-bottom:1px #dddddd solid;padding:10px'>
+		    	<div th:utext=${Limit1}></div>
+		    	<div th:utext=${Limit2}></div>
+		    	<div th:utext=${Limit3}></div>
+		    </div>
+		</div>		 		 	    
+	</div>
+	<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+</form>  
+
+<script>
+$("#btnSave").click(function() {
+		$("#form1").submit();	
+});
+</script>
+
+
+

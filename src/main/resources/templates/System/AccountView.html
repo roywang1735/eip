@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+				<p>
+				<div id='myDataTalbe' class="row" style='width:1000px'>
+					<div class="col-lg-8">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									<form id='form1' action="#" th:action="@{/System/AccountUpdate}" th:object="${employee}" method="post">
+									<input type='hidden' th:field="*{employee_seq}">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-md-4">
+													*帳號<input type="text" class="form-control" th:field="*{account0}" />
+												</div>
+												<div class="col-md-4">
+													*密碼<input type="text" id='drowssap' name='drowssap' class="form-control" value="**************" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													*中文名<input type="text" class="form-control"
+														th:field="*{ch_name}" />
+												</div>
+												<div class="col-md-4">
+													英文名<input type="text" class="form-control"
+														th:field="*{en_name}" />
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-4">
+													*部門<br> <select th:field="*{department}" class='form-control'>
+														<option value="">------------------</option>
+														<option th:each="item : ${departmentGroup}" th:value="${item.id}" th:utext="${item.name}" />
+													</select>
+												</div>
+												<div class="col-md-4">
+													電話<input type="text" class="form-control" th:field="*{tel}" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													Email<input type="text" class="form-control"
+														th:field="*{email}" />
+												</div>
+												<div class="col-md-4">
+													*分校<br> <select th:field="*{school_code}" class='form-control'>
+														<option value="">------------------</option>
+														<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+													</select>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													政龍帳號<input type="text" class="form-control" readonly
+														th:field="*{account}" />
+												</div>											
+												<div class="col-md-4">
+													建立者<input type="text" class="form-control"
+														th:field="*{creater}" readonly="readonly"/>
+												</div>
+											</div>
+											<div style='padding:5px'>
+													<span><img src='/images/fb.png' style='width:20px'></span>&nbsp;<input type="text" th:field="*{fb}" style='width:350px;height:32px;border-radius:5px;border:1px #cccccc solid'/>
+				   							</div>
+				   							<div style='padding:5px'>
+													<span><img src='/images/line.png' style='width:20px'></span>&nbsp;<input type="text" th:field="*{line}" style='width:350px;height:32px;border-radius:5px;border:1px #cccccc solid'/>
+				   							</div>
+											<div class="row">
+												<div class="col-md-4" style='margin:10px;border:1px #cccccc solid;padding:5px'>
+													群組<br>
+													<span th:each="item: ${listAuthority}">
+															<span th:utext="${item}"></span>
+													</span>
+												</div>
+											</div>																							
+											<div class="row">
+												<br>
+												<div class="col-md-8" align='center'>
+													<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存修改</button>
+													&nbsp;&nbsp; <button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+													&nbsp;&nbsp; <button type="button" id="btnDisable" class="btn btn-sm btn-danger">停用帳號</button>
+												</div>
+											</div>
+										</div>
+									</form>
+									<form id='form2' action="#" th:action="@{/System/AccountDisable}" method="post"><input type='hidden' id='employee_seq2' name='employee_seq2'></form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script>
+	$("#btnSave").click(function() {
+		var checkflag = 0;
+		$('input[name="authorityCode"]:checked').each(function() {
+			checkflag = 1;
+			}
+		); 
+		if(checkflag==0){
+			alert("***請至少選取一個群組***");
+		}else if($("#account0").val()==''){	
+			alert("請填寫帳號");
+		}else if($("#drowssap").val()==''){	
+			alert("請填寫密碼");
+		}else if($("#ch_name").val()==''){	
+			alert("請填寫中文名");
+		}else if($("#department").val()==''){	
+			alert("請填寫部門");	
+		}else if($("#school").val()==''){	
+			alert("請填寫分校");			
+		}else{
+			$("#form1").submit();
+		}		
+	});
+	$("#btnDisable").click(function() {
+		$('#employee_seq2').val($('#employee_seq').val());
+		if(confirm("確定停用此帳號?")){
+			$("#form2").submit();
+		}	
+	});
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+</html>

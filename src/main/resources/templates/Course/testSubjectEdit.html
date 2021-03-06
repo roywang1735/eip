@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<form id='form1' action="#" th:action="@{/Adm/mockBaseSave}" method="post">
+  <input type="hidden" name='mockBaseTitle_seq' th:value = "${mockBaseTitle_seq}">
+  <input type="hidden" name='setDate' th:value = "${setDate}">
+  <div align='center' style=''>
+	<div class="css-table" style='border:1px #dddddd solid;font-weight:bold'>
+		<div class="tr">
+		    <div class="td2" style='vertical-align:middle;height:50px;width:90px;border-bottom:1px #dddddd solid;background-color:#FFF7FD;letter-spacing:5px'>類別</div>
+		    <div class="td2" style='vertical-align:middle;width:300px;border-bottom:1px #dddddd solid'>
+					<select id="category" class="form-control" style='width:150px'>
+						<option value=''></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${category_id == item.category_seq}" />
+					</select>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td2" style='vertical-align:middle;height:50px;border-bottom:1px #dddddd solid;background-color:#FFF7FD;letter-spacing:5px'>名稱</div>
+		    <div class="td2" style='vertical-align:middle;width:150px;border-bottom:1px #dddddd solid'>
+		    	<input type='text' name='slot_1_from'  style='width:200px;border:1px #bbbbbb solid;height:30px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td2" style='vertical-align:middle;height:50px;border-bottom:1px #dddddd solid;background-color:#FFF7FD;letter-spacing:5px'>回</div>
+		    <div class="td2" style='vertical-align:middle;width:150px;border-bottom:1px #dddddd solid'>
+		    	<input type='text' name='slot_1_from'  style='width:200px;border:1px #bbbbbb solid;height:30px'>
+		    </div>
+		</div>		
+
+		<div class="tr">
+		    <div class="td2" style='vertical-align:middle;height:50px;border-bottom:1px #dddddd solid;background-color:#FFF7FD;letter-spacing:0px'>分項</div>
+		    <div class="td2" style='vertical-align:middle;width:150px;border-bottom:1px #dddddd solid'>
+		    	<input type='text' name='slot_1_from'  style='width:150px;border:1px #bbbbbb solid;height:30px'>&nbsp;&nbsp;
+		    	<input type='text' name='slot_1_from'  style='width:30px;border:1px #bbbbbb solid;height:30px'>人
+		    </div>
+		</div>						    
+	</div>
+	<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+</form>  
+
+<script>
+$("#btnSave").click(function() {
+	if($("#slot").val()==''){
+		alert("***請選取時段***");	
+	}else{
+		$("#form1").submit();
+	}	
+});
+</script>
+
+
+

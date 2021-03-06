@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/AccountLog">帳號</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Manager/GradeSetLog">課程設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Manager/comboSaleLog">課務銷售</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Manager/SubjectLog">科目</a></li>
+  </ul>
+</div>   
+  <div style='width:500px;padding:10px;border-radius:5px;margin-top:20px' align='center'>  
+	<div class="css-table" style="">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+				中文名<br>
+				<input type='text' style='width:120px' class='form-control'>
+			</div>
+			<div class="td2" style='padding:5px'>
+				分校<br>
+				<select id="school" style='width:120px;padding:2px' class="form-control" onchange="subjectData(this.value)">
+					<option></option>
+					<option th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />									
+				</select>				
+			</div>
+			<div class="td2" style='padding:5px'>
+				部門<br>
+				<select id="school" style='width:120px;padding:2px' class="form-control" onchange="subjectData(this.value)">
+					<option></option>
+					<option th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />									
+				</select>				
+			</div>						
+		</div>	
+	</div>	
+	<div style='text-align:center'><button type="button" id="btnQuery" class="btn btn-sm btn-success">查詢</button></div> 
+  </div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+				<table id="myDataTalbe" class="display" style='width:800px'>
+					<thead>
+						<tr>
+							<th style='width:40px'>No.</th>
+							<th>事件</th>
+							<th>分校</th>
+							<th>部門</th>
+							<th>姓名</th>
+							<th>建立者</th>
+							<th>時間</th>
+						</tr>
+					</thead>
+				</table>
+
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"iDisplayLength": 20,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Manager/getApplicationLog?fun1=1",
+				data : function(d) {
+/* 					d.ch_name    = $("input[name=ch_name]").val();
+					d.en_name    = $("input[name=en_name]").val(); */
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+
+			"columns" : [ 
+				{ "data" : "applicationLog_seq"},
+				{ "data" : "col1"}, 
+				{ "data" : "col2"}, 
+                { "data" : "col3"},
+                { "data" : "col4"},
+                { "data" : "updater"},
+                { "data" : "update_time"}
+            ]
+
+		});
+		
+		
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+		
+</script>
+
+

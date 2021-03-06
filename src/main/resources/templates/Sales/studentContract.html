@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/StudentProfile?student_seq='+${student_seq}+'>基本資料</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/Rotation?student_seq='+${student_seq}+'>輪值</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="background-color:#eeeeee" th:utext="'<A href=/Sales/studentContract?student_seq='+${student_seq}+'>合約書</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/JL_History?student_seq='+${student_seq}+'>政龍資料</A>'"></div>		    	    
+	</div>
+</div>
+<div>&nbsp;</div>
+	<div class="css-table" id='myDataTalbe'>
+		<div class="tr">
+			<div class="td" style="padding:3px;font-size:small;font-weight:bold">範本 :</div>
+			<div class="td">&nbsp;&nbsp;</div>		
+			<div class="td" style="padding:3px"><img src='/images/serviceContract.png' height='13px'/><A href='#' onclick="open_serviceContract('serviceContract')" style='color:blue;text-decoration:underline;'>學生契約書(<span th:text="${school_code}"></span>)</A></div>
+			<div class="td">&nbsp;&nbsp;</div>
+			<div class="td" style="padding:3px"><img src='/images/serviceContract.png' height='13px'/><A href='#' onclick="open_serviceContract('TOEFL_guarantyContract')" style='color:blue;text-decoration:underline;'>TOEFL保證班合約書(<span th:text="${school_code}"></span>)</A></div>
+			<div class="td">&nbsp;&nbsp;</div>
+			<div class="td" style="padding:3px"><img src='/images/serviceContract.png' height='13px'/><A href='#' onclick="open_serviceContract('IELTS_guarantyContract')" style='color:blue;text-decoration:underline;'>IELTS保證班合約書(<span th:text="${school_code}"></span>)</A></div>
+			<div class="td">&nbsp;&nbsp;</div>
+			<div class="td" style="padding:3px"><img src='/images/serviceContract.png' height='13px'/><A href='#' onclick="open_serviceContract('TOEIC_guarantyContract')" style='color:blue;text-decoration:underline;'>TOEIC保證班合約書(<span th:text="${school_code}"></span>)</A></div>						
+		</div>
+	</div>
+<div>&nbsp;</div>   
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/System/serviceContractSave}"  method="post"  enctype="multipart/form-data">
+<input type='hidden' id='student_seq' name='student_seq' th:value='${student_seq}'>
+<div align='center'>
+    <div style='text-align:left;width:450px'>
+    	<select id='contractType' name='contractType' style='border:1px #cccccc solid;width:180px;border-radius:5px;background-color:lightyellow;padding:3px'>
+    		<option value=''>~ 上 傳 類 型 ~</option>
+    		<option value='1'>學生契約書</option>
+    		<option value='2'>TOEFL保證班合約書</option>
+    		<option value='3'>IELTS保證班合約書</option>
+    		<option value='4'>TOEIC保證班合約書</option>
+    	</select>
+    </div>
+ 	<div class="css-table" style='margin:2px;border:1px #eeeeee solid;padding:15px;width:450px;background-color:#ffeeff'>	
+          <div class="tr" style='padding:5px'>
+             <div class="td2" style=''>上傳PDF檔 : </div>		
+             <div class="td2" style='width:300px;text-align:left'><input type="file" accept=".pdf" name="file"/></div> 
+ 	      </div>
+ 	</div> 
+	<div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='width:450px'>	
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重 設</button>
+	</div>	 	
+</div>
+</form>
+ 	
+<div>&nbsp;</div>
+<div>&nbsp;</div> 	
+	<table style='margin-left:30px'>
+		<tr style="border-bottom:1px solid #dddddd;text-align:left;">
+			<th width="500px">上 傳 檔 案 :</th>
+		</tr>
+        <tr style='text-align:left'>
+            <td th:utext="${LfileStr}"></td>           
+        </tr>			
+	</table>
+	
+<script>
+	$("#btnSave").click(function() {
+		    if($("#contractType").val()==''){
+		    	alert("請選擇上傳類型!");
+		    }else{
+				$("#form1").submit();
+		    }	
+	});
+</script>		
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript" type="text/javascript">
+	$(function() {
+		$("#datepickerFrom").datepicker();
+		$("#datepickerTo").datepicker();
+	});
+	
+	function open_serviceContract(fileName){
+ 		var feature = "width=1300,height=650,left=400,locationbar=false,scrollbar=yes,resizable=yes";
+ 	    window.open("/System/openContract?salesFileName="+[[${school_code}]]+"_"+fileName,"", feature); 		
+ 	}	
+	
+	function studentContractDelete(fileName){
+		if(confirm("確定刪除此上傳合約?")){
+			$.ajax({
+				url : "/Sales/studentContractDelete",
+				data : {
+					fileName : fileName
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.location.reload();
+				}
+			});
+		}	
+	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+
+
+

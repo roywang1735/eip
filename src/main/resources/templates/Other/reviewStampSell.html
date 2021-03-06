@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Other/bookSell">販售</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style=""><A href="/Other/bookSell"> 書籍 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Other/reviewStampSell"> Video點數 </A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+&nbsp;<p>
+<p>
+  <div style='border:1px #eeeeee solid;width:300px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					類別<br> 
+					<select id="category_id" class="form-control" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>				
+			</div>			
+		</div>
+	</div>						
+  </div>
+	<div align='center' style='width:300px'>
+		<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-success" onclick="location.href='/Other/reviewStampSellEdit'">&#8883;新增販售 </button>
+	</div>
+
+
+<div>&nbsp;</div>
+		<div style='width:1000px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='letter-spacing:2px'>
+					<th style='width:100px'>時間</th>
+					<th>名稱</th>
+					<th>數量</th>
+					<th>售價</th>
+					<th>學號</th>
+					<th>姓名</th>
+					<th>建立者</th>
+					<th>備註</th>				
+				</tr>
+			</thead>
+		  </table>
+	   </div>	
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Other/getOtherSell",
+				data : function(d) {
+					d.cat1   = "2";
+				},
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "createTime",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+					}			
+				},
+				{"data" : "sell_name"}, 					
+				{"data" : "amount"},
+				{"data" : "sellPrice"},
+				{"data" : "studentNo"},
+				{"data" : "studentName"},
+			    {"data" : "creater"},
+			    {"data" : "comment"}
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			table.ajax.reload();
+		});
+	});
+</script>
+

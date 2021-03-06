@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Sales/studentExperienceSave2}" method="post">
+	<input type='hidden' name='student_seq' th:value='${student_seq}'>
+	<div class="css-table" style='margin-left:100px'>			
+		<div class="tr" style='font-size:small'>
+			<div class="td2">
+					<b>特殊提報 : </b>&nbsp;<span th:text='${student_no}'></span>&nbsp;<span th:text='${ch_name}'></span><br> 
+					<textarea name='experience_content' style=" border:1px solid #aaaaaa;width:400px;height:70px;resize:none" maxlength="150"></textarea>				
+			</div>				
+		</div>
+		<div class="tr">
+			<div class="td2" style='text-align:center'>
+	  			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp; 
+	  			<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>			
+			</div>
+		</div>
+	</div>		
+</form> 
+<div>&nbsp;</div>   
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	<div class="css-table" style='border-spacing:1px;margin-left:100px' id='myDataTalbe'>
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='width:120px;text-align:center;padding:3px;background-color:#FFFFCC;border:1px #cccccc solid;font-weight:bold;letter-spacing:5px'>建立</div>		
+			<div class="td2" style='width:450px;text-align:center;padding:3px;background-color:#FFFFCC;border:1px #cccccc solid;font-weight:bold;letter-spacing:50px'>內容</div>
+		</div>
+	</div>
+	<div class="css-table" style='border-spacing:1px;margin-left:100px' th:utext="${experience_contentStr}">					
+	</div>			
+<div>&nbsp;</div>   
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>   
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+	
+<script>
+$("#btnSave").click(function() {
+		$("#form1").submit();
+});
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	
+
+
+
+

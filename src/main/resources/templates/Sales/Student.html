@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<form>
+  <div style='padding:10px;border-radius:5px;margin-top:20px;width:600px;border:1px #ffeeff solid'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					身分別<br>
+					<select id='degree' class="form-control" style='width:90px'>
+					    <option value='1'>一般生</option>
+					    <option value='2'>高中部</option>
+					</select>
+			</div>		
+			<div class="td2" style='padding:5px'>
+					中文名<br>
+					<input type="text" class="form-control" name="ch_name" style='width:90px'/>
+			</div>
+			<div class="td2" style='padding:5px'>
+					英文名<br>
+					<input type="text" class="form-control" name="en_name" style='width:90px' />				
+			</div>		
+			<div class="td2" style='padding:5px'>
+					學號<br>
+					<input type="text" class="form-control" name="student_no" value='' style='width:110px'/>															
+			</div>
+			<div class="td2" style='padding:5px'>
+					身分證<br>
+					<input type="text" class="form-control" name="idn" style='width:110px'/>
+			</div>
+		</div>
+	</div>	
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>			
+			<div class="td2" style='padding:5px'>
+					手機<br>
+					<input type="text" class="form-control" name="mobile" style='width:110px'/>				
+			</div>			
+			<div class="td2" style='padding:5px'>
+					協辦人<br>
+					<input type="text" class="form-control" name="cowork" style='width:90px'/>
+			</div>
+			<div class="td2" style='padding:5px'>
+					建立時間
+					<input type='text' placeholder='&#128197;' autocomplete="off" style='width:110px' name="create_time_0" class='form-control title' onclick='$(this).datepicker({dateFormat: "yy-mm-dd",});$(this).datepicker("show")'>							
+			</div>
+			<div class="td2" style='padding:5px'>
+					Email<br>
+					<input type="text" class="form-control" name="email" style='width:190px'/>																
+			</div>										
+		</div>
+	</div>
+ </div>
+ <div style='width:600px' align='center'>
+		<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+		<span sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')"><button type="button" class="btn btn-sm btn-success" onclick="location.href='/Sales/StudentProfile?student_seq=-1'">&#8883;新增學生 </button></span>
+ </div>
+</form> 
+ 
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+				<!--DataTables的表格-->
+				<table id="myDataTalbe" class="display" style='width:1220px'>
+					<thead>
+						<tr style='letter-spacing:2px'>
+							<th style='width:55px'>建立</th>
+							<th>學號</th>
+							<th style='width:50px'>姓名</th>
+							<th>手機</th>
+							<th style='width:80px'>準備考試</th>
+							<th style='width:80px'>出國時間</th>
+							<th style='width:80px'>目前單位</th>
+							<th>備註</th>
+							<th style='width:55px'>更新</th>														
+						</tr>
+					</thead>
+				</table>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			dom: "<'row'<'col-sm-3'l><'col-sm-3'f><'col-sm-6'p>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
+			"iDisplayLength": 20,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Sales/getStudent?remark_limit=200",
+				data : function(d) {
+					d.degree    = $("#degree").val();
+					d.ch_name    = $("input[name=ch_name]").val();
+					d.en_name    = $("input[name=en_name]").val();
+					d.eip_student_no = $("input[name=eip_student_no]").val();
+					d.student_no = $("input[name=student_no]").val();
+					d.idn        = $("input[name=idn]").val();
+					d.mobile     = $("input[name=mobile]").val();
+					d.email      = $("input[name=email]").val();
+					d.create_time= $("input[name=create_time_0]").val();
+					d.cowork    = $("input[name=cowork]").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				},
+				error: function(){
+					 window.location.replace("/");
+			    }				
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "create_time",
+					"render" : function(data,type,row,meta) {
+						return "<span style='font-size:x-small;width:40px'>"+data+"<br>"+row.creater+"</span>";
+				    }					
+				},
+				{"data" : "student_no",
+					"render" : function(data, type, row, meta) {
+						return "<A href='/Sales/StudentProfile?student_seq="+row.student_seq+"' style='font-size:small;text-decoration:underline;color:blue;font-weight:bold'>"+data+"</A>";
+				    }					
+				}, 
+				{"data" : "ch_name",
+					"render" : function(data, type, row, meta) {
+						return data+"<br>"+row.sex;
+					}	
+				},					
+				{"data" : "mobile_1",
+					"render" : function(data, type, full, meta) {
+						if(data==null){
+							return "";
+						}else{
+							return "<span style='font-size:small'>"+data+"</span>";
+						}	
+				    }						
+				}, 
+				{"data" : "exam"},
+				{"data" : "abroad_date"}, 
+				{"data" : "category"},
+				{"data" : "remark"},
+				{"data" : "update_time",
+					"render" : function(data,type,row,meta) {
+						return "<span style='font-size:x-small;width:40px'>"+data+"<br>"+row.updater+"</span>";
+				    }						
+				}
+			 ],			
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+		
+	});
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

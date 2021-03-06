@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>					
+
+
+
+
+
+    
+	<form id='form1' th:action="@{/Sales/ClassBookCancel}" method="post">
+	    <input type='hidden' name='Register_comboSale_grade_id' th:value="${Register_comboSale_grade_id}">
+		<input type='hidden' name='signRecordHistory_seq' th:value="${signRecordHistory_seq}">
+		<input type='hidden' name='class_th' th:value="${class_th}">
+		<input type='hidden' name='makeUpNo' th:value="${makeUpNo}">
+		<input type='hidden' name='register_id' th:value="${register_id}">
+		<input type='hidden' id='student_seq' name='student_seq' th:value="${student_seq}">	
+	  <div style='margin-top:20px;margin-left:50px;color:darkblue;letter-spacing:5px;font-weight:bold'>&#10149; 預約課程</div>	
+	  <div>&nbsp;</div>
+	  <div align='center'>		
+		<div class="css-table" style="border-spacing:10px;font-size:small;font-weight:bold;border:1px #eeeeee solid;background-color:#ffeeff;margin:10px;padding:10px">
+			<div class="tr">			
+				<div class="td" style='text-align:center'>
+					&nbsp;分 校<br>
+					<select name='school_code' class='form-control' style='color:darkblue' disabled>
+						<option value=""></option>
+						<option th:selected="${school_code eq item.code}" th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>				 	
+				</div>			
+				<div class="td" style='text-align:center'>
+					&nbsp;科 目<br>
+					<select name='subject_id' class='form-control' style='color:darkblue' disabled>
+						<option value=""></option>
+						<option th:selected="${subject_id eq item.subject_seq}" th:each="item : ${LSubject}" th:value="${item.subject_seq}" th:utext="${item.name}" />
+					</select>
+				</div>
+				<div class="td" style='text-align:center'>
+				 	&nbsp;方 式<br>
+				 	<select name='class_style' class='form-control' style='color:darkblue' disabled>
+				 		<option value=""></option>
+				 		<option value="1" th:selected="${class_style eq '1'}">面 授</option>
+				 		<option value="2" th:selected="${class_style eq '2'}">Video</option>
+				 	</select>
+				</div>				
+				<div class="td" style='text-align:center'>
+					&nbsp;期 別<br>
+					<select name='class_start_date' class='form-control' style='color:darkblue' disabled>
+						<option value=""></option>
+						<option th:selected="${class_start_date eq item.class_start_date_0}" th:each="item : ${LGrade}" th:value="${item.class_start_date_0}" th:utext="${item.class_start_date}" />
+					</select>							
+				</div>
+				<div class="td" style='text-align:center'>
+				    &nbsp;課 堂<br>
+					<input name='class_th' type='text' th:value="${class_th}" style='width:80px;color:darkblue' class='form-control' readonly>		
+				</div>							
+			</div>				
+		</div>
+		<div style='background-color:#ffffff;padding:2px'><button type="button" id="btnSave" class="btn btn btn-primary">取 消 預 約</button></div>
+	  </div>    
+	</form>		
+
+
+<script>
+    $("#btnSave").click(function() {
+      if(confirm("確定取消此預約課程?")){ 
+          var url = $("#form1").attr('action');
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: $("#form1").serialize(),
+            success: function(data)
+            {
+   				window.close();
+   				window.opener.location.reload();
+            }
+          });
+    		e.preventDefault(); 
+	   }
+    })  
+ </script>

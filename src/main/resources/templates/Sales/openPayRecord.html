@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<input type='hidden' id='register_id' th:value='${register_id}'>
+
+<div class="css-table" style="border-spacing:1px;margin-top:10px;margin-left:20px">	
+<div class="tr">  		 
+ <div class="td" style=''> 
+  <div><span style='font-weight:bold;letter-spacing:2px'>&#10074; 期數與金額</span></div>
+	<div class="css-table">
+	    <div class="tr" style='background-color:#3e7e99;font-size:small'>
+	        <div class="td2" style='color:white;text-align:center;width:100px'>繳費方式</div>
+	        <div class="td2" style='color:white;text-align:center;width:100px'>時間</div>
+	        <div class="td2" style='color:white;text-align:center;width:100px'>金額</div>
+	        <div class="td2" style='color:white;text-align:center;width:100px'>刷卡期數</div>
+	    </div>
+	</div>       
+    <div id='studentPayRecord' style='overflow:auto;height:300px;border:1px #dddddd solid;border-radius:5px;background-color:#ffffff'>  
+<!------------->
+<!------------->
+	</div> 
+  </div>			
+</div> 	
+</div>
+
+
+<script th:inline="javascript" type="text/javascript">  	
+	$(document).ready(function() {
+		$.ajax({
+			url : "/Sales/getStudentPayRecordDetail",
+			data : {
+				studentPayRecord_id : [[${studentPayRecord_id}]]
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#studentPayRecord").html(data);
+		    }
+		})		
+	}); 
+		
+</script>
+
+
+
+

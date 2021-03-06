@@ -1,0 +1,186 @@
+ <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div class="container-fluid" th:if="${student_seq!='' and student_seq!=null}">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{${backURL}}">預約時段</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentCalendar(mock=1,student_seq=${student_seq},Register_seq=${Register_seq},mockDetail_seq=${mockDetail_seq},school_code=${school_code})}">學員行事曆</A><li>	
+	</ul>		
+</div>
+
+<div>&nbsp;</div>
+<div align='center'>
+	<div class="css-table" style='border:1px #dddddd solid;background-color:#ffffec'>
+	  <div class="tr">
+	  		<div class="td2" style='width:120px;padding:2px;border-right:1px #dddddd solid;font-weight:bold;color:#aaaaaa;letter-spacing:5px'>分校</div>
+	  		<div class="td2" style='width:220px;border-right:1px #dddddd solid;font-weight:bold;color:#aaaaaa;letter-spacing:2px'>類別(參與-方式)</div>
+	  		<div class="td2" style='width:200px;border-right:1px #dddddd solid;font-weight:bold;color:#aaaaaa;letter-spacing:5px'>分組</div>  		
+	  		<div class="td2" style='width:360px;border-right:1px #dddddd solid;font-weight:bold;color:#aaaaaa;letter-spacing:5px'>時段</div>  		
+	  </div>
+	  <div class="tr">
+	         <div class="td2" style='border-right:1px #dddddd solid'>
+				<select id="school_code" name='school_code'  style='height:30px;border-radius:5px;width:100px;background-color:#F3F4FF' onchange='getMockBaseTitleStr()'>
+					<option th:selected="(${item.code} == ${school_code})"  th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+				</select>
+			 </div> 
+			 
+	         <div class="td2" style='border-right:1px #dddddd solid'>
+				<select id="mockBaseTitle_seq" name='mockBaseTitle_seq'  style='height:30px;border-radius:5px;width:200px;background-color:#F3F4FF' onchange='getPanel(); getMockMonth()'>
+					<option th:selected="(${item.mockBaseTitle_seq} == ${mockBaseTitle_seq})" th:each="item : ${LMockBaseTitle}" th:value="${item.mockBaseTitle_seq}" th:utext="${item.categoryName+'&nbsp;('+item.attendName+'-'+item.testWayName+')'}" />
+					<option value=''></option>
+				</select>
+			 </div>
+			 
+	         <div class="td2"  id='panelStr' align='left' style='padding:3px;border-right:1px #dddddd solid;vertical-align:top;color:darkblue'></div>	
+	         	 				  		 	    
+			 <div class="td2" style='vertical-align:top;padding:5px'>
+			    <div class="css-table" id='slot' style='border-right:1px #dddddd solid;text-align:left;border:1px #dddddd solid;border-radius:5px;padding:0px;background-color:#FFF7FD;font-size:xx-small'>	
+				    <!------>
+				    <!------>
+			    </div> 	   
+		     </div>    
+	  </div>  
+	</div>  	
+	<div id='mockBaseList'></div>
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript" type="text/javascript">
+$(document).ajaxStart(function(){
+	$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+});
+
+$(document).ajaxStop(function(){
+	$('#message').text("");
+});	
+
+$(document).ready(
+		function(){
+			getMockMonth();
+		}
+)
+//取得適用分校
+function getPanel(){
+	$.ajax({
+		url : "/Adm/getPanel",
+		data : {
+			mockBaseTitle_seq  : $("#mockBaseTitle_seq").val(),
+			student_seq        : [[${student_seq}]]
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#panelStr").html(data);
+		}
+	});
+}
+//月曆內容
+function getMockMonth(){
+	$.ajax({
+		url : "/Adm/getMockMonth",
+		data : {
+			mockBaseTitle_seq   : $("#mockBaseTitle_seq").val(),
+			Register_seq        : [[${Register_seq}]],
+			student_seq         : [[${student_seq}]],
+			mockDetail_seq      : [[${mockDetail_seq}]],
+			school_code         : [[${school_code}]]
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#mockBaseList").html(data);
+			getSlot();
+			getPanel();
+		}
+	});
+}
+
+function getSlot(){
+	$.ajax({
+		url : "/Adm/getSlot",
+		data : {
+			mockBaseTitle_seq   : $("#mockBaseTitle_seq").val()
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#slot").html(data);
+		}
+	});
+}
+
+
+function openMockBase(setDate){
+	var feature = "width=400,height=400,left=500";
+	window.open("/Adm/openMockBase?mockBaseTitle_seq="+[[${mockBaseTitle_seq}]]+"&setDate="+setDate,"",feature);		
+}
+
+//學生預定時段回數或人數限制
+function MockBookDate(setDate,slot,round,mockBase_id,testSubjectSelection2_seq){
+	if($("#panelStr").text()){
+		if(!$("input[name='mockPanel_id']:checked").val()){
+			alert("請選取分組!");
+			return;
+		}
+    }
+	var slotName="";
+	if(slot==1){
+		slotName="早";
+	}else if(slot==2){
+		slotName="午";
+	}else if(slot==3){
+		slotName="晚";
+	}
+	
+	if(slotName=''){slotName='無';}
+	if(round=''){round='無';}
+
+	if(confirm("確定選取此時段?  -->日期:"+setDate+'  -->時段:'+slotName+'  -->回數:'+round)){
+		$.ajax({
+			url : "/Sales/updateMockBaseBook",
+			data : {
+				student_seq    : [[${student_seq}]],
+				mockBase_id    : mockBase_id,
+				mockDetail_id  : [[${mockDetail_seq}]],
+				setDate        : setDate,
+				slot           : slot,
+				school_code    : $("#school_code").val(),
+				mockPanel_id   : $("input[name='mockPanel_id']:checked").val(),
+				testSubjectSelection2_seq : testSubjectSelection2_seq,
+				register_mock_seq : [[${register_mock_seq}]]
+			},
+			dataType : "text",
+			success : function(data) {
+				if(confirm("預定成功! 關閉並重新整理視窗!")){
+					window.close();
+					self.opener.location.reload();
+				}
+			},
+	        error:function(){
+	        	alert("預定失敗!");
+	        }			
+		});        
+    }	
+}
+
+//各分校模考可選項
+function getMockBaseTitleStr(){
+	$.ajax({
+		url : "/Adm/getMockBaseTitleStr",
+		data : {
+			school_code : $("#school_code").val()			
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#mockBaseTitle_seq").html(data);
+			//getMockMonth();
+		}
+	});		
+}
+</script>
+
+
+

@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/Manager/AccountLog">帳號</a></li>
+    <li><a href="/Manager/GradeSetLog">課程設置</a></li>
+    <li><a href="/Manager/comboSaleLog">課務銷售</a></li>
+    <li><a href="/Manager/SubjectLog">科目</a></li>
+    <li class="active"><a href="/Manager/MockLog">模考</a></li>
+  </ul>
+</div>   
+  <div style='border:1px #eeeeee solid;width:700px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table" style="">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+				中文名<br>
+				<input type='text' style='width:120px' class='form-control'>
+			</div>
+			<div class="td2" style='padding:5px'>
+				分校<br>
+				<select id="school" style='width:120px;padding:2px' class="form-control" onchange="subjectData(this.value)">
+					<option></option>
+					<option th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />									
+				</select>				
+			</div>
+			<div class="td2" style='padding:5px'>
+				部門<br>
+				<select id="school" style='width:120px;padding:2px' class="form-control" onchange="subjectData(this.value)">
+					<option></option>
+					<option th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />									
+				</select>				
+			</div>						
+		</div>	
+	</div>	
+	<div style='margin-top:20px;text-align:center'><button type="button" id="btnQuery" class="btn btn-sm btn-success">查詢</button></div> 
+  </div>
+  
+  &nbsp;<p>	
+			<div style='width:1000px'>
+				<table id="myDataTalbe" class="display">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>事件</th>
+							<th>類別</th>
+							<th>單科</th>
+							<th>售價</th>
+							<th>更新者</th>
+							<th>更新時間</th>
+						</tr>
+					</thead>
+				</table>
+			</div>	
+ &nbsp;<p>
+ &nbsp;<p>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"iDisplayLength": 15,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Manager/getApplicationLog?fun1=5",
+				data : function(d) {
+/* 					d.ch_name    = $("input[name=ch_name]").val();
+					d.en_name    = $("input[name=en_name]").val(); */
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{ "data" : "applicationLog_seq"}, 
+				{ "data" : "col1"}, 
+				{ "data" : "col2"}, 
+                { "data" : "col3"},
+                { "data" : "col4"},
+                { "data" : "updater"},
+                { "data" : "update_time"}
+            ]
+
+		});
+		
+		table.order( [ 0, 'desc' ] );
+		
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+		
+</script>
+
+

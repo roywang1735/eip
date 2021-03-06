@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<input type='hidden' id='account0' th:value='${account0}'>
+ <div style='letter-spacing:5px;font-weight:bold'>&nbsp;&#10074;備註</div>
+ <div align='center'>
+   <form>
+      <div style='margin-top:10px'>
+		  <textarea id='commentAppend' cols="40" rows="5" style='border:1px #eeeeee solid;margin-top:2px;border-radius:5px'></textarea>
+	 </div>	 
+	<div style='white-space:nowrap;width:400px;text-align:center'>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+			&nbsp;&nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>
+	</div>
+   </form>	
+ </div>
+<div>&nbsp;</div>
+
+
+
+
+<script type="text/javascript">
+ $("#btnSave").click(function(){
+	var commentAppend = $('#commentAppend').val();
+	var pop = $('#pop',window.opener.document).val();
+	var commentThis = $('#commentThis',window.opener.document).val(); //本次附註
+	var commentOrigin = $('#comment',window.opener.document).text(); //原先附註
+	var nowTime = new Date().toLocaleString();
+	var fun = '';
+	if(pop=='0'){
+		fun='[報名] ';
+	}else if(pop=='re_register'){
+		fun='[改報] ';
+	}else if(pop=='refund'){
+		fun='[退費] ';
+	}else if(pop=='exchange'){
+		fun='[換課] ';
+	}	
+	$('#comment',window.opener.document).html(". . . . . . .  "+fun+$("#account0").val()+" "+nowTime+"   . . . . . . .\n"+commentAppend+"\n"+commentOrigin);
+	$('#commentThis',window.opener.document).val(". . . . . . .  "+fun+$("#account0").val()+" "+nowTime+"   . . . . . . .\n"+commentAppend+"\n"+commentThis);
+	window.close();
+	
+ })
+</script>

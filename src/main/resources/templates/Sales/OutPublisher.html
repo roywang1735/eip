@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>			
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td"><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}"> 新增報名 </A></div><div class="td" style="width:20px"></div>
+			&#10074;<div class="td"><A th:href="@{/Sales/FeeRecord(student_seq=${student_seq})}">繳費/變更 </A></div><div class="td" style="width:20px"></div>
+			&#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/LagnappeRecord(student_seq=${student_seq})}">領取 </A></div><div class="td" style="width:20px"></div>
+		</div>				
+	</div>
+
+
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+		<div class="td">&bull;<A th:href="@{/Sales/LagnappeRecord(student_seq=${student_seq})}" style='text-decoration:underline;color:blue'>贈品</A></div><div class="td" style="width:20px"></div>
+		<div class="td">&nbsp;<A th:href="@{/Sales/OutPublisher(student_seq=${student_seq})}" style='background-color:#eeeeee;text-decoration:underline;color:blue'>外版書</A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+	<!--DataTables的表格-->		
+		<table id="myDataTalbe" class="display" style='width:1100px'>
+			<thead>
+				<tr>
+				  <th>報名</th>
+				  <th>物品</th>
+				  <th>售價</th>
+				  <th>建立者</th>	
+				  <th>時間</th>
+				  <th>發放</th>
+				  <th>更新</th>
+				  <th>時間</th>
+				  <th style='width:100px'>發放原因</th>			  			
+				</tr>
+			</thead>
+		</table>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script type="text/javascript">
+  	
+	$(document).ready(function() {		
+		let table = $('#myDataTalbe').DataTable({
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Sales/getOutPublisher",
+				data : function(d) {
+					d.lagnappe_id  = $("#lagnappeSel").val();
+					d.student_seq = [[${student_seq}]];
+				},
+				dataSrc : function(data) {
+						return data;
+				}
+			},
+			orderMulti : false,			
+
+			"columns" : [ 
+				{"data" : "comboSale_name"}, 					
+			    {"data" : "book_name"},
+			    {"data" : "sellPrice","className" : "text-right"},
+			    {"data" : "creater","className" : "text-center"},
+			    {"data" : "update_time","className" : "text-center",
+					"render" : function(data,type,row,meta) {
+							return "<span style='font-size:x-small'>"+data+"</font>";
+				    }			    	
+			    },
+			    {"data" : "isIssue","className" : "text-center",
+					"render" : function(data,type,row,meta) {
+						if(data=='0'){
+							return "<A href='javascript:void(0)' style='text-decoration:underline;color:blue' onclick=openIssue('"+row.register_outPublisher_seq+"','1')>未發放</A>";
+						}else{
+							return "已發放";
+						}
+				    }
+			    },
+			    {"data" : "issueUpdater"},
+			    {"data" : "issueDate","className" : "text-center",
+					"render" : function(data,type,row,meta) {
+						return "<span style='font-size:x-small'>"+data+"</font>";
+			    	}			    	
+			    },
+			    {"data" : "reason"}
+			]
+		});
+		
+		$("#btnQuery").click(function() {
+			table.ajax.reload();
+		});		
+		
+	});
+	
+
+    function openIssue(register_outPublisher_seq,payOffRelease0){
+    	var payOffRelease = '';
+    	if(payOffRelease0==0){
+    		payOffRelease = '已領取';   		
+    	}else if(payOffRelease0==1){
+    		payOffRelease = '結清後領取';   		
+    	}else if(payOffRelease0==2){
+    		payOffRelease = '結清後系統自動發放';   		
+    	}    	
+ 		var feature = "left=100,top=100,width=550,height=350";
+ 		var student_seq = [[${student_seq}]];
+ 	    window.open("/Sales/openIssue2?payOffRelease0="+payOffRelease0+"&payOffRelease="+payOffRelease+"&register_outPublisher_seq="+register_outPublisher_seq+"&student_seq="+student_seq,"", feature);    	
+    }
+    
+    $("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+

@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+<form id='form1' action="#" th:action="@{/Marketing/LectureFlowEditSave}"  th:object="${LectureFlow}" method="post">
+  <input type="hidden" th:field = "*{lectureFlow_seq}">
+  <input type="hidden" name='functions' th:value = "${functions}">
+  <input type="hidden" name='lecture_id' th:value = "${lecture_id}">
+  <div style='border:1px #eeeeee solid;width:600px;border-radius:5px;background-color:#ffeeff;padding:10px'>     
+	
+	
+<!----------Beclass連結--------->
+    <div class="css-table" style='padding:5px' th:if="${functions=='beclass'}">			
+		<div class="tr">	
+			 <div class="td2" style='width:150px;text-align:right;font-weight:bold'>
+			        Beclass連結
+			 </div>
+			 <div class="td2" style='width:450px;padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{beclass}" style='height:35px;border-radius:5px;border:1px #dddddd solid;width:400px'>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;vertical-align:middle'>備 註</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			    <textarea cols='40' rows='4'  style='font-size:small;border-radius:3px;border:1px #dddddd solid'  th:field="*{beclass_comment}"></textarea>   						 
+			</div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			               建立者
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{beclass_edit}" style='border:0px;height:30px;border-radius:5px;width:120px;background-color:#f5f5f5' readonly>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			               時間
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{beclass_time}" style='border:0px;height:30px;border-radius:5px;width:200px;background-color:#f5f5f5' readonly>     
+			 </div>
+		</div>
+	</div>	
+		
+<!----------海報製作---------> 
+	<div class="css-table" style='padding:5px' th:if="${functions=='art'}">					
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			               海報製作
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left;font-weight:bold'>			 	
+					<select th:field="*{art}" class="form-control" style='width:100px'>
+					    <option value=""></option>
+						<option value="1">已完成</option>
+					</select>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;vertical-align:middle'>備 註</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			    <textarea cols='40' rows='4'  style='font-size:small;border-radius:3px;border:1px #dddddd solid'  th:field="*{art_comment}"></textarea>   						 
+			</div>
+		</div>														
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			               建立者
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{art_edit}" style='border:0px;height:30px;border-radius:5px;width:120px;background-color:#f5f5f5' readonly>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			              時間
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{art_time}" style='border:0px;height:30px;border-radius:5px;width:200px;background-color:#f5f5f5' readonly>     
+			 </div>
+		</div>									           			
+	</div>
+
+	
+<!----------網路上架狀況---------> 
+	<div class="css-table" style='padding:5px' th:if="${functions=='website'}">					
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			               網路上架狀況
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left;font-weight:bold'>			 	
+					<select th:field="*{website}" class="form-control" style='width:100px'>
+					    <option value=""></option>
+						<option value="1">已完成</option>
+					</select>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;vertical-align:middle'>備 註</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			    <textarea cols='40' rows='4'  style='font-size:small;border-radius:3px;border:1px #dddddd solid'  th:field="*{website_comment}"></textarea>   						 
+			</div>
+		</div>										
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			               建立者
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{website_edit}" style='border:0px;height:30px;border-radius:5px;width:120px;background-color:#f5f5f5' readonly>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			              時間
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{website_time}" style='border:0px;height:30px;border-radius:5px;width:200px;background-color:#f5f5f5' readonly>     
+			 </div>
+		</div>									           			
+	</div>		
+
+<!----------備註--------->
+    <div class="css-table" style='padding:5px' th:if="${functions=='comment'}">			
+		<div class="tr">	
+			 <div class="td2" style='width:150px;text-align:right;font-weight:bold;vertical-align:middle'>
+			            備註
+			 </div>
+			 <div class="td2" style='width:450px;padding:5px;text-align:left'>			 	 
+			 	     <textarea  rows = '8' cols = '50'  th:field="*{comment}"></textarea>   
+			 </div>
+		</div>
+	</div>		
+<!--------------------------------->	
+  </div>
+  <div style='width:600px' align='center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+  </div>  
+</form> 
+		
+</div> 
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+											
+<script>
+$("#btnSave").click(function() {
+
+	if($("#category_id").val()==''){
+		alert("***請選取類別***");
+	}else if($("#bookName").val()==''){
+		alert("***請輸入名稱***");
+	}else if($("#originPrice").val()==''){
+		alert("***請輸入訂價***");
+	}else if($("#sellPrice").val()==''){
+		alert("***請輸入售價***");		
+	}else{
+		$("#form1").submit();
+	}	
+});
+
+$("#btnDelete").click(function() {
+	if(confirm("確認刪除? (請先確認無報名項目使用本書籍)")){
+		$("#book_seq_del").val($("#books_seq").val());
+		$("#form2").submit();
+	}	
+});
+</script>
+

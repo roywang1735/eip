@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+	<form id='form1' th:action="@{/System/classroomUpdate}" method="post">
+	    <input type='hidden' name='insert'>
+	    <input type='hidden' id='school_code' name='school_code'>
+		<table style='background-color:#ffefff'>
+	        <tr>
+	            <td>&nbsp;&nbsp;</td>
+	            <th style='width=100px; padding:4px;text-align:center'>*名稱<br><input type='text' class="form-control" style='width:80px' name='classRoom_name' placeholder='ex. A1'></td>
+	            <th style='width=100px; padding:4px;text-align:center'>
+			                *錄影
+			        <select name='isVideo' class="form-control" style='width:70px' >
+		        		<option value=''></option>
+		        		<option value='0'>有錄影</option>
+		        		<option value='1'>無錄影</option>
+		        		<option value='2'>Video教室</option>
+			        </select>
+	            </th>  
+	            <th style='width=100px; padding:4px;text-align:center'>*可容人數<input type='text' class="form-control" style='width:120px' name='capacity' placeholder='ex. 30-50'></td> 
+	            <td>&nbsp;&nbsp;</td>          
+            </tr>				
+		</table>
+		<div style='margin-left:30px;width:320px' align='center'>	
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp; 
+		</div>	
+	</form>	
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript">
+	$("#btnSave").click(function() {
+		$("#school_code").val([[${school_code}]]);
+		alert([[${school_code}]]);
+		$("#form1").submit();
+	});		
+</script>	

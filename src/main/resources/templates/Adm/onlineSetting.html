@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/VideoBase">Video設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockBase">模考設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/CounselingBase">充電站設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/programSetting2">教室&座位</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/onlineSetting">線上課程設置</a></li>						
+		</ul>
+	</div>
+	
+<div>&nbsp;</div>
+
+
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					分校<br> 
+					<select id="school" class="form-control" style='width:120px'>
+						<option></option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:120px'>
+					類別<br> 
+					<select id="category" class="form-control" onchange="subjectData()">
+						<option value=''></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${category_id == item.category_seq}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:220px'>
+					科目<br> 
+					<select id="subject" class="form-control">
+						<option value=''></option>
+					</select>			
+			</div>					
+			<div class="td2" style='padding:5px'>
+					期別<br>
+					<input type="text" class="form-control" id="class_start_date_0" style='width:100px' placeholder='ex.190106'/>
+			</div>		
+			<div class="td2" style='padding:5px'>
+					老師<br> 
+					<select id="teacher" class="form-control" style='width:130px'>
+							<option></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" th:selected="${teacher_id == item.teacher_seq}" />
+					</select>
+			</div>																	
+		</div>			
+	</div>								
+								
+	<div  align='center' style='width:700px;'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+	</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+		<div style='width:900px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='letter-spacing:2px'>
+					<th style='width:100px'>seq.</th>
+					<th style='width:100px'>狀態</th>					
+					<th style='width:100px'>分校</th>
+					<th style='width:100px'>類別</th>
+					<th style='width:300px'>期別</th>					
+					<th style='width:100px'>老師</th>
+					<th style='width:100px'>線上課程</th>			
+				</tr>
+			</thead>
+		  </table>
+	   </div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script>
+  function subjectData() {
+	var category_id = $("#category").val();
+	$.ajax({
+		url : "/Course/SubjectSearch",
+		data : {
+			category_id : category_id
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#subject").html(data);	
+		}
+	});
+  }
+  
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/OnlineClass/listClass/",
+				data : function(d) {
+					d.category_id = $("#category_id").val();
+					d.teacher_id  = $("#teacher_id").val();
+					d.active = 1;
+				},
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "grade_seq",
+				       "className" : "text-center",
+					   "render" : function(data, type, row, meta) {
+						   if(row.disable=='2'){
+							   disableName='{勿訂}\n';
+						   }else{
+							   disableName='';
+						   }
+					       if(row.status_code==4 || row.status_code==5){	
+				 				return disableName+"<a href='javascript:void(0)'  onclick='courseEdit("+data+")' style='font-size:small;color:blue;text-decoration:underline'>"+data+"</A>";
+						   }else{
+					           /*[# sec:authorize="hasAnyRole('ROLE_cou','ROLE_cou_mgr')"]*/ 
+				                return disableName+"<a href='javascript:void(0)'  onclick='courseEdit("+data+")' style='font-size:small;color:blue;text-decoration:underline'>"+data+"</A>";
+				               /*[/]*/ 
+				                return "-";
+						   }
+					    }					
+				},
+				{"data" : "status_name","className" : "text-center"},
+				{"data" : "school_name","className" : "text-center"},
+				{"data" : "category_name","className" : "text-center"},
+				{"data" : "grade_date",
+					   "render" : function(data, type, row, meta) {
+						   return "<span style='font-weight:bold'>"+data+" "+row.subject_name+" "+(row.gradeName==null?"":row.gradeName)+"</span>";
+			        }					
+				},
+				{"data" : "teacher_name","className" : "text-center"},
+				{"data" : "grade_seq","className" : "text-center",
+					   "render" : function(data, type, row, meta) {
+							   return "<A href='javascript:void(0)' style='color:blue;text-decoration:underline;font-size:large' onclick='editOnlineClass("+data+")'>&hellip;</A>";
+				        }				
+				}
+			]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	function courseEdit(grade_seq){
+ 		var feature = "top=0,left=350,width=1120,height=700";
+ 	    window.open("/Course/newCourse?action=edit&grade_seq="+grade_seq,"",feature);
+ 	} 
+
+	function editOnlineClass(grade_seq){
+ 		var feature = "top=0,left=350,width=950,height=400";
+ 	    window.open("/Adm/editOnlineClass?grade_seq="+grade_seq,"",feature);
+ 	}	
+	
+</script>
+
+
+

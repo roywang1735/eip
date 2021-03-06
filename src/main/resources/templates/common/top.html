@@ -1,0 +1,15 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta name="description" data-th-content="${title}" content="">
+<title>WSMS</title>
+
+<div class="navbar-header">
+	<span style=''><img src='/images/wordgod.png' height='45px' style='margin-top:5px'/><a class="navbar-brand" href="/" id="logo"></a></span>
+</div>
+
+
+<div class="text-right" style="color:white;vertical-align:bottom">
+	<A href='/logout' style="color:white;font-size:x-small">登 出</a> &UpArrowBar;<br>
+	<span sec:authentication="name"></span> / <span style="font-size:x-small" th:text="${session.fromIp}"></span> 	
+</div>

@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<input type='hidden' id='register_id' th:value='${register_id}'>
+
+<div class="css-table" style="border-spacing:1px;margin-top:10px;margin-left:20px">	
+<div class="tr">  		 
+ <div class="td" style=''> 
+  <div><span style='font-weight:bold;letter-spacing:5px'>&#10074;繳費明細</span></div>
+	<div class="css-table">
+	    <div class="tr" style='background-color:#3e7e99;font-size:small'>
+	        <div class="td2" style='color:white;text-align:center;width:100px;letter-spacing:3px;padding:2px'>收據編號</div>
+	        <div class="td2" style='color:white;text-align:center;width:100px;letter-spacing:5px'>繳費金額</div>
+	        <div class="td2" style='color:white;text-align:center;width:190px;letter-spacing:5px'>繳費時間</div>
+	        <div class="td2" style='color:white;text-align:center;width:100px;letter-spacing:5px'>承辦人員</div>
+	        <div class="td2" style='color:white;text-align:center;width:250px;letter-spacing:5px'>繳費方式-金額-期數</div>
+	        <div class="td2" style='color:white;text-align:center;width:100px;letter-spacing:5px'>列印</div>
+	    </div>
+	</div>       
+    <div id='studentPayRecord' style='overflow:auto;height:300px;border:1px #ffffff solid;border-radius:5px;background-color:#FFE7EA'>  
+<!------------->
+<!------------->
+	</div> 
+  </div>			
+</div> 	
+</div>
+
+
+<script type="text/javascript">  	
+	$(document).ready(function() {
+		$.ajax({
+			url : "/Sales/getStudentPayRecord",
+			data : {
+				register_id : $('#register_id').val()
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#studentPayRecord").html(data);
+		    }
+		})		
+	}); 
+
+/**
+ 	function openPayRecord(studentPayRecord_id) {
+ 		var feature = "width=700,height=500";
+ 	    window.open("/Sales/openPayRecord?studentPayRecord_id="+studentPayRecord_id,"",feature);
+ 	}
+**/
+</script>
+
+
+
+

@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li><a href="/Course/CourseSetting">課程設置</a></li>
+		<li><a href="/Course/LectureSetting">講座設置</a></li>
+		<li><a href="/Course/SubjectSetting">科目</a></li>
+    	<li class="active"><a href="/Course/Teacher">老師</a></li>
+    	<li><a href="/Course/ClassroomSetting">教室</a></li>		
+	</ul>
+</div>
+
+&nbsp;<br>
+			<div class="css-table" style="border-spacing:3px">
+				<div class="tr">
+				    <div class="td" style='color:white;background-color:#F433FF;font-weight:bold;padding:3px' th:text="${session.teacher_name}"></div><div class="td" style="width:20px"></div>
+					[<div class="td" style=""><A href='/Course/TeacherSetting'> 課表 </A></div>]<div class="td" style="width:20px"></div>
+					[<div class="td" style=""><A href='/Course/TeacherLimit'> 排課限制 </A></div>]<div class="td" style="width:20px"></div>
+					[<div class="td" style="background-color:greenyellow"><A href='/Course/VideoCross'> Video跨校區 </A></div>]<div class="td" style="width:20px"></div>
+				</div>
+			</div>
+&nbsp;<p>
+

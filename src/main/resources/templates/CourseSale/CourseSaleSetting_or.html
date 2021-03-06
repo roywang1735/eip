@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li class="active"><a href="/Course/CourseSaleSetting">售價設定</a></li>
+  
+  </ul>
+</div>
+			<div id="css-table" class="css-table" style="border-spacing: 3px">
+				<div class="tr">
+					<div class="td"><A href=''>[ 單元售價  ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 套裝售價 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 視聽售價 ]</A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+&nbsp;<p>
+<div class="row">
+	<div class="col-md-8">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<form name="myForm" action="" method="post">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-3">
+									狀態<br> <select id="FlowStatus" class="form-control">
+										<option></option>
+										<option th:each="item : ${flowStatusGroup}"
+											th:value="${item.code}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-3">
+									分校<br> <select id="school" class="form-control">
+										<option></option>
+										<option th:each="item : ${schoolGroup}"
+											th:value="${item.code}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-3">
+									考科類別<br> <select id="category" class="form-control"
+										onchange="subjectData(this.value)">
+										<option></option>
+										<option th:each="item : ${categoryGroup}"
+											th:value="${item.category_seq}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-3">
+									科目<br> <select id="subject" class="form-control">
+										<option></option>
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+									期別<input type="text" class="form-control" name="issue" />
+								</div>
+								<div class="col-md-3">
+									老師<br> <select id="teacher" class="form-control">
+										<option></option>
+										<option th:each="item : ${teacherGroup}"
+											th:value="${item.code}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-6 row">
+
+									開課期間<br>
+									<div class="input-group">
+										<input type="text" class="form-control" id="datepickerFrom" placeholder="from" />
+										<span class="input-group-addon">~</span> 
+										<input type="text" class="form-control" id="datepickerTo" placeholder="to" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<br>
+								<div class="col-md-12" align='center'>
+									<button type="button" id="btnQuery"
+										class="btn btn-sm btn-primary">查詢</button>
+									&nbsp;&nbsp; <input type="reset" value="重設">
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-sm btn-success"
+										onclick="location.href='/CourseSale/newCourseSale'">新增套裝
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--DataTables的表格-->
+<table id="myDataTalbe" class="display">
+	<thead>
+		<tr>
+			<th>狀態</th>
+			<th>分校</th>
+			<th>類別</th>
+			<th>科目</th>
+			<th>期別</th>
+			<th>老師</th>
+			<th>班級</th>
+			<th>開始時間</th>
+			<th>結束時間</th>
+			<th>編輯</th>
+		</tr>
+	</thead>
+</table>
+
+&nbsp;<p>
+&nbsp;<p>
+<script>
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+</script>
+<script>
+	$(function() {
+		$("#datepickerFrom").datepicker();
+		$("#datepickerTo").datepicker();
+	});
+</script>
+
+<script type="text/javascript">
+/* 	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getCourseList",
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ {
+				"data" : "status"
+			}, {
+				"data" : "school"
+			}, {
+				"data" : "category"				
+			}, {
+				"data" : "subject"
+			}, {
+				"data" : "issue_date"
+			}, {
+				"data" : "grade_teacher"
+			},
+			{
+				"data" : "grade_name"
+			},			
+			{
+				"data" : "from_date"
+			}, {
+				"data" : "to_date"
+			}, {
+				data: "course_seq",
+				"render" : function(data, type, full, meta) {
+					return "<A href='/Course/newCourse?course_seq="+data+"'>...</A>";
+				}
+			}
+			]
+
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	}); */
+</script>

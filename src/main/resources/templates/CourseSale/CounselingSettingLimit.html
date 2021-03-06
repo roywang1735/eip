@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+
+<div class="css-table">
+  <div class="tr">
+    <div class="td2" style='vertical-align:bottom'>
+      <div style='background-color:#FFFFE0;width:440px;padding:5px'>
+	     <div style='padding-left:5px;font-size:small;letter-spacing:2px;color:#004c99'>
+	           &#10045; 先選取[科目], 在[條件]選取須達到多少堂課後, 方能享有預約該科諮詢的權利
+	           &nbsp;<br>        
+	     </div>
+      </div>
+    </div> 
+</div> 
+&nbsp;<p>   
+<form id='form1' action="#" th:action="@{/CourseSale/CounselingSettingSave}"  method="post">
+<input type='hidden' id='comboSale_seq' name='comboSale_seq' th:value="${comboSale_seq}">
+  <div style='width:500px'>     
+	<div class="css-table" style='padding:5px'>			
+		<div class="tr">
+			<div class="th" style='padding:5px;width:300px;text-align:center;letter-spacing:10px'>科目</div>
+			<div class="th">&nbsp;</div>		
+			<div class="th" style='padding:5px;width:200px;text-align:center;letter-spacing:10px'>條件</div>
+		</div>
+		<div class="tr">
+			<div class="td" style='padding:5px;height:150px;background-color:palegreen' th:utext="${comboSale_subjectStr}"></div>		
+			<div class="th">&nbsp;</div>
+			<div class="td" style='text-align:center;background-color:palegreen;vertical-align:middle'>
+			        <b>&ge;</b> 
+					<select id="counselingLimitClass" name='counselingLimitClass' style='width:40px;height:30px;border-radius:5px'>
+						<option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='3'>3</option>
+                        <option value='4'>4</option>
+                        <option value='5'>5</option>
+                        <option value='6'>6</option>
+                        <option value='7'>7</option>
+                        <option value='8'>8</option>
+                        <option value='9'>9</option>
+                        <option value='10'>10</option>
+						<option value='11'>11</option>
+                        <option value='12'>12</option>
+                        <option value='13'>13</option>
+                        <option value='14'>14</option>
+                        <option value='15'>15</option>
+                        <option value='16'>16</option>
+                        <option value='17'>17</option>
+                        <option value='18'>18</option>
+                        <option value='19'>19</option>
+                        <option value='20'>20</option>                        
+					</select>
+					 堂 課
+			</div>
+		</div>		
+	</div>	
+  </div>
+  <div style='width:500px' align='center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設" />
+  </div>
+</form>  		
+
+&nbsp;<p>
+&nbsp;<p>
+	<div style='width:750px'>			
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+				  <th style='width:450px'>科目</th>
+				  <th style='width:120px'>條件</th>
+				  <th style='width:90px'>建立者</th>
+				  <th style='width:90px'>日期</th>
+				</tr>
+			</thead>
+		</table>
+	 </div>	
+
+&nbsp;<p>											
+<script>
+$("#btnSave").click(function() {
+	var checkflag = 0;
+	$('input[name="subject_id"]:checked').each(
+		function() {checkflag = 1;}
+	);
+	if(checkflag==0){
+		alert("***請至少選取一個科目***");
+	}else{
+		$("#form1").submit();
+	}	
+});
+
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/CourseSale/getCounselingLimit",
+			data : {
+				comboSale_seq : $("#comboSale_seq").val()
+			},			
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "subjectNameStr"}, 					
+		    {"data" : "counselingLimitClass",
+			     "render" : function(data, type, row, meta) {
+		               return "<b>&ge;</b> "+data+" 堂課";
+	     		 }				
+			},
+		    {"data" : "creater"},
+		    {"data" : "update_time"}
+		]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+}); 		
+</script>
+

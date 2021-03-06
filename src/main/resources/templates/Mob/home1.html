@@ -1,0 +1,81 @@
+<head th:include="/common/top_header_noMenu_Mob"></head>
+<meta name="viewport" content="width=device-width,initial-scale=1;charset=utf-8">
+
+<div align='center' style='margin-top:50px'>
+<div class="simpleLogin" style='width:70%'>
+  <form>
+    <legend>Let's Login</legend>
+    <fieldset>
+      <input id="name" placeholder="Username" type="text">
+      <input id="pass" placeholder="Password" type="password">
+      <input id="submit" type="submit" value="Log in">
+    </fieldset>
+  </form>
+</div> 
+</div>
+
+  
+  
+ 
+ 
+ 
+<style>
+.simpleLogin form {
+  max-width: 400px;
+  margin: auto;
+  background:#fefefd;
+  box-shadow: 0 2px 2px #aaa;
+}
+.simpleLogin form fieldset {
+    border: 0 none;
+    margin: 0;
+    padding: 20px;
+}
+.simpleLogin form legend,
+.simpleLogin form fieldset input {
+  font-family: Open Sans;
+  font-size:15px;
+}
+.simpleLogin form legend {
+    background-color: #7ba6b6;
+    border-top: 0 none;
+    color: white;
+    display: table-cell;
+    padding: 10px 20px;
+    width: auto;
+}
+
+.simpleLogin form fieldset input {
+  width: 90%;
+  margin: 10px 0;
+  padding: 10px 5%;
+  border: thin #8fc400 solid;
+}
+.simpleLogin input[type="submit"] {
+  width: 100px;
+  float: right;
+  background: #7ba6b6;
+  color: white;
+  transition: .2s;
+  border: 0;
+  cursor:pointer;
+}
+.simpleLogin input[type="submit"]:focus,
+.simpleLogin input[type="submit"]:hover, 
+.simpleLogin input[type="submit"]:active {
+  padding: 10px 5%;
+  background:#B3E226;
+  outline: none;
+}
+</style>    
+ 
+ 
+ 
+ 
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+

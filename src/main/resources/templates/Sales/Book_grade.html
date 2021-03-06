@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee dashed;
+	text-align: center;
+}
+</style>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">				
+		&#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}"> 期別選課 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A th:href="@{/Sales/Book_attend(student_seq=${student_seq})}"> 預約/點名紀錄 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A th:href="@{/Sales/StudentCalendar(student_seq=${student_seq})}"> 行事曆 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+<div>&nbsp;</div>
+
+
+<div>&nbsp;</div>
+<div style='text-align:right'>&bull; <A href='javascript:void(0)' onclick='GradeBookHistory()' style='letter-spacing:2px;text-decoration:underline;font-weight:bold;color:blue;font-size:small'>期別歷史紀錄</A></div>     
+
+	<div class="css-table" style="border-spacing:1px;margin-top:0px" id='myDataTalbe'>
+		<div class="tr" style='background-color:#3e7e99;color:white;font-size:small;letter-spacing:3px'>
+			<div class="td" style='padding:2px;border-radius:2px;width:70px;text-align:center'>報名</div>
+			<div class="td" style='border-radius:2px;width:70px;text-align:center'>費用</div>
+			<div class="td" style='border-radius:2px;width:300px;text-align:center'>科 目</div>
+			<div class="td" style='border-radius:2px;width:100px;text-align:center'>訂期別</div>	
+			<div class="td" style='border-radius:2px;width:200px;text-align:center'>已 訂 期 別</div>
+			<div class="td" style='border-radius:2px;width:70px;text-align:center'>
+				進班<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 若此次報名單尚未結清, 則由專員勾選課堂進班上課 ! </span>"><img src='/images/message.png' height='8px'/></A>
+			</div>										
+			<div class="td" style='border-radius:2px;width:50px;text-align:center'>性質</div>
+			<div class="td" style='border-radius:2px;width:70px;text-align:center'>分校</div>			
+			<div class="td" style='border-radius:2px;width:60px;text-align:center'>老師</div>
+			<div class="td" style='border-radius:2px;width:100px;text-align:center;letter-spacing:0px'>正班狀態 / 異動</div>			
+		</div>
+	</div>
+	<div class="css-table" th:each="register:${LRegister}" style='font-size:small;text-align:center' th:utext="${register.comboSaleString}">	
+	</div>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>				
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>	
+			
+<script th:inline="javascript"> 
+ 	function openGradeToSelect(Register_comboSale_seq,Register_seq,comboSale_seq,subject_id,gradeNoLeft,teacher_id,class_style) { 
+ 		var feature = "width=1100,height=700";
+ 		var student_seq = [[${student_seq}]];
+ 	    window.open("/Sales/openGradeToSelect?class_style="+class_style+"&Register_comboSale_seq="+Register_comboSale_seq+"&Register_seq="+Register_seq+"&comboSale_seq="+comboSale_seq+"&subject_id="+subject_id+"&student_seq="+student_seq+"&gradeNoLeft="+gradeNoLeft+"&teacher_id="+teacher_id, "", feature);
+ 	}
+//虛擬科目 	
+ 	function openSubjectToSelect(viewSide,Register_comboSale_seq,Register_seq,comboSale_seq,gradeNoLeft,subject_id,costShare) { 
+ 		var feature = "width=950,height=500";
+ 	    window.open("/Sales/openSubjectToSelect?gradeNoLeft="+gradeNoLeft+"&viewSide="+viewSide+"&Register_comboSale_seq="+Register_comboSale_seq+"&Register_seq="+Register_seq+"&comboSale_seq="+comboSale_seq+"&subject_id="+subject_id+"&costShare="+costShare, "", feature);
+ 	} 	
+
+
+	function gradeChange(register_id,grade_seq,student_seq,Register_comboSale_grade_seq,order_grade) {
+		var feature = "width=980,height=700,locationbar=false,scrollbar=yes,resizable=yes";
+	    window.open("/Sales/gradeChange?register_id="+register_id+"&order_grade="+order_grade+"&student_seq="+student_seq+"&grade_id="+grade_seq+"&Register_comboSale_grade_seq="+Register_comboSale_grade_seq, "", feature);
+	}
+
+
+ 	
+ 	function GradeBookHistory() { 
+ 		var feature = "width=1050,height=400";
+ 		var student_seq = [[${student_seq}]];
+ 	    window.open("/Sales/GradeBookHistory?student_seq="+student_seq, "", feature);
+ 	}	
+
+ 	function openCurrentCourse() {
+ 		var feature = "width=700,height=500";
+ 	    window.open("/Sales/CurrentCourse?pop=1", "", feature);
+ 	}
+ 	
+ 	//未結清
+ /**	
+ 	function pay_status(Register_comboSale_id,Register_comboSale_grade_seq) {
+ 		var feature = "width=400,height=300";
+
+ 	    window.open("/Sales/pay_status?Register_comboSale_id="+Register_comboSale_id+"&Register_comboSale_grade_seq="+Register_comboSale_grade_seq, "", feature);
+ 	}
+**/ 	
+    function openRegiser(Register_seq){
+ 		var feature = "left=0,top=0,width=1300,height=600";
+ 		var student_seq = [[${student_seq}]];
+ 	    window.open("/Sales/RegisterCombo?pop=view&Register_seq="+Register_seq+"&student_seq="+student_seq, "", feature);    	
+    } 
+    
+	function allowAttend(grade_seq){
+		var student_seq = [[${student_seq}]];
+		window.location.href = "/Sales/Book_attend?grade_id="+grade_seq+"&student_seq="+student_seq;
+	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+
+</script>

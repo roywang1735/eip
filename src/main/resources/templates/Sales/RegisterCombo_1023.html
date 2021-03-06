@@ -1,0 +1,967 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:if="${pop=='0'}" th:include="/common/top_header"></head>
+<head th:unless="${pop=='0'}" th:include="/common/top_header_noMenu"></head>
+
+
+
+<div class="container-fluid" th:if="${pop=='0'}">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>		
+	</ul>	
+</div>
+
+<div class="css-table" style="border-spacing:3px" th:if="${pop=='0'}">
+	<div class="tr">
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}"> 新增報名 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A th:href="@{/Sales/FeeRecord(student_seq=${student_seq})}">繳費/變更 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A th:href="@{/Sales/LagnappeRecord(student_seq=${student_seq})}">領取 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+
+
+<div>&nbsp;</div>
+<div class="container-fluid" th:if="${pop!='0'}" style='width:1180px;margin-left:10px'>
+   <div th:if="${page=='1' and drop=='1'}">
+		<ul class="nav nav-tabs" style='font-size:medium'>
+	        <li style='letter-spacing:2px;font-weight:bold' class="active"><A href='javascript:void(0)' onclick='RegisterExchange(1)'>[ 檢視 ]</a></li>
+		</ul>
+
+	   	<br>
+	   	<span style='margin-left:30px;background-color:greenyellow;font-size:x-small;border:1px #aaaaaa solid;border-radius:3px;padding:1px'>訂</span><span style='letter-spacing:2px'> : 已訂期別</span>
+	   	<span style='margin-left:30px;background-color:aquamarine;font-size:x-small;border:1px #aaaaaa solid;border-radius:3px;padding:1px'>贈</span><span style='letter-spacing:2px'> : 補償贈課</span>	
+	   	<span style='margin-left:30px;background-color:pink;font-size:x-small;border:1px #aaaaaa solid;border-radius:3px;padding:1px'>換</span><span style='letter-spacing:2px'> : 換課</span>	   	
+   </div> 
+   <div th:if="${page=='1' and drop!='1'}">
+		<ul class="nav nav-tabs" style='font-size:medium'>
+	        <li style='letter-spacing:2px;font-weight:bold' class="active"><A href='javascript:void(0)' onclick='RegisterExchange(1)'><span style='background-color:#ffeeff;color:blue'>[ 檢視 ]</span></a></li>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(4)'>[ 換課 ]</a></li>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(3)'>[ 套裝更改 ]</a></li>	        	        
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(2)'>[ 退費 ]</a></li>	
+		</ul>
+		
+	   	<br>
+	   	<span style='margin-left:30px;background-color:greenyellow;font-size:x-small;border:1px #aaaaaa solid;border-radius:3px;padding:1px'>訂</span><span style='letter-spacing:2px'> : 已訂期別</span>
+	   	<span style='margin-left:30px;background-color:aquamarine;font-size:x-small;border:1px #aaaaaa solid;border-radius:3px;padding:1px'>贈</span><span style='letter-spacing:2px'> : 補償贈課</span>	
+	   	<span style='margin-left:30px;background-color:pink;font-size:x-small;border:1px #aaaaaa solid;border-radius:3px;padding:1px'>換</span><span style='letter-spacing:2px'> : 換課</span>	   		
+   </div>
+   <div th:if="${page=='2' and drop!='1'}">
+		<ul class="nav nav-tabs" style='font-size:medium'>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(1)'>[ 檢視 ]</a></li>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(4)'>[ 換課 ]</a></li>		
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(3)'>[ 套裝更改 ]</a></li>	                
+	        <li style='letter-spacing:2px;font-weight:bold' class="active"><A href='javascript:void(0)' onclick='RegisterExchange(2)'><span style='background-color:#ffeeff;color:blue'>[ 退費 ]</span></a></li>
+		</ul>
+		
+		<br>
+		<span  style='margin-left:30px;letter-spacing:2px'>&bull; 退費將同時取消已訂期別, 且Video點數將歸零</span>		
+   </div>
+   <div th:if="${page=='3' and drop!='1'}">
+		<ul class="nav nav-tabs" style='font-size:medium'>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(1)'>[ 檢視 ]</a></li>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(4)'>[ 換課 ]</a></li>
+	        <li style='letter-spacing:2px;font-weight:bold' class="active"><A href='javascript:void(0)' onclick='RegisterExchange(3)'><span style='background-color:#ffeeff;color:blue'>[ 套裝更改 ]</span></a></li>	        	
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(2)'>[ 退費 ]</a></li>
+	        
+		</ul>
+		<br>
+		<span style='margin-left:30px;letter-spacing:2px'>&bull; 若改報當中含有相同科目且課程已在進行中, 則此期別將會續存!</span>
+   </div> 
+   <div th:if="${page=='4' and drop!='1'}">
+		<ul class="nav nav-tabs" style='font-size:medium'>
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(1)'>[ 檢視 ]</a></li>
+	        <li style='letter-spacing:2px;font-weight:bold' class="active"><A href='javascript:void(0)' onclick='RegisterExchange(4)'><span style='background-color:#ffeeff;color:blue'>[ 換課 ]</span></a></li>	
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(3)'>[ 套裝更改 ]</a></li>	        	        
+	        <li style='letter-spacing:2px;font-weight:bold'><A href='javascript:void(0)' onclick='RegisterExchange(2)'>[ 退費 ]</a></li>
+		</ul>
+		<br>
+		<span style='margin-left:30px;letter-spacing:2px'>&bull; 操作時點選<img src='/images/exchange3.png' height='11px'/>, 且必須先將已訂期別取消, 此科目才可換課!</span>		
+   </div>        		
+</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Sales/RegisterSave}" method="post">
+<input type='hidden' name ='commentThis' id='commentThis'>
+<input type='hidden' name='Register_seq' id='Register_seq' th:value='${Register_seq}'>
+<input type='hidden' id='student_seq' name='student_seq' th:value='${student_seq}'>
+<input type='hidden' id='balanceTotal' th:value='${balanceTotal}'>
+<input type='hidden' name ='pop' id='pop' th:value='${pop}'>						  				  	           			
+<div>&nbsp;</div>
+<div style='border-radius:10px;border:1px #eeeeee solid;background-color:#FEF8F8;margin-top:15px;margin-left:30px;width:1230px;padding:10px' id='myDataTalbe'> 
+		<div style='font-size:medium;letter-spacing:5px;font-weight:bold'>&#10074;報名選取</div>
+		
+		<div class="css-table" th:unless="${pop=='refund' or pop=='view' or pop=='exchange'}">
+			<div class="tr">
+				<div class="td" style='width:320px'>&nbsp;</div>
+				<div class="td">
+					<select id="category" class="form-control" style='width:120px;font-size:small;font-weight:bold;' onchange='GetSubjectStr()'>						
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+				</div>
+				<div class="td">
+					<select id="Iscombo" class="form-control" style='margin-left:8px;width:100px;font-size:small;font-weight:bold' onchange='GetSubjectStr()'>					    
+						<option value='1'>套裝</option>
+						<option value='0' selected>單科</option>
+					</select>
+				</div>
+				<div class="td" style='width:100px'>&nbsp;</div>
+				<div class="td">
+					<select id="freeChoice" style='padding:2px;border-radius:3px;background-color:#ffefff;width:120px;letter-spacing:5px;font-size:small;border:1px #bbbbbb solid' onchange='GetSubjectStr()'>					    
+						<option value='1' selected>一般選取</option>
+						<option value='2'>補償贈課</option>
+					</select>
+				</div>														
+			</div>
+		</div>
+		<div id='SubjectSel' style='margin-left:20px;width:1210px' th:unless="${pop=='refund' or pop=='view' or pop=='exchange'}"></div>
+		
+		
+
+         <div style='margin-left:0px;margin-top:20px'>
+			<div id="css-table" class="css-table" style="background-color:#dddddd;border-spacing:1px;width:1210px">			
+				<div class="tr" style='background-color:#7ba6b6;color:white;font-size:small;font-weight:bold' >
+					<div class="td2" style='padding:2px;width:250px;text-align:center;border-radius:5px 0px 0px 5px;letter-spacing:10px'><br>單科/套裝-科目</div>
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>DM<br>售價</div>
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>科目<br>原價</div>
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>各科<br>實收</div>
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>人事<br>管銷</div>
+					<div class="td2" style='padding:2px;width:150px;text-align:center;letter-spacing:10px'>
+						<br>充電站
+						<!--  
+						<A href='javascript:void(0)'  onclick='openSelect("counselingArea")' title='新增充電站'><img src='/images/edit2.png' height='12px'/></A>&nbsp;
+						<A href='##' title='刪除此筆' onclick='$(".counselingArea").empty();'><img src='/images/delete.png' height='11px'/></A>
+						-->
+					</div>
+					<div class="td2" style='padding:2px;width:150px;text-align:center;letter-spacing:10px'>
+					    <br>其他贈品 
+					    <!--     
+						<A href='javascript:void(0)'  onclick='openSelect("lagnappeArea")' title='新增贈品'><img src='/images/edit2.png' height='12px'/></A>&nbsp;
+						<A href='##' title='刪除此筆' onclick='$(".lagnappeArea").empty();'><img src='/images/delete.png' height='11px'/></A>
+						--> 
+					</div>															
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>講義<br>印製</div>
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>作業<br>批改</div>										
+					<div class="td2" style='padding:2px;width:150px;text-align:center;letter-spacing:10px'>
+						<br>模考 
+						<!--  
+						<A href='javascript:void(0)'  onclick='openSelect("mockArea")' title='新增模考'><img src='/images/edit2.png' height='12px'/></A>&nbsp;
+						<A href='##' title='刪除此筆' onclick='$(".mockArea").empty();'><img src='/images/delete.png' height='11px'/></A>
+						-->
+					</div>										
+					<div class="td2" style='padding:2px;width:50px;text-align:center'>課程<br>收入</div>
+					<div class="td2" style='padding:2px;width:150px;text-align:center;border-radius:0px 5px 5px 0px;letter-spacing:10px'>
+					    <br>外版書 
+					    <!--  
+						<A href='javascript:void(0)'  onclick='openSelect("outPublisherArea")' title='外版書'><img src='/images/edit2.png' height='12px'/></A>&nbsp;
+						<A href='##' title='刪除此筆' onclick='$(".outPublisherArea").empty();'><img src='/images/delete.png' height='11px'/></A>
+						-->    
+					</div>										
+				</div>
+			</div>	
+        </div>       
+        <div style='height:3px'>&nbsp;</div>
+        <div style='margin-left:0px'>
+<!-------------------------------------------------------------------------------------------------------------------->			
+            <div id='comboSale_append' align='left' th:utext="${returnDivStr}"></div>
+<!-------------------------------------------------------------------------------------------------------------------->			            
+			<div id="" class="css-table" style="border-spacing:1px">							
+				<div class="tr" style='color:darkblue;font-size:x-small' >
+					<div class="td2" style='padding:1px;width:250px'></div>
+					<div class="td2" style='padding:1px;width:50px'></div>
+					<div class="td2" style='padding:1px;width:50px'></div>
+					<div class="td2" style='padding:1px;width:50px'></div>
+					<div class="td2 counselingArea" style='background-color:#FEFFF5;padding:1px;width:150px;text-align:left;font-size:x-small'></div>
+					<div class="td2 lagnappeArea" style='background-color:#FEFFF5;padding:1px;width:150px;text-align:left;font-size:x-small'></div>
+					<div class="td2" style='padding:1px;width:50px'></div>
+					<div class="td2" style='padding:1px;width:50px'></div>
+					<div class="td2 mockArea" style='background-color:#FEFFF5;padding:1px;width:150px;text-align:left;font-size:x-small'></div>
+					<div class="td2" style='padding:1px;width:50px'></div>
+					<div class="td2 outPublisherArea" style='background-color:#FEFFF5;padding:1px;width:150px;text-align:left;font-size:x-small'></div>										
+				</div>				
+			</div>  
+        </div>
+      
+        <div style='height:10px'></div>
+        <div align='center'>
+			<div class="css-table" style="">							
+				<div class="tr" style='font-size:small;font-weight:bold' >			
+					<div class="td2" style='width:300px;text-align:center;vertical-align:middle;border-radius:5px'>
+					   <div style='background-color:white;padding:10px'>
+						 	原價 <input type='text' name='originPriceTotal' id='originPriceTotal' th:value='${originPriceTotal}' style='padding:1px;width:100px;border:0px;color:darkblue' readonly>&nbsp;	
+						 	折數 <input type='text'  id='discount' style='padding:2px;width:60px;border:0px;color:darkblue' readonly>
+						 	<div style='height:5px'>&nbsp;</div>
+						 	應繳總金額 <input type='text' name='salePriceTotal' id='salePriceTotal' maxlength="6" th:value='${salePriceTotal}' style='padding:1px;width:100px;color:darkblue;border:1px #aaaaaa solid;border-radius:3px' onchange="clearMoney();Comp()">
+					   </div>
+					   <div>&nbsp;</div>					  				  
+					</div> 
+					<div style='width:20px'>&nbsp;&nbsp;</div>
+					<div class="td2" th:if="${pop=='delete' or pop=='view'}">					
+						<div id='comment' name='comment' th:utext='${comment}' placeholder='備 註' style='width:400px;text-align:left;height:150px;border:1px #eeeeee solid;color:brown; border-radius:5px;margin-top:1px;font-size:x-small;background-color:white;overflow:auto' readonly></div>
+					</div>
+					<div class="td2" th:if="${pop=='0' or pop=='exchange' or pop=='re_register' or pop=='refund'}">
+					    <div id='comment' name='comment' th:utext='${comment}' placeholder='備 註' style='width:400px;text-align:left;height:150px;border:1px #eeeeee solid;color:brown; border-radius:5px;margin-top:1px;font-size:x-small;background-color:white;overflow:auto' readonly></div>				
+						<div style='font-size:x-small;color:blue'><img src='/images/edit.png' height='10px'/>&nbsp;<A href='javascript:void(0)'  onclick='openCommentEdit()' title='新增備註' style='text-decoration:underline'>Add</A></div>
+					</div>																				 					 									
+				</div>				
+			</div>
+		</div>
+</div>		
+		
+<!-- 改報 -->
+<div style='margin-left:10px;margin-top:15px;width:1240px'  th:if="${pop=='re_register'}">  				  				  	                		
+		<div style='margin-top:50px;margin-left:20px' align="left">
+		    <input type='hidden' name='makeUpRefund' th:value="${makeUpRefund}">
+		    <div style='text-align:left;width:850px'>&starf;&starf;&nbsp;&nbsp;<span style='letter-spacing:10px;font-weight:bold'>改報</span>&nbsp;&nbsp;&starf;&starf;</div>	    
+			<div style='width:850px;padding:10px;background-color:lightyellow;border-radius:5px;border:1px #eeeeee solid' align='left'>
+				<div class="css-table" style='padding:3px'>
+					<div class="tr">		
+					    <div class="td2" style='width:180px;font-weight:bold;text-align:left'>原報名已繳 : <span style='width:120px;vertical-align:bottom' th:text="${paid+'元'}"></span></div>				    
+					    <div class="td2" style='width:180px;font-weight:bold;text-align:left'>
+					    	<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 扣除已使用的教材費及課程費 </span>"><img src='/images/message.png' height='8px'/></A>* 留存 : <input type='text' value='' style='text-align:right;width:60px;border-radius:2px;border:1px #bbbbbb solid' id='deductPrice' name='deductPrice' onchange="ShowCashRefund2()">&nbsp;元
+					    </div>					    					    				    
+					    <div class="td2" style='width:150px;font-weight:bold;text-align:left'>
+					    	<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 原訂單剩餘點數將全數刪除 </span>"><img src='/images/message.png' height='8px'/></A>使用點數 : <span style='width:120px;vertical-align:bottom' th:text="${useMakeUpNo+'點'}"></span> 
+					    </div>
+					    <div class="td2" style='width:300px'></div>			 
+					</div>
+				</div>
+				<div class="css-table" style='padding:3px'>					
+					<div class="tr">					    					    		
+					    <div class="td2" style='width:180px;font-weight:bold;text-align:left'>
+					    	<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 可轉新訂單 = 原訂單已繳 - 留存 </span>"><img src='/images/message.png' height='8px'/></A>可轉新訂單 : <input type='text' style='text-align:left;width:60px;border-radius:2px;border:1px #dddddd solid;background-color:lightyellow' id='new_paid' name='new_paid' readonly>元
+					    </div>						    
+					    <div class="td2" style='width:150px'></div>
+					    <div class="td2" style='width:150px'></div>
+						<div class="td2" style='width:300px'></div>						    					    		    					 
+					</div>																
+				</div>
+				<div class="css-table" style='padding:3px' id='cashRefundDiv'>					
+					<div class="tr">					    					    								    
+					    <div class="td2" style='width:350px;font-weight:bold;text-align:left'>
+					    	<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 退費/繳費 = 新訂單應繳總金額 - 可轉新訂單 </span>"><img src='/images/message.png' height='8px'/></A>應繳 : <input type='text' style='text-align:left;width:60px;border-radius:2px;border:1px #dddddd solid;background-color:lightyellow' id='cashRefund1' name='cashRefund1' readonly>元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='red'>應退</font> : <input type='text' style='color:red;text-align:left;width:60px;border-radius:2px;border:1px #dddddd solid;background-color:lightyellow' id='cashRefund2' name='cashRefund2' readonly>元
+					    </div>
+					    <div class="td2" style='width:50px'></div>
+						<div class="td2" style='width:300px'></div>
+						<div class="td2" style='width:300px'></div>						    					    		    					 
+					</div>																
+				</div>				
+				<div class="css-table" style='padding:0px'>	
+					<div class="tr">
+					    <div class="td2" style='width:280px;color:darkblue;text-align:left;letter-spacing:1px'>
+					        <A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 訂單改報一次結案,無須再繳費或退費,而列入折讓項目 </span>">
+							<img src='/images/message.png' height='8px'/></A><input type='radio' name='rebate' value='1' class='rebate'>一次結案<span><input type='text' style='border:0px;width:30px;background-color:lightyellow'></span>
+					    	<input type='radio' name='rebate' value='0' checked class='rebate'>實際計算(多退少補)
+					    </div>					
+					    <div class="td2" style='vertical-align:middle;text-align:right;width:60px'>&nbsp;<span style='letter-spacing:0px;font-weight:bold;background-color:#bbbbbb;color:white;padding:3px;letter-spacing:5px'>備註</span></div>			
+					    <div class="td2" style='width:400px;vertical-align:middle;text-align:left'><input type='text' id='remarkReRegister'  style='width:400px;border-radius:2px;border:1px #dddddd solid'></div>			 
+					</div>
+				</div>										
+			</div>
+		</div>	      
+		
+</div>
+<div th:if="${pop=='0' or pop=='re_register' or pop=='exchange'}">		  
+<div style='height:50px'>&nbsp;</div>	
+
+<div style='padding:10px;border-radius:10px;border:1px #eeeeee solid;background-color:#FEF8F8;margin-top:15px;margin-left:30px;width:1150px'>		
+	     <div style='font-size:medium;letter-spacing:5px;font-weight:bold'>&#10074;本日繳退費</div>
+	     <div class='payCols' style='letter-spacing:3px;font-weight:bold;text-align:center'>&nbsp;<input type='radio' name='payWay' value='1' checked>繳&nbsp;費&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='radio' name='payWay' value='-1'><font color=red>退&nbsp;費</font>&nbsp;</div>		
+					<div id="css-table" class="css-table" style="width:1100px;border-spacing:1px">			
+						<div class="tr" style='background-color:#7ba6b6;color:white;font-size:small' >
+							<div class="td2" style='padding:2px;width:106px;text-align:center;letter-spacing:8px'>溢繳抵扣</div>
+							<div class="td2" style='width:106px;text-align:center;letter-spacing:8px'>現 金</div>
+							<div class="td2" style='width:183px;text-align:center;letter-spacing:8px'>現 金 分 期</div>									
+							<div class="td2" style='width:183px;text-align:center;letter-spacing:8px'>刷 卡</div>	
+							<div class="td2" style='width:183px;text-align:center;letter-spacing:8px'>支 票</div>
+							<div class="td2" style='width:183px;text-align:center;letter-spacing:8px'>匯 款</div>
+							<div class="td2" style='width:50px;text-align:center;letter-spacing:8px;background-color:#FEF8F8'></div>
+							<div class="td2" style='width:100px;text-align:center;letter-spacing:8px;border-radius:5px'>禮 券<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此項目不列入應繳總金額內"><img src='/images/message.png' height='8px'/></A></div>									
+						</div>
+						<div class="tr payCols" style='background-color:#ffffff;font-size:small'>
+							<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+								  <span style='color:#333333' th:text="${balanceTotal+' 元'}"></span><br> 
+								  <input type='text' id='payStyle_1_money' name='payStyle_1_money' maxlength="6" style='border-radius:5px;height:22px;width:80px;border:1px #dddddd solid;font-weight:bold' placeholder='$'>
+							</div>
+							<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+								  <br><input type='text' id='payStyle_2_money' name='payStyle_2_money' maxlength="6"  style='border-radius:5px;height:22px;width:80px;border:1px #dddddd solid' placeholder='$'>
+							</div>	
+							<div class="td2" style='vertical-align:top;text-align:center;border-right:1px #ffffff solid'>
+								<select id='InstalNoSel' name='InstalNoSel' onchange="InstalNo()" style='color:darkblue;border-radius:5px;width:95px;padding:2px'>
+									<option value='0'>分期數</option>
+									<option value='1'>1 期</option>
+									<option value='2'>2 期</option>
+									<option value='3'>3 期</option>
+									<option value='4'>4 期</option>
+									<option value='5'>5 期</option>
+									<option value='6'>6 期</option>
+									<option value='7'>7 期</option>
+									<option value='8'>8 期</option>
+									<option value='9'>9 期</option>
+									<option value='10'>10 期</option>
+									<option value='11'>11 期</option>
+									<option value='12'>12 期</option>
+								</select>				
+							
+								<div id='InstalNoArea' class="td2" style='width:800px;padding:3px;text-align:left'>
+									<!--------------------------------------> 
+									<!-------------------------------------->
+								</div>
+							</div>						
+							<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+								<select id='payStyle_5_periods' name='payStyle_5_periods' style='color:darkblue;border-radius:5px;width:70px;padding:1px;margin-bottom:4px'>
+									<option value='0'>0期</option>
+									<option value='3'>3 期</option>
+									<option value='6'>6 期</option>
+									<option value='9'>9 期</option>
+									<option value='12'>12 期</option>
+								</select><br>					
+								<input type='text' id='payStyle_5_code' name='payStyle_5_code' maxlength="4" style='border-radius:5px;height:22px;width:80px;border:1px #dddddd solid' placeholder='卡片後4碼'>-<input type='text' id='payStyle_5_money' name='payStyle_5_money'  maxlength="6" style='border-radius:5px;height:22px;width:60px;border:1px #dddddd solid' placeholder='$'>&nbsp;
+							</div>
+							<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+								<input type='text' id='payStyle_6_code' name='payStyle_6_code' maxlength="28" style='border-radius:5px;height:22px;width:170px;border:1px #dddddd solid' placeholder='支票號碼'><br><input type='text' id='payStyle_6_money' name='payStyle_6_money'  maxlength="6" style='margin-top:2px;border-radius:5px;height:22px;width:60px;border:1px #dddddd solid' placeholder='$'>&nbsp;
+							</div>
+							<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+								<input type='text' id='payStyle_7_code' name='payStyle_7_code' maxlength="6"  style='border-radius:5px;height:22px;width:90px;border:1px #dddddd solid' placeholder='後4碼 or 姓名'>-<input type='text' id='payStyle_7_money' name='payStyle_7_money'  maxlength="6" style='border-radius:5px;height:22px;width:60px;border:1px #dddddd solid' placeholder='$'>&nbsp;
+							</div>
+							<div class="td2" style='background-color:#FEF8F8'></div>	
+							<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+							    <select id='payStyle_4_code' name='payStyle_4_code'  style='margin-top:1px;color:darkblue;border-radius:5px;width:95px;padding:2px'>
+									<option value='0'></option>
+									<option value='1'>優惠禮券</option>
+									<option value='2'>獎學金禮券</option>					    
+							    </select>
+								<input type='text' id='payStyle_4_money' name='payStyle_4_money' style='margin-top:2px;border-radius:5px;height:22px;width:80px;border:1px #dddddd solid' placeholder='$'>			
+							</div>																																																				
+						</div>
+				    </div>						
+        </div>
+</div>      
+      
+<div style='height:50px'>&nbsp;</div>
+<div style='padding:10px;border-radius:10px;border:1px #eeeeee solid;background-color:#FEF8F8;margin-top:15px;margin-left:30px;width:1250px'>        
+        <div style='font-size:medium;letter-spacing:5px;font-weight:bold'>&#10074;優惠折扣</div>
+        <div style='text-align:center;font-size:small;color:#777777;letter-spacing:2px' th:text="'(適用分校 : '+${mySchool}+')'"></div>
+			<div id="css-table" class="css-table" style="width:1230px;border-spacing:1px;background-color:#ffffff;border:1px #eeeeee solid">			
+				<div class="tr" style='background-color:#7ba6b6;color:white;font-size:small' >
+					<div class="td2" style='padding:2px;width:205px;text-align:center;letter-spacing:3px'>講座優惠(劃位單上傳)</div>
+					<div class="td2" style='width:205px;text-align:center;letter-spacing:8px'>月 活 動 優 惠</div>	
+					<div class="td2" style='width:205px;text-align:center;letter-spacing:8px'>常 態 優 惠</div>
+					<div class="td2" style='width:205px;text-align:center;letter-spacing:8px'>合 報 優 惠 </div>
+					<div class="td2" style='width:205px;text-align:center;letter-spacing:8px'>高 中 部 優 惠</div>										
+					<div class="td2" style='width:205px;text-align:center;letter-spacing:8px'>其 他</div>								
+				</div>
+				<div class="tr" style='background-color:white;color:#000000' >
+					<div class="td2" style='padding:0px'>
+						  <div class="css-table" id='PromoRegularItem' style="padding:1px;letter-spacing:1px;font-size:small" align='left' th:utext="${lectureStr}"></div>					
+					</div>
+					<div class="td2" style='padding:0px'>
+						  <div class="css-table" id='PromoRegularItem' style="padding:1px;letter-spacing:1px;font-size:x-small" align='left' th:utext="${monthlyStr}"></div>					
+					</div>					
+					<div class="td2" style='padding:0px'>
+						  <div class="css-table" id='PromoRegularItem' style="padding:1px;letter-spacing:1px;font-size:x-small" align='left' th:utext="${regularStr}"></div>					
+					</div>	
+					<div class="td2" style='padding:0px'>
+						  <div class="css-table" id='PromoRegularItem' style="padding:1px;letter-spacing:1px;font-size:x-small" align='left' th:utext="${combineStr}"></div>					
+					</div>
+					<div class="td2" style='padding:0px'>
+						  <div class="css-table" id='PromoRegularItem' style="padding:1px;letter-spacing:1px;font-size:x-small" align='left' th:utext="${oldStr}"></div>					
+					</div>
+					<div class="td2" style='padding:0px'>
+						  <div class="css-table" id='PromoRegularItem' style="padding:1px;font-size:small" align='left' th:utext="${otherStr}"></div>					
+					</div>																																									
+				</div>				
+			</div>	
+</div>       
+             
+      
+		<div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='width:1300px' align="center" th:unless="${pop=='refund' or pop=='view' or pop=='re_register'}">
+				<button type="button" id='SendSave' name='SendSave' class="btn  btn-primary" style='font-weight:bold;letter-spacing:5px'>儲 存</button>&nbsp;&nbsp;
+		</div>
+		    	
+		<div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='width:1300px' align="center" th:if="${pop=='re_register'}">
+				<button type="button" id='SendSave' name='SendSave' class="btn  btn-danger" style='font-weight:bold;letter-spacing:5px'>改報儲存</button>&nbsp;&nbsp;
+		</div>		
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+		
+		
+<!-- 退費取消 -->	        	
+		<div style='500px;margin-left:20px' align="left" th:if="${pop=='refund'}">
+<div style='margin-left:10px;padding:10px;border-radius:5px;margin-top:15px'>		
+		    <input type='hidden' id='makeUpRefund' th:value="${makeUpRefund}">
+		    <div style='text-align:left;width:900px'>&starf;&starf;&nbsp;&nbsp;<span style='letter-spacing:10px;font-weight:bold'>退費</span>&nbsp;&nbsp;&starf;&starf;</div>
+			<div style='width:900px;border:1px #eeeeee dashed;padding:15px;background-color:lightyellow;border-radius:5px' align='center'>
+				<div class="css-table" style='padding:3px;border-spacing:1px'>	
+					<div class="tr">			
+					    <div class="td2" style='width:100px;font-weight:bold;letter-spacing:10px;background-color:#CCCC00;color:white'>應繳</div>	
+					    <div class="td2" style='width:100px;font-weight:bold;letter-spacing:10px;background-color:#CCCC00;color:white'>已繳</div>
+					    <div class="td2" style='width:100px;font-weight:bold;letter-spacing:10px;background-color:#CCCC00;color:white'>留存<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 扣除已使用的教材費及課程費! </span>"><img src='/images/message.png' height='12px'/></A></div>
+					    <div class="td2" style='width:100px;font-weight:bold;letter-spacing:10px;background-color:#CCCC00;color:white'>退費</div>
+					    <div class="td2" style='width:150px;font-weight:bold;letter-spacing:3px;background-color:#CCCC00;color:white'>使用點數</div>
+					    <div class="td2" style='width:350px;font-weight:bold;letter-spacing:10px;background-color:#CCCC00;color:white'>備註</div>
+					</div> 
+					<div class="tr" style='height:6px'></div>
+					<div class="tr" style=''>
+						<div class="td" th:text="${salePriceTotal+'元'}" style=''></div>
+						<div class="td" th:text="${paid+'元'}" style=''></div>
+						<div class="td" style=''>&nbsp;<input type='text' style='width:70px;border-radius:2px;border:1px #dddddd solid' id='deductPrice' onchange="ShowCashRefund()">元</div>
+						<div class="td" style=''>&nbsp;<input type='text' style='width:70px;border-radius:2px;border:1px #dddddd solid;background-color:lightyellow' id='cashRefund' readonly>元</div>
+						<div class="td" style='' th:text="${useMakeUpNo+'點'}"></div> 
+						<div class="td" style=''>&nbsp;<input type='text' id='remarkCancel' style='width:340px;border-radius:2px;border:1px #dddddd solid'></div>					 
+					</div>   				
+				</div>
+			</div>    				    				    				    		
+		</div>
+		<div style='width:1300px' align="center" th:if="${pop=='refund'}">				
+			    <div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='vertical-align:middle'>
+					<button type="button" id='cancelSave' class="btn-danger" style='font-weight:bold;letter-spacing:5px'>退費儲存</button>&nbsp;&nbsp;				    
+			    </div>
+		</div>
+</div>			
+			 	
+</form>
+
+	<div sec:authorize="hasAnyRole('approve_mgr')"><input type='hidden' id='approveRole' value='1'></div>			
+	<div style='height:200px'>&nbsp;</div>
+
+		
+<script th:inline="javascript" type="text/javascript">
+ 	$(document).ready(function() { 		 
+ 		GetSubjectStr();
+
+        $('.rebate').click(function () {
+        	var ya=$('input[name=rebate]:checked').val();
+		   	 if(ya==0){
+		   		 $('.payCols').show(); //制式付款
+		   		 $('#cashRefundDiv').show(); //應繳應退
+			 }else if(ya==1){
+				 $('.payCols').hide();
+				 $('#cashRefundDiv').hide();
+			 }    	 
+        });
+         
+ 		
+ 		//舊訂單不允許更改總值
+ 		if($("#Register_seq").val() && $("#pop").val()!='re_register'){
+ 			$('#salePriceTotal').prop('readonly', true);
+ 			$('#salePriceTotal').css("background-color", "#ffeeff")
+ 		}
+	}); 
+	
+
+	function GetSubjectStr() {		
+		var isCombo = $("#Iscombo").val();
+		var category_id = $("#category").val();
+		if(isCombo && category_id){
+			 $.ajax({
+				url : "/CourseSale/getComboSale2",
+				data : {
+					FlowStatus_code : 4,
+					isCombo : isCombo,
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#SubjectSel").html(data);
+				}
+			 });
+		} 
+	}
+	
+ 	
+ 	function openPopup(data) {
+ 		var feature = "width=950,height=400";
+ 	   	window.open("/CourseSale/editComboSale?action=popView&comboSale_seq="+data, "", feature);	   
+ 	}
+
+    function openExchange(comboSale_id){
+    	//if($('#pop').val()=='exchange'){
+	 		var feature = "left=200,top=200,width=750,height=400";
+	 		var Register_seq = "";
+	 		if($('#Register_seq').val()){
+	 	 		Register_seq = $('#Register_seq').val(); 			
+	 		}
+	 	    window.open("/Sales/Exchange2?Register_seq="+Register_seq+"&comboSale_id="+comboSale_id,"",feature); 
+        //}  
+    }	
+ 	
+ 	//加入 (action=add 加入, action=exchane 換課)
+    function AddComboSale(comboSale_seq,action,isCombo,obj){
+    	var repeat = 0;
+    	if(isCombo==1){ //套裝時檢查是否重複報名
+	 		var x = document.getElementsByName("comboSale_seq");
+	 		if(x.length>0){
+	 			for(var i=0;i<x.length;i++) {
+	 		       if(comboSale_seq==x[i].value){ //是否存在相同的comboSale_seq
+	 		    	   repeat = 1;
+	 		       }
+	 			} 
+	 		}
+    	}
+    	if(repeat ==1){
+    		setTimeout("alert('套裝已重複!');", 200);
+    	}
+ 		if(repeat ==0){
+			$.ajax({
+				url : "/CourseSale/ComboSaleAppend",
+				data : {
+					 		comboSale_seq : comboSale_seq,
+					 		action        : action,
+					 		page          : [[${page}]],
+					 		freeChoice    : $('#freeChoice').val()  
+					   },
+				dataType : "text",
+				success : function(data) {	
+					$("#comboSale_append").append(data);
+					if($("#freeChoice").val()=='1'){ //一般選取
+						SumOriginPrice();
+					}	
+			 		obj.style.backgroundColor = '#ffffff';					
+				}
+			});			
+ 		}	
+ 	}
+
+
+ 	//刪除
+ 	function Del(thisId){
+ 		if(confirm("確定刪除此項目?")){
+ 			$(thisId).parent().parent().parent().remove();
+ 			SumOriginPrice();
+ 		}	
+ 	}
+	
+ 	//開視窗加入項目	
+ 	    function openSelect(returnAreaId){
+ 	 		var feature = "left=200,top=200,width=400,height=200";
+ 	 	    window.open("/CourseSale/openSelect?returnAreaId="+returnAreaId, "", feature);    	
+ 	    }
+	//總原價
+ 	function SumOriginPrice(addMoney){
+		var sum1 = 0;
+		$('.originPrice').each(			
+		   function(){ sum1 = sum1 + Number($(this).val()); }
+		)
+		$('#originPriceTotal').val(sum1);
+		$('#discount').val("");
+		$('#salePriceTotal').val(Number($('#salePriceTotal').val())+Number(addMoney));
+		Comp();
+	}
+
+ 	$(document).ready(function() {
+ 		Comp();
+ 	})	
+ 	//計算
+function Comp(){
+   if($('#salePriceTotal').val() && $('#salePriceTotal').val()!='NaN'){	
+		//總原價
+		var sum1 = 0;		
+		$('.originPrice').each(				
+		   function(){ 
+			   sum1 = sum1 + Number($(this).val()); 
+		   }
+		)
+        //折數				
+		$('#discount').val(Number(($('#salePriceTotal').val()/sum1)).toFixed(2)); 
+		//外版書
+		var outPublisherTotal = 0;
+		$('.outPublisherPrice').each(
+		   function(){ 
+			   outPublisherTotal = outPublisherTotal + Number($(this).val()); 
+		   }
+		)		
+		//與售價價差
+		var downPrice = sum1-$('#salePriceTotal').val();
+		//var downRate = downPrice / sum1;
+		var downRate = downPrice / ($('#salePriceTotal').val()-outPublisherTotal);
+		//各科實收下降
+	    var paramArray = new Array();
+		$('.salePrice').each(				
+		   function(){
+			  paramArray = $(this).parent().parent().find('#subject_seq').val().split("@");
+			  //扣除費用 
+			  var fee=0;
+			  //各科原價
+			  var curr_originPrice = $(this).parent().parent().find('.originPrice').val();
+			  //各科實收
+			  //var curr_salePrice = Number(Number(curr_originPrice)*(1-downRate)).toFixed();
+			  var curr_salePrice = Math.round((Number(curr_originPrice)/sum1)*($('#salePriceTotal').val()-outPublisherTotal));
+			  
+			  $(this).val(curr_salePrice);
+			  if($('#approveRole').val()==1){ //審核主管
+			  		$(this).show();
+			  }else{
+				    $(this).hide();  
+			  }
+
+			 if($('#approveRole').val()==1){ //審核主管
+				  //人事管銷
+				  var hrPrice_R = paramArray[1];		  
+				  $(this).parent().parent().find('.hrPrice').val(Number(curr_salePrice*hrPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*hrPrice_R/100).toFixed());
+				  //充電站
+				  var counselingPrice_R = paramArray[2];
+				  $(this).parent().parent().find('.counselingPrice').val(Number(curr_salePrice*counselingPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*counselingPrice_R/100).toFixed());
+				  //其他贈品
+				  var lagnappePrice_R = paramArray[3];
+				  $(this).parent().parent().find('.lagnappePrice').val(Number(curr_salePrice*lagnappePrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*lagnappePrice_R/100).toFixed());
+				  //講義印製
+				  var handoutPrice_R = paramArray[4];
+				  $(this).parent().parent().find('.handoutPrice').val(Number(curr_salePrice*handoutPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*handoutPrice_R/100).toFixed());
+				  //作業批改
+				  var homeworkPrice_R = paramArray[5];
+				  $(this).parent().parent().find('.homeworkPrice').val(Number(curr_salePrice*homeworkPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*homeworkPrice_R/100).toFixed());
+				  //模考
+				  var mockPrice_R = paramArray[6];
+				  $(this).parent().parent().find('.mockPrice').val(Number(curr_salePrice*mockPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*mockPrice_R/100).toFixed());
+				  //課程收入
+				  $(this).parent().parent().find('.coursePrice').val(Number(curr_salePrice-fee));
+			 }else{
+				   $(this).parent().parent().find('.hrPrice').val("***");
+				   $(this).parent().parent().find('.counselingPrice').val("***");
+				   $(this).parent().parent().find('.lagnappePrice').val("***");
+				   $(this).parent().parent().find('.handoutPrice').val("***");
+				   $(this).parent().parent().find('.homeworkPrice').val("***");
+				   $(this).parent().parent().find('.mockPrice').val("***");
+				   $(this).parent().parent().find('.coursePrice').val("***");
+			 }
+		   }
+		)
+   }else{$('#salePriceTotal').val("");}
+} 
+
+	$("#SendSave").click(function() {
+		$('#SendSave').attr('disabled',true);
+		setTimeout(function(){document.getElementById("SendSave").disabled = false;},3000);
+		var x = $('#originPriceTotal').val();
+		if(x=='' || isNaN(x) || x<1 || x>500000){		
+			alert("並無[報名選取]項目!");
+			$('#SendSave').attr('disabled',false);
+			return;
+		}		
+		var y = $('#salePriceTotal').val();
+		if(y=='' || isNaN(y) || y<1 || y>500000){		
+			alert("請填入正確[應繳總金額]!");
+			$('#SendSave').attr('disabled',false);
+			return;
+		}
+		var z = $('#payStyle_1_money').val();
+		var z1 = $('#balanceTotal').val(); //所剩溢繳
+		if(z && z!=0){
+			z = parseInt(z, 10);
+			z1 = parseInt(z1, 10);
+			if(z>z1 || isNaN(z) || z<1 || z>500000){
+				//if(z>z1){alert("aa");}
+				//if(isNaN(z)){alert("bb");}
+				//if(z<1){alert("cc");}
+				//if(z>500000){alert("cc");}
+				alert("請填入正確[溢繳抵扣]!");
+				$('#SendSave').attr('disabled',false);
+				return;
+			}
+		}
+		var a = $('#payStyle_2_money').val();
+		if(a){
+			if(isNaN(a) || a<1 || a>500000){		
+				alert("請填入正確[現金]!");
+				$('#SendSave').attr('disabled',false);
+				return;
+			}
+		}
+		var c = $('#payStyle_4_money').val();
+		var c1 = $('#payStyle_4_code').val();
+		if(c){
+			if(isNaN(c) || c<1 || c>500000 || c1=='0'){		
+				alert("請填入正確[禮 券]或禮券類型!");
+				$('#SendSave').attr('disabled',false);
+				return;
+			}
+		}
+		var d = $('#payStyle_5_money').val();
+		var d1 = $('#payStyle_5_code').val();
+		if(d){
+			if(isNaN(d) || d<1 || d>500000 || d1==''){		
+				alert("請填入正確[刷卡]金額或後四碼!");
+				$('#SendSave').attr('disabled',false);
+				return;
+			}
+		}
+		var e = $('#payStyle_6_money').val();
+		var e1 = $('#payStyle_6_code').val();
+		if(e){
+			if(isNaN(e) || e<1 || e>500000 || e1==''){		
+				alert("請填入正確[支票]金額或號碼!");
+				$('#SendSave').attr('disabled',false);
+				return;
+			}
+		}
+		var f = $('#payStyle_7_money').val();
+		var f1 = $('#payStyle_7_code').val();
+		if(f){
+			if(isNaN(f) || f<1 || f>500000 || f1==''){		
+				alert("請填入正確[匯款]金額或後四碼!!");
+				$('#SendSave').attr('disabled',false);
+				return;
+			}
+		}	
+		
+		Comp();
+		
+
+		//改報
+		var pop = [[${pop}]];
+		if(pop=='re_register'){
+			var deductPrice = $("#deductPrice").val();
+			var new_paid = $("#new_paid").val(); 
+			if(deductPrice=='' || new_paid==''){
+				alert("請填入正確[留存] 或 [移轉新訂單]");
+			    return;
+			}
+						
+			//檢視應繳應退是否相等於費用格式輸入
+			//var totalPay = z+a+c+d+e+f;
+			var totalPay = z+a+d+e+f;
+			if(totalPay==''){totalPay=0;}
+			var rebate = $('input[name=rebate]:checked').val();
+			if(rebate==0){ //實際計算
+				var cashRefund1 = $("#cashRefund1").val();
+				if(cashRefund1==''){cashRefund1=0;} 
+				
+				var cashRefund2 = $("#cashRefund2").val();
+				if(cashRefund2==''){cashRefund2=0;}
+				if((Number(cashRefund1)!=Number(totalPay) && Number(cashRefund2)!=Number(totalPay))){
+					alert("請輸入正確[本日繳退費]相關費用!");
+					return;
+				}
+			}
+			
+			var useMakeUpNo = [[${useMakeUpNo}]];
+			var dateTime = new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate()+' '+new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();  		
+			var rebateStr = "";
+			if(cashRefund1!=''){
+				rebateStr +="應繳:"+$("#cashRefund1").val();
+			}else if(cashRefund2!=''){
+				rebateStr +="應退:"+$("#cashRefund2").val();
+			}
+			if(rebate==0){ 
+				rebateStr+="(實際計算)";
+			}else if(rebate==1){ 
+				rebateStr+="(一次結案)";
+			}			
+			var commentAppend = "<div style=width:100%;text-align:center;background-color:#eeeeee>[改報] " + [[${principalName}]] +" "+dateTime+"</div>";
+			commentAppend +="移轉:"+$("#new_paid").val()+" | 留存:"+$("#deductPrice").val()+" | "+rebateStr+" | 使用點數:"+useMakeUpNo+"<br>";
+			commentAppend +="備註:"+$("#remarkReRegister").val();
+			$("#commentThis").val($("#commentThis").val()+commentAppend);
+		}
+		
+		var errorFlag = 0;
+		$('.payStyle_3_money').each(
+				   function(){ 
+					   if($(this).val()){
+					   	    if(!$(this).parent().find('.payStyle_3_date').val()){
+					   	    	alert("請輸入現金分期日期");
+								$('#SendSave').attr('disabled',false);
+								errorFlag = 1;
+								return;				   	    	
+					   	    }
+					   }	
+				   }
+		)		
+		if(errorFlag==0){
+	    	$("#form1").submit();
+		}
+		
+	});
+		
+ 	function openPromo(promoType,classPromotion_id,student_seq) {
+ 		var feature = "width=900,height=600";
+ 	    window.open("/Marketing/PromoEdit?student_seq="+student_seq+"&pop=1&promoType="+promoType+"&classPromotion_id="+classPromotion_id, "", feature);
+ 	}	
+ 	
+ 
+ 	function openCommentEdit() {
+ 		var pop = [[${pop}]];
+ 		var feature = "width=500,height=270,top=100,left=1000";
+ 	    window.open("/Sales/openCommentEdit?pop="+pop, "", feature);
+ 	} 
+ 	
+    function InstalNo(){
+    	var InstalNoSel = $("#InstalNoSel").val();
+    	var Str = "";
+    	for(i=0;i<parseInt(InstalNoSel);i++){
+    		Str += "<div style='padding-bottom:2px'>"+
+			    		"<span style='background-color:darkorange'>&nbsp;</span>"+
+			    		"<span style=''>"+
+			    		   "<input type='text' class='payStyle_3_date' name='payStyle_3_date'  onclick=\"$(this).datepicker({dateFormat:'yymmdd',});$(this).datepicker('show');\" style='background-color:#ffeeff;border-radius:5px;width:80px;border:1px #aaaaaa solid' placeholder='第 "+(i+1)+" 期'>-"+
+			    		   "<input type='text' class='payStyle_3_money' name='payStyle_3_money' style='border-radius:5px;width:80px;border:1px #aaaaaa solid' placeholder='$'>"+
+			    		"</span>"+
+			       "</div>";		
+    	}
+    	$("#InstalNoArea").html(Str);
+    } 
+    
+    $("#cancelSave").click(function() {
+		var cashRefund = $("#cashRefund").val();
+		if([[${paid}]]){
+			var paid = [[${paid}]];
+		}
+
+		if($("#deductPrice").val()=='' || isNaN($("#deductPrice").val())){
+			alert("請輸入留存金額!");
+			return;			
+		}
+		if(parseInt(cashRefund)>parseInt(paid)){
+			alert("退費超過已繳金額!");
+			return;
+		}  
+
+    	if(confirm("確定退費?")){
+    		var useMakeUpNo = [[${useMakeUpNo}]];
+    		var dateTime = new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate()+' '+new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();  		
+			var commentAppend = "<div style=width:100%;text-align:center;background-color:#eeeeee>[退費] " + [[${principalName}]] +" "+dateTime+"</div>";
+			commentAppend +="留存:"+$("#deductPrice").val()+" | 退費:"+$("#cashRefund").val()+" | 使用點數:"+useMakeUpNo+"<br>";
+			commentAppend +="備註:"+$("#remarkCancel").val();
+    		$.ajax({
+				url : "/Sales/cancelRegister",
+				data : {
+					Register_seq : $("#Register_seq").val(),
+					commentThis : $("#commentThis").val()+commentAppend,
+					cashRefund : $("#cashRefund").val(),
+					saveAccount : $("#saveAccount").val(),
+					student_seq : $("#student_seq").val(),
+					makeUpRefund : $("#makeUpRefund").val()
+				},
+				dataType : "text",
+				success : function(data) {	
+					alert("退費完成!")
+					window.close();
+					window.opener.location.reload();
+				}
+			});     		
+    	}
+    })
+   
+     //退費取消
+     function ShowCashRefund(){
+    	  var paid = [[${paid}]];
+    	　var deductPrice = $("#deductPrice").val();
+    	  $("#cashRefund").val(paid-deductPrice);
+     } 
+     
+     
+     //改報
+     function ShowCashRefund2(){
+    	 var salePriceTotal = $("#salePriceTotal").val();
+    	 $("input[name='payWay'][value='-1']").attr('checked',false);
+    	 $("input[name='payWay'][value='1']").attr('checked',false);
+    	  if(salePriceTotal==''){
+    		  alert("請先[報名選取]相關科目, 並填入[應繳總金額]");
+    		  $("#deductPrice").val("");
+    		  return;
+    	  }else{		   	  
+		   	  var paid = [[${paid}]]; //原繳
+		   	　var deductPrice = $("#deductPrice").val(); //留存
+		   	  $("#new_paid").val(paid-deductPrice); //移轉新訂單
+		   	  var new_paid = $("#new_paid").val();
+		   	  if(salePriceTotal-new_paid>=0){
+		   		//繳費  
+		   		$("#cashRefund1").val(salePriceTotal-new_paid);
+		   		$("#cashRefund2").val("");
+		   		$("input[name='payWay'][value='1']").attr('checked',true);
+		   		$('#payStyle_1_money').removeAttr("readonly");
+		   		$("#payStyle_1_money").css('background-color','#ffffff');
+		   	  }else{
+		   		//退費  
+		   		$("#cashRefund1").val("");  
+		   		$("#cashRefund2").val(new_paid-salePriceTotal);
+		   		$("input[name='payWay'][value='-1']").attr('checked',true);
+		   		$('#payStyle_1_money').attr("readonly","readonly");
+		   		$("#payStyle_1_money").css('background-color','#eeeeee');
+		   	  }
+    	  }
+     }
+     
+     //填入應繳清除其他欄位
+     function clearMoney(){
+    	 var originPriceTotal = $("#originPriceTotal").val();
+    	 if(originPriceTotal=='' || originPriceTotal=='0'){
+    		 alert("請先[報名選取]相關科目");
+    		 return;
+    	 }
+    	 var deductPrice = $("#deductPrice").val();
+    	 if(deductPrice){
+    		 $("#deductPrice").val("");
+    	 }
+    	 var new_paid = $("#new_paid").val();
+    	 if(new_paid){
+    		 $("#new_paid").val("");
+    	 }
+    	 var cashRefund1 = $("#cashRefund1").val();
+    	 if(cashRefund1){
+    		 $("#cashRefund1").val("");
+    	 }     	 
+    	 var cashRefund2 = $("#cashRefund2").val();
+    	 if(cashRefund2){
+    		 $("#cashRefund2").val("");
+    	 }    	 
+     }
+     
+     function RegisterExchange(page){
+ 		var student_seq = [[${student_seq}]];
+	 	var Register_seq = [[${Register_seq}]];
+	 	var paid = [[${paid}]]; 
+	 	var drop = [[${drop}]];
+  		//檢視
+    	if(page==1){
+ 	 		location.href = "/Sales/RegisterCombo?drop="+drop+"&page=1&pop=view&Register_seq="+Register_seq+"&student_seq="+student_seq+"&paid="+paid;
+  		//退費
+  		}else if(page==2){
+ 	 		location.href = "/Sales/RegisterCombo?drop="+drop+"&page=2&pop=refund&Register_seq="+Register_seq+"&student_seq="+student_seq+"&paid="+paid;
+  		//改報
+  		}else if(page==3){		
+	 	 	location.href = "/Sales/RegisterCombo?drop="+drop+"&page=3&pop=re_register&Register_seq="+Register_seq+"&student_seq="+student_seq+"&paid="+paid;
+ 	 	//換課
+  		}else if(page==4){ 
+ 	 		location.href = "/Sales/RegisterCombo?drop="+drop+"&page=4&pop=exchange&Register_seq="+Register_seq+"&student_seq="+student_seq+"&paid="+paid;
+  		}      
+     } 
+     
+     $("#titleWidth").width(170+$("#myDataTalbe").width()<1300?1300:300+$("#myDataTalbe").width());
+</script>	
+
+<style>
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #afcad3;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #7ba6b6;
+}
+}
+</style>
+				
+			

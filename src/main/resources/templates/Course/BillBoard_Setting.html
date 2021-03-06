@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+<form id='form1' action="#" th:action="@{/Course/SuspensionSave}"  method="post">
+  <div style='padding:10px;width:450px;border:1px #eeeeee solid'>
+  <div class="css-table" style=''>
+	<div class="tr">
+		<div class="td" style='padding:5px;width:120px;text-align:right'>日期</div>
+		<div class="td" style='padding:5px;width:300px;text-align:left'><input type="text" class="form-control" th:value='${dateSel}' style='border:0px; width:100px' name='suspension_date' readonly /></div>
+	</div>
+	<div class="tr">
+		<div class="td" style='padding:5px;text-align:right'>* 國定假日名稱</div>
+		<div class="td" style='padding:5px;text-align:left'><input type="text" class="form-control" style='width:200px' th:value='${reason}' name='reason' id='reason'></div>
+	</div>
+<!--  
+	<div class="tr">
+		<div class="td" style='padding:5px;text-align:right'>假日可排課時段</div>
+		<div class="td" style='padding:5px;text-align:left' th:utext='${checkStr}'>
+		</div>
+	</div>
+-->				
+  </div>		  
+  </div>
+  <div>
+  <div style='width:400px;text-align:center'>		
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+		&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+ 		
+  </div>
+ </div>
+</form>
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script type="text/javascript">	
+	$("#btnSave").click(function() {
+		if($("#reason").val()==''){
+			alert("請填寫[國定假日名稱]!");
+		}else{	
+			$("#form1").submit();
+		}	
+	});	
+</script>

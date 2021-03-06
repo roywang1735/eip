@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<div>&nbsp;</div>
+      <div style='width:70px;margin-left:30px;background-color:#FFFFCC;border:1px #dddddd solid;text-align:center' th:text="${school_name_self}"></div>	
+	  <div class="css-table" style='margin-left:30px;border:1px #eeeeee solid;background-color:#FFFAF8'>
+		<div class="tr">
+		    <div class="td" style='text-align:right;vertical-align:bottom;width:60px;font-weight:bold;border-right:1px #eeeeee solid'>選取</div>
+		    <div class="td" style='width:800px;vertical-align:bottom;font-weight:bold;text-align:center'>例 行 工 作</div>
+		</div>
+	    <!--------->	
+		<div class="tr trID" th:each="admRegularJob : ${LadmRegularJob}">
+		    <div class="td" style='text-align:right;vertical-align:middle'><input type='checkbox' class='checkID' checked style='width:18px;height:18px'></div>
+		    <div class="td" style='height:40px;vertical-align:middle'><input type='text' class='jobContentClass' style='border:1px solid #eeeeee;height:33px;width:790px'  th:value="${admRegularJob.jobContent}"></div>
+		</div>
+		<!--------->
+		<div><div class="td" style='height:4px'></div><div class="td"></div></div>
+	  </div>
+	  <div style='text-align:center'>
+				<button type="button" id="btnSave" class="btn btn-sm btn-primary">加 入</button>
+	  </div>	  	 		    	
+
+
+
+ 
+<script th:inline="javascript">
+$("#btnSave").click(function(){
+	var tmp ='';
+	$('.trID').each(		
+		   function(){	
+			   if($(this).find('.checkID').is(':checked')){
+			   		tmp += "<div style='padding:2px'><A href='javascript:void(0)' style='vertical-align:middle;padding:1px' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete2.png' height='11px'/></A><select name='worker1' style='padding:0px;display:inline-block;height:22px;width:80px;vertical-align:bottom;border:1px #dddddd solid'>"+[[${AdmEmployee}]]+"</select><input type='checkbox' disabled style='width:18px;height:18px;display:inline-block;vertical-align:bottom;margin-left:5px;margin-right:5px'><div style='display:inline-block;vertical-align:bottom'><input type='text' name='jobContent1' value='"+$(this).find('.jobContentClass').val()+"' style='width:790px;border:0px'></div></div>";
+			   }		
+		   }
+	)
+	$('#area1',window.opener.document).append(tmp);
+	window.close();
+})	
+</script>

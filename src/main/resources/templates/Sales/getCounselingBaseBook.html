@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+<div>&nbsp;</div>
+
+	<div class="css-table" style="border-spacing:1px;margin-top:0px" id='myDataTalbe'>
+		<div class="tr" style='background-color:#3e7e99;color:white;font-size:small;letter-spacing:3px'>
+			<div class="td" style='padding:2px;border-radius:2px;width:100px;text-align:center'>時間</div>
+			<div class="td" style='border-radius:2px;width:100px;text-align:center'>建立</div>
+			<div class="td" style='border-radius:2px;width:50px;text-align:center'>點名</div>
+			<div class="td" style='border-radius:2px;width:100px;text-align:center'>日期</div>
+			<div class="td" style='border-radius:2px;width:50px;text-align:center'>時段</div>
+			<div class="td" style='border-radius:2px;width:150px;text-align:center'>備註</div>
+		</div>		
+	</div>
+	<div class="css-table" style="border-spacing:1px;margin-top:0px" th:utext='${returnStr}'>	
+	</div>		
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+
+
+<script th:inline="javascript">
+
+</script>

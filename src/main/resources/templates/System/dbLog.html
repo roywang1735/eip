@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/scheduleLog">排程</a></li>  
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/loginLog">登入</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/serverLog">系統</a></li>
+  </ul>
+</div>   
+			<div class="css-table" style="border-spacing:3px">
+				<div class="tr">
+				    &#10074;<div class="td" style=""><A href='/System/serverLog'> Tomcat </A></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/dbLog'> MySQL </A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>  
+&nbsp;<p>&nbsp;<p>   
+
+<form id='form1'> 
+   <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+   <input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}"/> 
+      <div align='left' style='margin-top:30px;width:2000px'>
+	    <div class="css-table" style='border:1px #eeeeee solid;background-color:#ffffff'>			
+		  <div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					<input type="text" class="form-control"  name="fileName" id="fileName" style='width:250px' value='' autofocus />			
+			</div>	
+			<div class="td2" style='padding:5px'>
+					<input type="submit" class="btn btn-sm btn-danger" value='搜 尋'>&nbsp;&nbsp;		
+			</div>								
+		  </div>
+    	</div>
+	  </div>
+</form>	  
+
+	<div id='tomcatLog' style='margin-top:20px;font-size:x-small'></div>
+  </div>
+	 
+
+
+<script>
+</script>   
+
+

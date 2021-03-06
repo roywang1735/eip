@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+ <br>					
+ <div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Sales/StudentCalendar">點數紀錄</a></li>		
+	</ul>
+</div>
+
+<div>&nbsp;</div>
+
+		<div style='width:900px;margin-left:20px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+					<th style='letter-spacing:2px'>建立者</th>
+					<th style='letter-spacing:2px'>建立時間</th>
+					<th style='letter-spacing:2px'>類型</th>
+					<th style='letter-spacing:2px'>點數</th>
+					<th style='letter-spacing:2px'>內容</th>
+					<th style='letter-spacing:2px'>狀態</th>									
+				</tr>
+			</thead>
+		  </table>
+	   </div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+
+
+<script th:inline="javascript">
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"order": [ 0, "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Sales/getClassMakeUp",
+			data : function(d) {
+				d.student_seq = [[${student_seq}]]
+			},
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "creater","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					return "<span style='font-size:x-small'>"+data+"</span>";
+				}			    	
+		    },			
+			{"data" : "createTime",
+				"render" : function(data, type, row, meta) {
+					return "<span style='font-size:x-small'>"+data+"</span>";
+				}			    	
+		    },
+			{"data" : "typeName","className":"text-center"},
+			{"data" : "amount","className":"text-center"},
+			{"data" : "content"},
+			{"data" : "remark"}
+		 ]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+});
+
+
+
+function openRegister(Register_seq,student_seq){
+		var feature = "left=10,top=10,width=1300,height=600";
+	    window.open("/Sales/RegisterCombo?pop=view&Register_seq="+Register_seq+"&student_seq="+student_seq, "", feature);    	
+}
+</script>

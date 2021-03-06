@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div th:if="${newTeacher=='0'}" th:utext ='${"&nbsp;&#10074;&nbsp;老師 : "+teacher_name}' style='font-weight:bold;color:#000000;text-align:left;margin-left:100px'></div>
+				
+<form id='form1' action="#" th:action="@{/Course/teacherAndGradeEditSave}" th:object="${subjectTeacher}" method="post">
+  <input type='hidden' th:field="*{subjectTeacher_seq}">
+  <input type='hidden' th:field="*{subject_id}">
+  <input type='hidden' th:field="*{teacher_id}">
+  <div style='border:1px #eeeeee solid;width:600px;border-radius:5px;background-color:#ffeeff;padding:10px;margin-left:30px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr" th:if="${newTeacher=='1'}">
+			 <div class="td2" style='padding:5px;text-align:right;width:100px;font-weight:bold'>*老師</div>
+			 <div class="td2" style='padding:5px'>			 
+					<select id="teacher_sel" class="form-control" style='width:130px'>
+							<option></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+					</select>
+			</div>		
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='width:100px;padding:5px;text-align:right;font-weight:bold'>科目</div>
+			 <div class="td2" style='padding:5px' th:text="*{subject_name}"></div>
+		</div>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;width:130px;font-weight:bold'>   
+			 	*總堂數
+			 </div>
+			 <div class="td2" style='padding:5px;width:380px'>
+			 	<input type="text"  th:field="*{totalClassNo}" style='width:60px;border:1px #aaaaaa solid;height:28px;border-radius:5px' placeholder='ex.30'/>																	 	
+			 </div>
+		</div>				
+		<div class="tr">	
+			 <div class="td2" style='width:100px;padding:5px;text-align:right;font-weight:bold'>*<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此科目此老師若含有六個班ABCDEF,應選期別數為4, 即需選取四個來訂期別! </span>"><img src='/images/message.png' height='5px'/></A>總共應選期數</div>
+			 <div class="td2" style='padding:5px'><input type="text"  onchange="showArea()" th:field="*{gradeNo}" style='width:60px;border:1px #aaaaaa solid;height:28px;border-radius:5px' /></div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此科目此老師若含有四個班ABCD,同選期別數為2, 則每次訂期別時至少須選二個, 如AB或CD ! </span>"><img src='/images/message.png' height='5px'/></A>最低應選期數</div>
+			 <div class="td2" style='padding:5px'><input type="text"  th:field="*{gradeNoATime}" style='width:60px;border:1px #aaaaaa solid;height:28px;border-radius:5px' /></div>
+		</div>
+		<div class="tr" style=''  id='gradeClassNoArea'>	
+			 <div class="td2" style='width:100px;padding:5px;text-align:right;font-weight:bold'><A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此科目此老師所有班別加總後的課堂數, 若此位老師只有一個班別, 則無需設定此欄位 </span>"><img src='/images/message.png' height='5px'/></A>多班設定&nbsp;&#10097;</div>
+			 	<button type="button" class="btn btn-sm btn-success" style='margin-left:20px;padding:0px' onclick="addGradeClassNo()">&nbsp;多班設定&nbsp;</button>	
+			 	<!--<span style='font-size:x-small;margin-left:30px'>(老師在此科目具有多個班別時, 才須設定)</span>-->		 							
+				<div style='width:300px;padding:3px' th:each="gradeClassNo:${LGradeClassNo}">
+				    <span>班別-堂數 :</span>
+					<input type="text"  th:value="${gradeClassNo.gradeName}" name='gradeName' style='width:120px;border:1px #aaaaaa solid;height:28px;border-radius:5px' placeholder='ex. A'/>-
+					<input type="text"  th:value="${gradeClassNo.gradeClassNo}" name='gradeClassNo' style='width:60px;border:1px #aaaaaa solid;height:28px;border-radius:5px'  placeholder='ex. 10' />
+				</div>	
+		</div>				
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 此科目此老師若設置預選期別, 系統將自動設定預先選取的期別, 如科目: 字神20000, 將自動帶出已選期別字神20000補充班! </span>"><img src='/images/message.png' height='5px'/></A>預選期別&nbsp;&#10097;</div>
+			 <div class="td2" style='padding:5px'>
+			 	<select th:field="*{isPreGrade}"  style='width:70px;height:30px;border-radius:3px' onchange="showPpreGradeDiv()">
+						<option value="0">否</option>
+						<option value="1">是</option>
+				</select>				 
+			 </div>
+		</div>			
+		<div class="tr isPreGradeDiv" style='display:none'>	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;font-size:large;color:#aaaaaa'>&hellip;</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+				<div class="css-table" style='padding:10px;border:1px #eeeeee solid;background-color:#ffffff'>	
+					<div class="tr">	
+			 		  <div class="td2" style='width:300px;vertical-align:middle;color:darkblue'>
+							&nbsp;期別						
+							<select id="pre_grade_seq"  style='width:150px;height:30px;border-radius:3px;background-color:lightyellow'>
+								<option> 期別 - 班別 - 別名 </option>
+								<option th:each="item:${LpreGrade}" th:value="${item.grade_seq}" th:utext="${item.class_start_date+'-'+item.gradeName+'-'+item.video_date}" />
+							</select><br>
+							<button type="button" style='margin-top:10px;margin-left:80px' class="btn-xs btn-info" onclick="AddPreGrade();">加入期別 </button>						 			
+			 		 </div>			 
+			 		 <div class="td2" id='preGradeStr' th:utext="${preGradeStr}" style='width:280px;height:100px;background-color:white;padding:5px;text-align:left;border:1px #cccccc solid'>
+						<!-------->
+						<!-------->
+			 		 </div>		
+			        </div>
+			     </div>
+			 </div>
+		</div>							
+    </div>
+  </div>
+  <div style='width:600px;margin-left:30px' align='center'>
+		<button type="button" id="btnSave"class="btn btn-sm btn-primary" style=''>儲 存</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+		<span th:if="${newTeacher=='0'}">&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="btnDelete" class="btn btn-sm btn-danger">刪 除</button><A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 刪除此筆將影響課程設置初始條件及學員訂期別之限制條件! </span>"><img src='/images/message.png' height='7px'/></A></span>
+  </div>  
+</form>
+
+<form id='form2' action="#" th:action="@{/Course/DeleteSubjectTeacher}"  th:object="${subjectTeacher}" method="post">
+  <input type='hidden' th:field="*{subjectTeacher_seq}">
+  <input type='hidden' th:field="*{subject_id}">
+</form>  
+
+    
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script>	
+	$(document).ready(function() {
+		 showPpreGradeDiv();
+		 //showArea();
+	})
+	
+	
+	function showPpreGradeDiv(){
+		if($("#isPreGrade").val()==1){
+			$('.isPreGradeDiv').css('display','');
+		}else{
+			$('.isPreGradeDiv').css('display','none');
+		}
+		
+	}
+	
+	function AddPreGrade() {
+		var pre_grade_seq = $("#pre_grade_seq").val();
+		var pre_grade_text = $("#pre_grade_seq").find("option:selected").text()
+		var tmp = 
+		"<div>"+
+			"<input type='hidden' name='pre_grade_seq' value='"+pre_grade_seq+"'>"+
+			"<A href='javascript:void(0)' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete.png' height='8px'/></A>&nbsp;&nbsp;"+		
+			"<div>"+
+			    "期別: <span style='color:darkblue;font-size:small;font-weight:bold'>"+pre_grade_text+"</span>"+
+			"</div>"+
+			"<div>"+
+			    "備註: <input type='text' name='pre_grade_remark' style='width:180px;border-radius:3px;border:1px #aaaaaa solid;' placeholder='ex.實體課前先上'>"+
+			"</div>";    
+		"</div>"+
+		$("#preGradeStr").append(tmp);
+	}
+	
+	$("#btnSave").click(function() {
+		fieldCheck();
+	});
+	
+	function fieldCheck(){
+		if($("#teacher_sel") && $("#teacher_id").val()==''){
+			$("#teacher_id").val($("#teacher_sel").val());
+		}
+		
+        if($("#teacher_id").val()==''){
+			alert("***請輸入老師***");
+	    }else if($("#totalClassNo").val()==''){
+			alert("***請輸入總堂數***");			
+	    }else if($("#isPreGrade").val()==''){
+			alert("***請輸入預選類別***");
+		}else if($("#gradeNo").val()==''){
+			alert("***請輸入總選期別***");
+		}else if($("#gradeNoATime").val()==''){
+			alert("***請輸入同選期別***");			
+		}else{
+			$("#form1").submit();
+		}
+	}
+	
+	function addGradeClassNo(){
+		var tmp =
+		"<div style='width:300px;padding:3px'>"+
+			"<span>班別-堂數 : </span>"+
+			"<input type='text' name='gradeName' style='width:120px;border:1px #aaaaaa solid;height:28px;border-radius:5px' placeholder='ex. A' />-"+
+			"<input type='text' name='gradeClassNo' style='width:60px;border:1px #aaaaaa solid;height:28px;border-radius:5px'  placeholder='ex. 10' />"+
+		"</div>";		
+		$("#gradeClassNoArea").append(tmp);
+	}
+	
+	function showArea(){
+		if($("#gradeNo").val()==1){
+			$("#Area").hide();
+		}else{
+			$("#Area").show();
+		}
+	}
+	
+	$("#btnDelete").click(function() {
+		if(confirm("確定刪除此資料?")){
+			$("#form2").submit();
+		}	
+	});	
+	
+	
+</script>
+

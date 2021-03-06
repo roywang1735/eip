@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/Adm/BookDiagram?slot=1">總表&座位</a></li>
+    <li><a href="/Adm/TodayBook">櫃台預約</a></li>
+    <li><a href="/Adm/todaySign">正班紀錄</a></li>
+    <li class="active"><a href="/Adm/StudentVideoSign">Video紀錄</a></li>
+    <li><a href="/Adm/MockSign">模考紀錄</a></li>
+    <li><a href='javascript:void(0)'  onclick='openTodaySign()' style='color:darkorange;text-decoration:underline'>QRcode點名</a></li>
+  </ul>
+</div>
+		 <div class="css-table" style="border-spacing:3px">
+			<div class="tr">
+			    &#10074;<div class="td"><A href='/Adm/StudentVideoSign'> 今日點名紀錄 </A></div><div class="td" style="width:20px"></div>			    
+				&#10074;<div class="td" style="background-color:#eeeeee"><A href='/Adm/StudentVideoSignRecord'> 歷程紀錄 </A></div><div class="td" style="width:20px"></div>			
+			</div>
+		 </div>
+		 
+		 <div style='width:900px;padding:10px;border-radius:5px;margin-top:20px'>  
+			<div class="css-table">			
+				<div class="tr" style='font-size:small'>				
+					<div class="td2" style='padding:5px'>
+						分校<br> 
+						<select id="school_code" class="form-control" style='width:110px'>
+							<option></option>
+							<option th:each="item : ${schoolGroup}"
+								th:value="${item.code}" th:utext="${item.name}" th:selected="${item.code==SchoolCode}"/>
+						</select>
+					</div>
+					<div class="td2" style='padding:5px'>
+							類別<br> 
+							<select id="category_id" class="form-control" onchange="subjectData(this.value)">
+								<option></option>
+								<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+							</select>
+					</div>
+					<div class="td2" style='padding:5px'>
+							科目<br> 
+							<select id="subject_id" class="form-control" style='width:200px'>
+								<option></option>
+							</select>
+					</div>
+					<div class="td2" style='padding:5px'>
+							期別<br><input type="text" class="form-control" style='width:100px' id='class_start_date' placeholder='ex.190929' />
+					</div>
+					<div class="td2" style='padding:5px'>
+							期別別名<br><input type="text" class="form-control" style='width:100px' id='video_date' placeholder='ex.0001A' />
+					</div>						
+					<div class="td2" style='padding:5px'>
+							學號<br><input type="text" class="form-control" style='width:120px' id='student_no' placeholder='ex.317954' />
+					</div>	
+					<div class="td2" style='padding:5px'>
+							預約日期<br>
+							<input type="text" style='width:120px' class="form-control" id="attend_date" />
+					</div>																							
+		       </div>
+		    </div>  
+		 </div>			
+
+		<div style='width:900px;text-align:center'>
+			<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; &nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;&nbsp;&nbsp;
+			<!--  
+			<button type="button" class="btn btn-sm btn-success" onclick="openUploadVideo()">上傳xlsx檔</button>
+			-->
+		</div>			
+<p><div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>	
+<div style='width:1000px'>
+<table id="myDataTalbe" class="display">
+	<thead>
+		<tr>
+			<th>分校</th>
+			<th>日期</th>					
+			<th>學員</th>
+			<th>期別</th>
+			<th>時段</th>		
+			<th>課堂</th>
+			<th>出席</th>
+			<th>教室</th>
+			<th>座位</th>
+			<th>點名&領取</th>
+		</tr>
+	</thead>
+</table>
+</div>
+
+
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+
+	function openTodaySign() {
+		var feature = "width=4000,height=4000";
+	    window.open("/Adm/openTodaySign", "", feature);
+	}	
+	
+	$(document).ready(function() {
+		DataTable();
+	})
+	
+	$("#btnQuery").click(function() {
+		var table = $('#myDataTalbe').DataTable();
+		table.destroy();
+		DataTable();
+	});	
+	
+	function DataTable(){		
+		let table = $('#myDataTalbe').DataTable({
+			"order": ([ 1, 'desc' ],[ 3, 'desc' ]),
+			"iDisplayLength": 20,
+			"bDestroy": true,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Adm/getTodayVideoStudentList",
+				data : function(d) {
+					d.school_code = $("#school_code").val();
+					d.student_no = $("#student_no").val();
+					d.category_id = $("#category_id").val();
+					d.subject_id = $("#subject_id").val();					
+					d.class_start_date = $("#class_start_date").val();
+					d.attend_date = $("#attend_date").val();
+					d.video_date = $("#video_date").val();
+				},				
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			
+			"language": {loadingRecords: "<img src='/images/wait2.gif' style='width:25px'/> <span style='font-size:small'>讀 取 中</span>"},			
+
+			"columns" : [
+			    {"data" : "school_name","className" : "text-center"},
+			    {"data" : "attend_date","className" : "text-center"}, 
+				{"data" : "student_no",
+				     "render" : function(data, type, row, meta) {
+			               return data+" "+row.ch_name;
+		     		 }					
+				},
+				{"data" : "subject_name",
+				     "render" : function(data, type, row, meta) {
+				    	   if(row.video_date!=''){
+			               		return row.class_start_date+" "+data+"<br>"+row.video_date;
+				    	   }else{
+				    		   return row.class_start_date+" "+data;
+				    	   }		
+		     		 }						
+				},
+				{"data" : "slot","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+			             if(data==1){
+			            	 return '早';
+			             }else if(data==2){
+			            	 return '午';
+			             }else if(data==3){
+			            	 return '晚';
+			             }else{
+			            	 return '';
+			             }   
+		     		 }						
+				},		
+			    {"data" : "class_th","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+			               return "第 "+data+" 堂";
+		     		 }						
+				},
+			    {"data" : "attend","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+				    	   if(data==1){
+				    		   return "&#10004;";
+				    	   }else if(data==-1){
+			                   return "x";
+				     	   }else{
+				     		  return "-";
+				     	   }    
+		     		 }						
+				},
+				{"data" : "classroom","className" : "text-center"},
+				{"data" : "seat","className" : "text-center"},
+			    {"data" : "register_comboSale_grade_id","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+				    	 return "<A href='javascript:void(0)'  onclick='signRecord3("+data+","+row.class_th+")'  style='font-size:large;text-decoration:underline;color:blue'>&hellip;</A>";
+				     }
+			    }			    
+			]
+		  });
+	 }
+	
+ 	function openUploadVideo() {
+ 		var feature = "width=500,height=400";
+ 	    window.open("/Adm/openUploadVideo", "", feature);	
+	
+	};
+	
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject_id").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+/*  	function openBookAttend(student_id) {
+ 		var feature = "width=1000,height=500";
+ 	    window.open("/Sales/Book_attend?pop=1&student_id="+student_id, "", feature);	
+	
+	}; */	
+	
+ 	function signRecord3(Register_comboSale_grade_id,class_th) {
+ 		var feature = "width=950,height=500,locationbar=false,scrollbar=yes,resizable=yes";
+ 	    window.open("/Adm/signRecord3?class_th="+class_th+"&register_comboSale_grade_id="+Register_comboSale_grade_id,"", feature);
+ 	}
+	
+	$(function() {
+		$("#attend_date").datepicker();
+	});
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

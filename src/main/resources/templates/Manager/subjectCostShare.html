@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/orderChange">紀錄</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/costShare">學員費用</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/costShareReport">月報表</a></li>    
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/subjectCostShare">科目分攤比率</a></li>
+  </ul>
+</div> 
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>   
+<div>&nbsp;</div>
+      <div style='width:500px;padding:2px;margin-left:20px'>
+	     <div style='padding-left:20px;font-size:small;letter-spacing:1px;color:red'>
+		       ✽ 設定所有科目的費用分攤比率
+	     </div>
+      </div>
+<form id='form1' action="#" th:action="@{/Manager/subjectCostShareUpdate}" method="post">
+   <div style='border:1px #eeeeee solid;width:600px;border-radius:5px;background-color:#ffefff;padding:10px'> 
+	<div class="css-table" style='padding:5px' id='myDataTalbe'>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>成本(班內)</div>
+			 <div class="td2" style=''>
+			 	<div class="css-table" style='padding:5px'>	
+			 		<div class="tr">
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>人事管銷<br><input th:value="${hrPrice_R1}"  type="text" name='hrPrice_R1' style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>充電站<br>  <input th:value="${counselingPrice_R1}" type="text" name='counselingPrice_R1'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>其他贈品<br><input th:value="${lagnappePrice_R1}" type="text" name='lagnappePrice_R1'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>講義印製<br><input th:value="${handoutPrice_R1}" type="text" name='handoutPrice_R1'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>作業批改<br><input th:value="${homeworkPrice_R1}" type="text" name='homeworkPrice_R1' style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>模考<br>    <input th:value="${mockPrice_R1}" type="text" name='mockPrice_R1'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 		</div>
+			 	</div>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>成本(線上)</div>
+			 <div class="td2" style=''>
+			 	<div class="css-table" style='padding:5px'>	
+			 		<div class="tr">
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>人事管銷<br><input th:value="${hrPrice_R3}"  type="text" name='hrPrice_R3' style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>充電站<br>  <input th:value="${counselingPrice_R3}" type="text" name='counselingPrice_R3'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>其他贈品<br><input th:value="${lagnappePrice_R3}" type="text" name='lagnappePrice_R3'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>講義印製<br><input th:value="${handoutPrice_R3}" type="text" name='handoutPrice_R3'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>作業批改<br><input th:value="${homeworkPrice_R3}" type="text" name='homeworkPrice_R3' style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>模考<br>    <input th:value="${mockPrice_R3}" type="text" name='mockPrice_R3'  style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 		</div>
+			 	</div>
+			 </div>
+		</div>	
+     </div>
+   </div> 
+   <div style='text-align:center'><button type="button" id="btnSave"class="btn btn-sm btn-primary">儲 存</button></div> 
+   <div style='color:darkblue;font-size:small;font-weight:bold'th:text="${message}"></div>
+</form>   
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script>
+	$("#btnSave").click(function() {
+		$("#form1").submit();
+	});
+	
+	$("#titleWidth").width(170+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script> 
+
+
+

@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+	<li style='letter-spacing:2px;font-weight:bold'><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>	
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style=""><A href="/System/JL_grade">政龍EIP對應</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/System/JL_gradeRegister">政龍報名</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href="/System/JL_studentPay">政龍繳費</A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td" style=""><A href="/System/JL_studentPayRecord">政龍繳費方式</A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td" style=""><A href="/System/JL_grade_not">政龍EIP未對應</A></div><div class="td" style="width:20px"></div>		    		    
+	</div>
+</div>
+<div>&nbsp;</div>
+
+<form>
+<div class="css-table">
+<div class="tr">
+ <div class="td">
+  <div style='border:1px #eeeeee solid;width:600px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;width:120px'>
+					學號<br> 
+					<input type='text' class="form-control" id='student_no_x' style='width:120px'>			
+			</div>					
+		</div>
+	</div>		
+
+  </div>
+ </div>
+</div>
+</div> 									
+								
+		<div  align='center' style='width:600px;'>
+			<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;
+		</div>	
+</form>				
+<div>&nbsp;</div>
+<!--DataTables的表格-->
+<div style='width:1100px'>
+<table id="myDataTalbe" class="display">
+	<thead>
+		<tr>
+			<th>gradeRegister_seq</th>
+			<th>學號</th>
+			<th>gradeId</th>
+			<th>gradeName</th>
+			<th>saleId</th>
+			<th>salePerson</th>
+			<th>registerDate</th>
+			<th>sitNo</th>			
+		</tr>
+	</thead>
+</table>
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+			"order": [6, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/System/getJLM_gradeRegister",
+				data : function(d) {
+					d.student_no = $("#student_no_x").val();
+				},				
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+			"iDisplayLength": 20,
+			"columns" : [ 
+				{"data" : "gradeRegister_seq"}, 
+				{"data" : "student_no"},
+				{"data" : "gradeId"},
+				{"data" : "gradeName"},
+				{"data" : "saleId"},
+			    {"data" : "salePerson"},
+			    {"data" : "registerDate"},
+			    {"data" : "sitNo"}		    
+			]
+		});
+		$("#btnQuery").click(function() {
+			table.ajax.reload();
+		});
+	});
+	
+ 	function openGrade0(grade_seq,JL_gradeId) {
+ 		var feature = "width=900,height=700";
+ 		if(grade_seq==null || grade_seq==''){grade_seq='-1';}
+ 	    window.open("/Course/FaceOrVideo?action=popView&grade_seq="+grade_seq+"&JL_gradeId="+JL_gradeId,"",feature);
+ 	}
+ 	
+ 	function openGrade(grade_seq,JL_gradeId) {
+ 		var feature = "width=900,height=700";
+ 		if(grade_seq==null || grade_seq==''){grade_seq='-1';}
+ 	    window.open("/Course/newCourse?action=popView&grade_seq="+grade_seq+"&JL_gradeId="+JL_gradeId,"",feature);
+ 	} 
+ 	
+ 	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

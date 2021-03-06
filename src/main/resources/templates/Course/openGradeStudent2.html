@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header_noMenu"></head>
+
+<input type="hidden" id='grade_seq' th:value="${grade_seq}"/>
+<input type="hidden" id='class_style' th:value="${class_style}"/>
+<input type="hidden" id='school_code' th:value="${school_code}"/>
+&nbsp;<p>
+&nbsp;<p>
+		<!--DataTables的表格-->
+	    <div style='text-align:left;width:900px;margin-left:50px'>		
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='background-color:lightyellow'>
+					<td style='width:100px;font-weight:bold;letter-spacing:2px'>學號</td>
+					<th style='width:100px;font-weight:bold;letter-spacing:2px'>姓名</th>
+					<th style='width:120px;font-weight:bold;letter-spacing:2px'>手機</th>
+					<th style='width:120px;font-weight:bold;letter-spacing:2px'>選課業務</th>
+					<th style='width:200px;font-weight:bold;letter-spacing:2px'>目前單位</th>
+					<th style='width:200px;font-weight:bold;letter-spacing:2px'>政龍座號</th>							
+				</tr>
+			</thead>
+		</table>
+		</div>	
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"iDisplayLength": 20,
+			"order": [2,"asc"],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getGradeStudent2",
+				data : function(d) {
+					d.grade_id   = $("#grade_seq").val();
+					d.class_style   = $("#class_style").val();
+					d.school_code   = $("#school_code").val();
+					d.register_status   = "1";
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "student_no"}, 
+				{"data" : "ch_name"},					
+				{"data" : "mobile_1"},
+				{"data" : "updater2",
+					"render" : function(data, type, row, meta) {
+						if(data==null){data='';}
+						var update_time2 = row.update_time2;
+						if(update_time2==null){update_time2='';}
+						return "<span style='font-size:x-small'>"+data+"<br>"+update_time2+"</span>";
+				    }					
+				},
+				{"data" : "category"},				
+				{"data" : "sitNo"}
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+	function gradeData(subject_id) {
+		if (subject_id) {
+			$.ajax({
+				url : "/Course/GradeSearch",
+				data : {
+					subject_id : subject_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#grade").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+ 	function openSMSList() {
+ 		var feature = "width=700,height=500";
+ 		var param = "ch_name="+$("#ch_name").val()+"&en_name="+$("#en_name").val()+"&eip_student_no="+$("#eip_student_no").val()+
+ 		"&student_no="+$("#student_no").val()+"&mobile="+$("#mobile").val()+"&email="+$("#email").val()+"&school="+$("#school").val()+"&category="+$("#category").val()+"&subject="+$("#subject").val()+"&grade="+$("#grade").val();
+ 	    window.open("/Adm/openSMSList?"+param,"", feature);
+ 	}	
+</script>
+
+

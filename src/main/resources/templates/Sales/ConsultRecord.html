@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>  
+
+<button type="button" class="btn btn-sm btn-success" onclick="open_consultRecord('')">&#8883;新增訪談</button>  
+<div>&nbsp;</div>	
+			<div style='width:900px'>
+				<table id="myDataTalbe" class="display">
+					<thead>
+						<tr style='letter-spacing:2px'>
+						    <th>建立日期</th>
+						    <th>建立者</th>	
+							<th>諮詢課程</th>
+							<th>效期建立</th>
+							<th>邀約日</th>
+							<th>效期期限</th>
+							<th>分校</th>													
+							<th>細項</th>							
+						</tr>
+					</thead>
+				</table>
+			</div>	
+
+
+
+<script th:inline="javascript">  
+	$(document).ready(function() {
+		var student_seq = [[${student_seq}]];
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"order": [ 0, "desc" ],
+			"iDisplayLength": 20,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Sales/getConsultRecord",
+				data : function(d) {
+ 					d.student_seq  = student_seq;
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{ "data" : "createDate",
+					"render" : function(data, type, full, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+				    }					
+				},
+				{ "data" : "employee_name","className" : "text-center"}, 				
+				{ "data" : "classCategoryNameSel","className" : "text-left",
+					"render" : function(data, type, row, meta) {
+						   return data+row.category_id_text_1;	
+					}		   
+				},
+				{ "data" : "consultCategory_name","className" : "text-center"},
+				{ "data" : "oneDayValid"},
+				{ "data" : "consultCategory_id","className" : "text-center",
+					"render" : function(data, type, row, meta) {
+						if(data=='2'){
+						   return row.validDate;
+						}else if(data=='3'){
+						   return row.crossDate;
+						}else if(data=='4'){
+						   return row.lectureDate;
+						}else{
+							return "";
+						}  
+					}					
+				},
+				{ "data" : "employee_school"}, 
+				{ "data" : "consultRecord_seq","className" : "text-center",					
+					"render" : function(data, type, full, meta) {
+						return "<A href='#' onclick='open_consultRecord("+data+")' style='font-size:large;color:blue;text-decoration:underline'>&hellip;</A>";
+					}
+				}				
+            ]
+
+		});
+				
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+		
+ 
+     
+  	function open_consultRecord(consultRecord_seq){
+  		var student_seq = [[${student_seq}]];
+ 		var feature = "width=1120,height=650,left=50,locationbar=false,scrollbar=yes,resizable=yes";
+ 	    window.open("/Sales/editConsultRecord?consultRecord_seq="+consultRecord_seq+"&student_seq="+student_seq,"", feature); 		
+ 	}
+  	
+  	
+  	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	
+
+

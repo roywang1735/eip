@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:if="${mock=='1'}" th:include="/common/top_header_noMenu"></head>
+<head th:if="${mock=='0'}" th:include="/common/top_header"></head>
+
+
+<div class="container-fluid" th:if="${mock=='0'}">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div class="css-table" style="border-spacing:3px" th:if="${mock=='0'}">
+	<div class="tr">				
+		&#10074;<div class="td"><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}"> 期別選課 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A th:href="@{/Sales/Book_attend(student_seq=${student_seq})}"> 預約/點名紀錄 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/StudentCalendar(student_seq=${student_seq})}"> 行事曆 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+
+<div>&nbsp;</div>
+
+ 
+ 
+	<div class="container-fluid" th:if="${mock=='1'}">
+		<ul class="nav nav-tabs" id="myTabs">
+			<!--<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Adm/openTitleLink(student_seq=${student_seq},Register_seq=${Register_seq},mockDetail_seq=${mockDetail_seq},school_code=${school_code})}">模考時間</A><li>  -->
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{${backURL}}">預約時段</A><li>
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/StudentCalendar(mock=1,student_seq=${student_seq},Register_seq=${Register_seq},mockDetail_seq=${mockDetail_seq},school_code=${school_code})}">學員行事曆</A><li>	
+		</ul>		
+	</div>
+
+<div>&nbsp;</div>
+<div th:if="${mock=='0'}"  id="calendar" style="font-size:small;color:black;width:1000px;border-radius:10px;border-color:#ffffff;"></div>
+<div th:if="${mock=='1'}"  id="calendar" style="font-size:small;margin-left:20px;color:gray;width:880px;border-radius:10px;border-color:#ffffff;"></div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+  <script src="/js/jquery-1.9.1.min.js" type="text/javascript"></script> 
+  <script src="/js/moment.min.js" type="text/javascript"></script>
+  <script src="/js/fullcalendar.min.js" type="text/javascript"></script> 
+  <link rel="stylesheet" href="/css/fullcalendar.min.css">
+  <link rel="stylesheet" media="print" href="/css/fullcalendar.print.css">
+  
+<style type="text/css">
+.fc-day-grid-event > .fc-content {
+   white-space: normal;
+   text-overflow: ellipsis;
+   max-height:100px;
+   font-size:small;
+   font-weight:normal;
+   color:brown;
+   margin-bottom:2px;
+   //background-color:#ccffe5;
+   
+}
+.fc-day-grid-event > .fc-content:hover {
+   max-height:none!important; 
+}
+.fc-today {
+    background: snow !important;
+    border-color:#eeeeee;
+}
+.fc-time{
+   display : none;
+}
+
+.fc-title{
+    font-size:small;
+    //background:white;
+}
+
+
+.fc-event {
+    border-width: 0px;  
+}
+</style>
+
+
+<script th:inline="javascript" type="text/javascript">
+$(document).ready(function() {
+    $('#calendar').fullCalendar({
+      events: {
+    	  url : "/sales/getEvent?student_id="+[[${student_seq}]]+"&school_code="+[[${school_code}]]
+      },
+
+      eventRender: function(event, element) { 
+        var title = element.find( '.fc-title' );
+      	title.html( title.text() );
+      	element.find('.fc-title').append(event.description);
+      }       
+    });
+  });
+  
+
+
+
+function NoClass(date){
+	var feature = "width=400,height=300";
+	window.open("/Course/noClass?dateSel="+date.format(),"",feature);		
+}
+
+function selectSlot(mockSet_id,mockDetail_id,Register_seq,mock_id) {
+
+	if(confirm("確定選取此時段?")){
+		$.ajax({
+			url : "/Sales/saveRegister_mockBook",
+			data : {
+				mockSet_id : mockSet_id,
+				mockDetail_id : mockDetail_id,
+				Register_seq : Register_seq,
+				mock_id : mock_id
+
+			},
+			dataType : "text",
+			success : function(data) {	
+				window.close();
+				window.opener.location.reload();
+			}
+		});        
+    }	
+}
+
+$("#titleWidth").width(200+$("#calendar").width()<1400?1400:200+$("#calendar").width());
+</script>

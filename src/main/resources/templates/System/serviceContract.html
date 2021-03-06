@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style=""><A href='/System/SchoolSetting'>分校</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/categorySetting'>類別</A></div><div class="td" style="width:20px"></div>	    
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/serviceContract'>合約</A></div><div class="td" style="width:20px"></div>      
+	</div>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#9737;<div class="td" style="background-color:#eeeeee"><A href='/System/serviceContract' style='color:blue;text-decoration:underline'>學生契約書</A></div><div class="td" style="width:20px"></div>
+	    &#9737;<div class="td" style=""><A href='/System/TOEFL_guarantyContract' style='color:blue;text-decoration:underline'>TOEFL保證班合約書</A></div><div class="td" style="width:20px"></div>
+	    &#9737;<div class="td" style=""><A href='/System/IELTS_guarantyContract' style='color:blue;text-decoration:underline'>IELTS保證班合約書</A></div><div class="td" style="width:20px"></div>
+	    &#9737;<div class="td" style=""><A href='/System/TOEIC_guarantyContract' style='color:blue;text-decoration:underline'>TOEIC保證班合約書</A></div><div class="td" style="width:20px"></div>	    	    	    
+	</div>
+</div>
+ 
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/System/serviceContractSave}"  method="post"  enctype="multipart/form-data">
+<input type='hidden' name='contractName' value='serviceContract'>
+
+    <div style='padding:3px;text-align:left'>
+		<select id="school_code" name='school_code' class="form-control" style='margin-left:100px;width:120px;background-color:#FFFFCC'  onchange="getFiles()">
+			<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}" />
+		</select>
+    </div>
+    
+	<div align='center' id='myDataTalbe'>			 
+	 	<div class="css-table" style='border:1px #eeeeee solid;padding:15px;width:400px;background-color:lightyellow'>	
+	          <div class="tr" style='padding:5px'>
+				 <div class="td2">&nbsp;&nbsp;&nbsp;&nbsp;</div>	          		
+	             <div class="td2" style='width:250px;text-align:left'><input type="file" name="file"/></div> 
+	 	      </div>
+	 	</div> 
+		<div style='width:400px'>	
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp; 
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重 設</button>
+		</div>	 	
+	</div>
+</form>
+ 	
+<div>&nbsp;</div>
+<div>&nbsp;</div> 	
+	<table style='margin-left:30px'>
+		<tr style="border-bottom:1px solid #dddddd;text-align:left;">
+			<th width="500px">File name</th>
+		</tr>
+        <tr style='text-align:left'>
+            <td id='fileList'></td>           
+        </tr>			
+	</table>
+	
+<script>
+	$(document).ready(
+		function(){
+			getFiles();
+		}	
+	)
+	
+	function getFiles() {
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+		
+			 $.ajax({
+				url : "/System/getServiceContract",
+				data : {
+					school_code : $("#school_code").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#fileList").html(data);
+				}
+			 });
+	}	
+	
+	$("#btnSave").click(function() {
+			$("#form1").submit();	
+	});
+
+	function openContract(fileName){
+ 		var feature = "width=1300,height=650,left=400,locationbar=false,scrollbar=yes,resizable=yes";
+ 	    window.open("/System/openContract?fileName="+fileName,"", feature); 		
+ 	}
+	
+	
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	
+	

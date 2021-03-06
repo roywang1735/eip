@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/orderChange">紀錄</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/costShare">學員費用</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/costShareReport">月報表</a></li>    
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/subjectCostShare">科目分攤比率</a></li>
+  </ul>
+</div> 
+<div>&nbsp;</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Manager/costShareReport">月報表(進行中)</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href="/Manager/costShareReportMonth">月報表(歷史存檔)</A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+<form>
+  <div style='width:800px;margin-top:20px' align='center'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;text-align:left'>
+						開課分校<br> 
+						<select id="school_code" class="form-control"  style='width:120px'>
+							<option></option>
+							<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}"  th:selected="${school_code == item.code}" />
+						</select>
+			</div>				
+			<div class="td2" style='padding:5px;text-align:left'>
+						類別<br> 
+						<select id="category_id" class="form-control" onchange="subjectData(this.value)" style='width:100px'>
+							<option></option>
+							<option th:each="item : ${categoryGroup}"
+								th:value="${item.category_seq}" th:utext="${item.name}" />
+						</select>			
+			</div>
+			<div class="td2" style='padding:5px;text-align:left'>
+						科目<br> 
+						<select id="subject_id" class="form-control" style='width:200px'>
+							<option></option>
+						</select>				
+			</div>	
+			<div class="td2" style='padding:5px;width:130px;text-align:left'>
+					老師<br> 
+					<select id="teacher_id" class="form-control" style='width:130px'>
+							<option></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+					</select>
+			</div>								
+		</div>
+	</div>
+  </div>
+  <div  align='center' style='width:800px'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+  </div>
+ </form> 
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div th:text="${YearMonth}" style='color:darkblue;font-weight:bold;font-size:large;text-align:left'></div>
+<!--DataTables的表格-->
+<div style='width:1180px'>
+<table id="myDataTalbe" class="display">
+	<thead>
+		<tr>
+			<th style='width:20px'>結業<br>日期</th>	
+			<th>開課<br>分校</th>		
+			<th>科目</th>
+			<th>開課<br>日期</th>			
+			<th>期別</th>		
+			<th>班別</th>	
+			<th>老師</th>
+			<th>堂數<br>(占比)</th>
+			<th>正班<br>總<br>人數</th>
+			<th>正班<br>贈課<br>人數</th>
+			<th>正班<br>總<br>收入</th>
+			<th>正班<br>贈課<br>費用</th>
+			<th style='color:steelblue'>Video<br>總<br>人數</th>
+			<th style='color:steelblue'>Video<br>贈課<br>人數</th>
+			<th style='color:steelblue'>Video<br>總<br>收入</th>
+			<th style='color:steelblue'>Video<br>贈課<br>原價</th>			
+		</tr>
+	</thead>
+</table>
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	DataTable();
+})
+
+function DataTable(){	
+		let table = $('#myDataTalbe').DataTable({
+			"iDisplayLength": 10,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getGradeList3",
+				data : function(d) {
+					//d.category_id  = $("#category").val();
+
+				},											
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			"language": {loadingRecords: "<img src='/images/wait2.gif' style='width:25px'/> <span style='font-size:small'>讀 取 中 </span>"},	
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "class_date_final","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-size:x-small'>"+data+"</font>";
+					}	
+				},
+				{"data" : "school_name","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-size:x-small'>"+data+"</font>";
+				    }					
+				}, 			
+				{"data" : "subject_name",
+					"render" : function(data, type, row, meta) {
+						if(row.class_style=='1'){
+							return data+row.subjectContent_name+"<br><span style='color:#999999;font-size:x-small'>"+row.subject_abbr+"</span>";
+						}else if(row.class_style=='3'){
+							return data+row.subjectContent_name+"<span style='font-size:x-small;color:#999999'>&nbsp;(線上)</span><br><span style='color:#7777777;font-size:x-small'>"+row.subject_abbr+"</span>";
+						}	
+					}					
+				},
+				{"data" : "class_date_start","className":"text-center",
+					"render" : function(data, type, row, meta) {
+							return "<span style='font-size:x-small'>"+data+"</font>";
+					}					
+				},
+				{"data" : "grade_date","className":"text-center"},					
+				{"data" : "gradeName","className":"text-center"},	
+				{"data" : "teacher_name","className":"text-center"},
+				{"data" : "class_no","className":"text-right",
+					"render" : function(data, type, row, meta) {
+						return data+" "+row.gradeNoRatioStr;
+				}						
+				},
+				{"data" : "gradeNo","className":"text-right"},
+				{"data" : "gradeFreeNo","className":"text-right"},
+				{"data" : "gradeFee","className":"text-right"},
+				{"data" : "gradeFreeFee","className":"text-right"},
+				{"data" : "gradeNo_v","className":"text-right"},
+				{"data" : "gradeFreeNo_v","className":"text-right"},
+				{"data" : "gradeFee_v","className":"text-right"},
+				{"data" : "gradeFreeFee_v","className":"text-right"}				
+			]
+		});
+	};
+	$("#titleWidth").width(170+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

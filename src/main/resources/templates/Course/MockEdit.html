@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div style='margin-left:50px'>
+	<form id='form1' action="#" th:action="@{/Course/MockEditSave}">
+	<input type="hidden" name='mock_seq' th:value='${mock_seq}'/>
+	  <div style='width:700px;border-radius:5px;background-color:#ffffff'>     
+		<div class="css-table" style='padding:10px;background-color:#3e7e99;color:white'>			
+			<div class="tr">
+				<div class="td2">*類別</div>		
+				<div class="td2">
+						<select id="category_id" name="category_id" class="form-control">
+							<option value=''></option>
+							<option th:selected="${item.category_seq==category_id}" th:each="item : ${LCategory}" th:value="${item.category_seq}" th:utext="${item.name}" />
+						</select>				
+				</div>
+				<div class="td2">&nbsp;&nbsp;</div>
+				<div class="td2">*名稱</div>		
+				<div class="td2"><input type="text" id="mock_name" name="mock_name" th:value='${mock_name}' class="form-control" style='width:270px' /></div>
+				<div class="td2">&nbsp;&nbsp;</div>																		
+			</div>
+			<div class="tr" style='height:10px'><div class="td2"></div><div class="td2"></div><div class="td2"></div><div class="td2"></div></div>
+			<div class="tr" style=''>
+				<div class="td2">&nbsp;原價</div>		
+				<div class="td2"><input type="text" id="original_price" name="original_price" th:value='${original_price}' class="form-control" style='width:120px' /></div>				
+				<div class="td2">&nbsp;&nbsp;</div>
+				<div class="td2">*狀態</div>
+				<div class="td2" align='left'>
+						<select id="active" name="active" class="form-control" style='width:150px'>
+							<option value='1' th:selected="${active=='1'}">啟用</option>
+							<option value='0' th:selected="${active=='0'}">停用</option>
+						</select>				
+				</div>
+			</div>			
+		</div>
+	  </div>		
+	<!--模考-->
+	  <div style='border:1px #dddddd solid;width:870px;border-radius:5px;background-color:#F8FAFF;padding:10px;margin-top:20px;text-align:left'> 
+		<div class="css-table" style='padding:2px'>		
+			<div class="tr">
+			    <div class="th" style='background-color:#FDFEF2;width:50px;text-align:center;border:1px #eeeeee solid'>刪除</div>
+				<div class="th" style='background-color:#FDFEF2;width:80px;text-align:center;border:1px #eeeeee solid'>*次數</div>			
+				<div class="th" style='background-color:#FDFEF2;width:100px;text-align:center;border:1px #eeeeee solid'>回</div>		
+				<div class="th" style='background-color:#FDFEF2;width:120px;text-align:center;border:1px #eeeeee solid'>*參與</div>		
+				<div class="th" style='background-color:#FDFEF2;width:150px;text-align:center;border:1px #eeeeee solid'>*方式</div>
+				<div class="th" style='width:150px;text-align:left'><button type="button" class="btn btn-sm btn-success" style='padding:2px' onclick="AddMockDetail()">&#8883;加入模考 </button></div>		
+			</div>
+		</div>	
+		<div class="css-table" id='mockDiv' th:utext="${returnStr}">	
+			<!------------------------->		
+	
+			<!------------------------->
+	    </div>
+	 </div>
+	 <div style='height:5px'></div>	
+	<!--模考講解-->
+	  <div id='myDataTalbe' style='border:1px #dddddd solid;width:600px;border-radius:5px;background-color:#F8FAFF;margin-top:20px;padding:10px;text-align:left'>   
+		<div class="css-table" style='margin-top:0px'>		
+			<div class="tr">
+			    <div class="th" style='background-color:#FDFEF2;width:50px;text-align:center;border:1px #eeeeee solid'>刪除</div>	
+				<div class="th" style='background-color:#FDFEF2;width:250px;text-align:center;border:1px #eeeeee solid'>*模考講解科目</div>
+				<div class="td2" style='width:150px;text-align:left'><button type="button" class="btn btn-sm btn-success" style='padding:2px' onclick="AddMockVideo()">&#8883;加入模考講解 </button></div>		
+			</div>
+		</div>	
+		<div class="css-table" style='padding:2px' id='mockVideoDiv' th:utext="${returnStr2}">	
+			<!------------------------->		
+			
+			<!------------------------->												
+		</div>												
+	</div>	
+	  
+	  <div style='width:820px;margin-top:10px' align='center'>
+			<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;&nbsp;&nbsp;
+	  </div>
+	</form>  		
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+										
+<script>
+	$("#btnSave").click(function() {
+		if($("#category_id").val()==''){
+			alert("***請選取類別***");
+		}else if($("#mock_name").val()==''){
+			alert("***請輸入名稱***");	
+		}else{
+			$("#form1").submit();
+		}	
+	});
+		
+	function AddMockDetail() {
+		if($('#category_id').val()==''){
+			alert("請先選擇[類別]!");
+			return;
+		}
+		 
+		    var returnStr = 
+		    "<div class='tr'>"+	
+				    "<div class='td2' style='height:30px;width:50px;text-align:center'><A href='javascript:void(0)' title='刪除此筆'  onclick='$(this).parent().parent().remove();'><img src='/images/delete.png' height='10px'/></A></div>"+
+					"<div class='td2' style='width:80px' align='center'><input type='text' name='totalNo' class='form-control' style='width:50px' value='1' /></div>";	
+
+				  
+		  $.ajax({
+			url : "/Course/getTestSubjectOption",
+			data : {
+				category_id : $("#category_id").val()		
+			},
+			dataType : "text",
+			success : function(data) {
+					returnStr+=
+					//模考回數						
+					"<div class='td2' style='width:100px' align='center'>"+
+						"<select name='noName' class='form-control noName' style='width:70px'>"+data+"</select>"+
+					"</div>"+
+					
+					"<div class='td2' style='width:120px' align='center'>"+
+						"<select class='form-control' style='width:80px' name='testStyle'>"+
+							"<option></option>"+
+							"<option value='1'>個別</option>"+
+							"<option value='2'>視訊</option>"+
+							"<option value='3'>團體</option>"+
+						"</select>"+
+					"</div>"+	
+					
+					"<div class='td2' style='width:150px' align='center'>"+
+						"<select class='form-control' style='width:120px' name='testMethod'>"+
+							"<option></option>"+
+							"<option value='1'>電腦</option>"+
+							"<option value='3'>紙筆</option>"+
+							"<option value='4'>真人評測</option>"+
+						"</select>"+
+					"</div>"+													
+		  		"</div>"; 
+		        $("#mockDiv").append(returnStr);
+			}
+		  });
+	}
+	
+	//取得回數
+	function getRoundOption(thisID) { 
+		$.ajax({
+			url : "/Course/getRoundOption",
+			data : {
+				testSubject_seq : $(thisID).val()		
+			},
+			dataType : "text",
+			success : function(data) {
+				$(thisID).parent().parent().find('.noName:first').html(data);
+			}
+	    });
+	}
+	
+	
+	function AddMockVideo() {
+		if($('#category_id').val()==''){
+			alert("請先選擇[類別]!");
+			return;
+		}
+		
+		$.ajax({
+			url : "/Course/getMockVideoSubject",
+			data : {
+				category_id : $("#category_id").val()		
+			},
+			dataType : "text",
+			success : function(data) {
+				addRow(data);
+			}
+		});
+	}
+	
+	function addRow(options){
+		  var data = 
+		  "<div class='tr'>"+	
+			    "<div class='td2' style='width:50px;text-align:center'><A href='javascript:void(0)' title='刪除此筆'  onclick='$(this).parent().parent().remove();'><img src='/images/delete.png' height='10px'/></A></div>"+
+				"<div class='td2' style='width:250px' align='center'>"+
+					"<select name='subject_id' id='subject_id' class='form-control' style='width:230px'><option value=''></option>"+options+"</select>"+
+				"</div>"+													
+		  "</div>"; 
+		  $("#mockVideoDiv").append(data);
+	}	
+
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+

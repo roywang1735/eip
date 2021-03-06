@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<form id='form1'  th:action="@{/Adm/videoSlotTitleSave}" th:object="${videoSlotTitle}" method="post">
+  <input type="hidden" name='school_code' th:value = "${school_code}">
+  <div align='center' style=''>
+    <div th:text=${school_name} style='font-weight:bold;letter-spacing:3px'></div>
+	<div class="css-table" style='border:1px #eeeeee solid;font-weight:bold'>
+		<div class="tr" style='background-color:#FE87E1'>
+		    <div class="td2" style='width:60px;border-bottom:1px #eeeeee solid'></div>
+		    <div class="td2" style='padding:2px;letter-spacing:40px;width:200px;border-bottom:1px #eeeeee solid;color:white'>
+				平日
+		    </div>
+		</div>	
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>早</div>
+		    <div class="td" style='width:200px;border-bottom:1px #eeeeee solid'>
+		    	<input type='text' th:field="*{slot_1_from}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>&nbsp;~&nbsp; 
+		    	<input type='text' th:field="*{slot_1_to}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td" style='padding:12px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>午</div>
+		    <div class="td" style=';border-bottom:1px #eeeeee solid'>
+		    	<input type='text' th:field="*{slot_2_from}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>&nbsp;~&nbsp; 
+		    	<input type='text' th:field="*{slot_2_to}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>晚</div>
+		    <div class="td" style='border-bottom:1px #eeeeee solid'>
+		    	<input type='text' th:field="*{slot_3_from}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>&nbsp;~&nbsp; 
+		    	<input type='text' th:field="*{slot_3_to}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>
+		    </div>
+		</div>
+<!------------------------------------------->		
+		<div class="tr" style='background-color:#FF3FD0'>
+		    <div class="td2" style='width:60px;border-bottom:1px #eeeeee solid'></div>
+		    <div class="td2" style='padding:2px;letter-spacing:40px;width:200px;border-bottom:1px #eeeeee solid;color:white'>
+				假日
+		    </div>
+		</div>	
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>早</div>
+		    <div class="td" style='width:200px;border-bottom:1px #eeeeee solid'>
+		    	<input type='text' th:field="*{slot_1_from2}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>&nbsp;~&nbsp; 
+		    	<input type='text' th:field="*{slot_1_to2}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td" style='padding:12px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>午</div>
+		    <div class="td" style=';border-bottom:1px #eeeeee solid'>
+		    	<input type='text' th:field="*{slot_2_from2}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>&nbsp;~&nbsp; 
+		    	<input type='text' th:field="*{slot_2_to2}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>晚</div>
+		    <div class="td" style='border-bottom:1px #eeeeee solid'>
+		    	<input type='text' th:field="*{slot_3_from2}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>&nbsp;~&nbsp; 
+		    	<input type='text' th:field="*{slot_3_to2}"  style='width:70px;border:1px #bbbbbb solid;height:30px;border-radius:3px'>
+		    </div>
+		</div>						    
+	</div>
+	<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+</form>  
+
+<script>
+$("#btnSave").click(function() {
+		$("#form1").submit();	
+});
+</script>
+
+
+

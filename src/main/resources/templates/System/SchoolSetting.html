@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/SchoolSetting'>分校</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/categorySetting'>類別</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/serviceContract'>合約</A></div><div class="td" style="width:20px"></div>
+	</div>
+</div> 
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	<table style='margin-left:30px' id='myDataTalbe'>
+		<tr style="border-bottom:1px solid #dddddd;text-align:left;">
+			<th width="100px" style='padding:5px'>Seq.</th>
+			<th width="120px">代碼</th>
+			<th width="200px">分校</th>
+		</tr>
+        <tr th:each="school : ${LSchool}" style='border-bottom:1px solid #dddddd;text-align:left'>
+            <td style='padding:5px'><span th:text="${school.school_seq}"></span></td>
+            <td><span th:text="${school.code}"></span></td>
+            <td><span th:text="${school.name}"></span></td>             
+        </tr>			
+	</table>
+	
+<script>
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	

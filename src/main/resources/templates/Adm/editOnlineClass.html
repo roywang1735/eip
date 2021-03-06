@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' th:action="@{/Adm/onlineClassUpdate}" method="post">
+<div align='center'>
+	<div th:utext=${returnStr}></div>
+	<div>&nbsp;</div>
+	<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲 存</button>
+</div>
+</form>
+<script>
+$("#btnSave").click(function() {
+	$("#form1").submit();
+});
+</script>
+
+
+

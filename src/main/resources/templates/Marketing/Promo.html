@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid" style='letter-spacing:2px;font-weight:bold'>
+	<ul class="nav nav-tabs" id="myTabs">
+		<li th:class="${promoType=='lecture'} ? 'active':''"><a href="/Marketing/Promo?promoType=lecture">講座活動優惠</a></li>
+		<li th:class="${promoType=='monthly'} ? 'active':''"><a href="/Marketing/Promo?promoType=monthly">月活動</a></li>
+		<li th:class="${promoType=='regular'} ? 'active':''"><a href="/Marketing/Promo?promoType=regular">常態優惠</a></li>
+		<li th:class="${promoType=='combine'} ? 'active':''"><a href="/Marketing/Promo?promoType=combine">合報優惠</a></li>
+		<li th:class="${promoType=='old'} ? 'active':''"><a href="/Marketing/Promo?promoType=old">高中部優惠</a></li>	
+		<li th:class="${promoType=='other'} ? 'active':''"><a href="/Marketing/Promo?promoType=other">其他</a></li>
+	</ul>
+</div>
+&nbsp;
+<p>
+<form>
+<input type="hidden" id='promoType' name='promoType' th:value='${promoType}'/>
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+		    <div class="td" style='width:20px'>&nbsp;</div>
+			<div class="td">
+				<div style='display: inline-block'>
+					適用分校 
+					<select id='school_code' class="form-control" style='width:120px'>
+						<option value="" selected></option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+				</div>
+				<div style='margin-left:20px;display:inline-block'>
+					狀態
+					<select id='enabled'  class="form-control" style='width:90px'>
+						<option value="1">使用</option>
+						<option value="0">停用</option>
+						<option value=""></option>
+					</select>
+				</div>
+				<div style='white-space:nowrap;width:400px;text-align:center;margin-top:5px'>
+						<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>
+						&nbsp;&nbsp;
+						<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+						&nbsp;&nbsp;
+			 			<button type="button" class="btn btn-sm btn-success" onclick="PromoEdit('')">&#8883;新增優惠</button>
+				</div>
+		    </div>
+		    <div class="td" style='width:20px'>&nbsp;</div>
+		    <div class="td" style='vertical-align:bottom'> 
+			      <div style='padding:5px;font-size:small'>   
+			 	    <img src='/images/promo.jpg' style='width:320px'/><br>    
+			 	   </div>   	     
+		    </div>  	
+        </div>
+     </div>   
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	<!--DataTables的表格-->
+	<div style='width:1010px'>			
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+				  <th style='width:30px'>Seq.</th>
+				  <th style='width:40px'>排序</th>
+				  <th style='width:50px;letter-spacing:2px'>審核</th>
+				  <th style='width:500px;letter-spacing:2px'>內容</th>				  
+				  <th style='width:120px;letter-spacing:2px'>適用分校</th>	
+				  <th style='width:70px;letter-spacing:2px'>起日</th>
+				  <th style='width:70px;letter-spacing:2px'>迄日</th>	
+				  <th style='width:70px;letter-spacing:2px'>展延至</th>				  			  
+				  <th style='width:60px;letter-spacing:2px'>啟用<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 審核通過的啟用或停用,才能運作 ! </span>"><img src='/images/message.png' height='7px'/></A></th>
+				</tr>
+			</thead>
+		</table>
+	 </div>	
+</form>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">   	
+	$(document).ready(function() {
+		var dataLenght;
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Marketing/getClassPromotion",
+				data : function(d) {
+					d.school_code = $("#school_code").val();
+					d.enabled     = $("#enabled").val();
+					d.promoType   = $("#promoType").val();
+					d.active = 1;
+				},
+
+				dataSrc : function(data) {
+					dataLenght = data.length;
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "classPromotion_seq","className":"text-center"},
+				{"data" : "ranking","className":"text-center",
+					"render" : function(data,type,row,meta) {
+						
+						var returnStr = "<select style='border:1px #aaaaaa solid;height:30px;font-weight:bold;width:50px;border-radius:5px' onchange='SetRanking("+row.classPromotion_seq+",this.value)'><option value=''></option>";
+						for(var x=1;x<=dataLenght;x++){
+							if(data==x){
+								returnStr +="<option value='"+x+"' selected>"+x+"</option>";
+							}else{
+								returnStr +="<option value='"+x+"'>"+x+"</option>";
+							}	
+						}
+						return returnStr;
+						
+					}	
+				},
+				{"data" : "approve","className":"text-center",
+				     "render" : function(data,type,full,meta) {
+		    	           if(data==1){
+			               		return "&#128077;";
+		    	           }else if(data==-1){
+		    	        	    return "&#128078;&#127997;";
+		    	           }else if(data==0){
+		    	        	    return "送審";
+		    	           }else{
+		    	        	   return "?";
+		    	           }		
+		     		 }			    	
+			    },				
+				{"data" : "promoName",
+				     "render" : function(data, type, row, meta) {
+			               return "<A href='javascript:void(0)' onclick='PromoEdit("+row.classPromotion_seq+")'  style='color:blue;text-decoration:underline'>"+data+"</A>";
+		     		}					
+				},
+				{"data" : "chool_code_Str","className":"text-center"},				
+			    {"data" : "startDate"},
+			    {"data" : "endDate"},
+			    {"data" : "extendDate"},
+				{"data" : "enabled","className":"text-center",
+				     "render" : function(data, type, full, meta) {
+		    	           if(data==1){
+			               		return "<img src='/images/enable.png' height='17px'/>";
+		    	           }else{
+		    	        	    return "<img src='/images/disable.png' height='17px'/>";
+		    	           }		
+		     		 }			    	
+			    }			    
+			]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	function PromoEdit(classPromotion_id){
+ 		var feature = "top=100,left=300,width=900,height=600";
+ 	    window.open("/Marketing/PromoEdit?classPromotion_id="+classPromotion_id+"&promoType="+$("#promoType").val(), "", feature);
+ 	}	
+	
+	function SetRanking(classPromotion_seq,ranking){
+		$.ajax({
+			url : "/Marketing/SetRanking",
+			data : {
+				classPromotion_seq : classPromotion_seq,
+				ranking : ranking
+			},
+			dataType : "text",
+			success : function(data) {	
+				alert("設定完成!");
+				window.location.reload();
+			}
+		}); 
+	}
+	
+	$("#titleWidth").width(170+$("#myDataTalbe").width()<1300?1300:170+$("#myDataTalbe").width());	
+</script>

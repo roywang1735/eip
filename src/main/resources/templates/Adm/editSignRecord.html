@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<form>
+<div align='center'>
+<input type='hidden' id='signRecordHistory_seq' th:value='${signRecordHistory_seq}'>
+<input type='hidden' id='attend_ori' th:value='${attend}'>
+
+    <div align='center' style='width:350px'>
+    	<span>編輯 : </span>
+    	<span id='takePerson' th:text="${creater}" style='padding:2px'></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    	<span>時間 : </span>
+    	<span id='takePerson' th:text="${createTime}" style='padding:2px'></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>   	
+      		
+	<div class="css-table">
+		<div class="tr" style=''>
+			<div class="td2" style='padding:5px;font-weight:bold;vertical-align:middle;background-color:#7ba6b6;color:white'>
+				進 班
+			</div>
+			<div sec:authorize="hasAnyRole('sal_mgr','sal','approve_mgr')" style='padding:5px;border:1px #eeeeee solid;width:350px;background-color:#ffeeff;border-radius:5px;text-align:left' th:utext="${allowAttendStr}"></div>
+		</div>
+		<div>&nbsp;</div>				
+		<div class="tr" style=''>
+			<div class="td2" style='padding:5px;font-weight:bold;vertical-align:middle;background-color:#7ba6b6;color:white'>
+				點 名
+			</div>
+			<div class="td2" style='padding:5px;border:1px #eeeeee solid;width:350px;background-color:#ffeeff;border-radius:5px;text-align:left'>
+				<span sec:authorize="hasAnyRole('adm_mgr','adm','approve_mgr')" th:utext="${attendStr}"></span>
+			</div>
+		</div>
+		<div>&nbsp;</div>
+		<div class="tr" style=''>
+			<div class="td2" style='padding:5px;font-weight:bold;vertical-align:middle;background-color:#7ba6b6;color:white'>
+				領 取
+			</div>
+			<div style='padding:5px;border:1px #eeeeee solid;width:350px;background-color:#ffeeff;border-radius:5px;text-align:left'  th:utext="${materialStr}"></div>
+		</div>
+		<div>&nbsp;</div>
+		<div class="tr" style=''>
+			<div class="td2" style='padding:5px;font-weight:bold;vertical-align:middle;background-color:#7ba6b6;color:white'>
+				其 他
+			</div>
+			<div class="td2" style='padding:5px;border:1px #eeeeee solid;width:350px;background-color:#ffeeff;border-radius:5px;text-align:left'>
+				<span sec:authorize="hasAnyRole('adm_mgr','adm','approve_mgr')" th:utext="${otherStr}"></span> 
+			</div>
+		</div>					
+	</div>		
+    <!-- approve_mgr無權限儲存, 會造成/Adm/manualSignRecord混亂 -->
+    <div>&nbsp;</div>
+	<div style='white-space:nowrap;width:400px;text-align:center' sec:authorize="hasAnyRole('adm_mgr','adm','sal','sal_mgr')">
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+		&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+	</div>
+  </div>
+</form>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+	$("#btnSave").click(function() {
+			var allowAttend = $('input[name=allowAttend]:checked').val();
+	    	var attend = $('input[name=signRecord]:checked').val();
+	        var arr1 = [-1];
+	        var classesMaterial_seq = document.getElementsByName("classesMaterial_seq");
+	        for(i=0;i<classesMaterial_seq.length;i++){
+	        	if(classesMaterial_seq[i].checked){
+	        		arr1.push(classesMaterial_seq[i].value);
+	        	} 
+	        }	    	
+ 	        if(confirm("確定設定點名紀錄?")){
+				$.ajax({
+					url : "/Adm/manualSignRecord",
+					data : {
+						signRecordHistory_seq : $("#signRecordHistory_seq").val(),
+						attend_ori : $("#attend_ori").val(),
+						allowAttend : allowAttend,
+						attend : attend,
+						classesMaterial_seq : arr1,
+						classroom : $("#classroom").val(),
+						seat : $("#seat").val(),
+						comment : $("#comment").val()
+					},
+					dataType : "text",
+					traditional: true,
+					success : function(data) {
+						alert("點名紀錄設定完成!")
+						window.close();
+						window.opener.location.reload();
+					}
+				});        
+	        }	 
+	});	
+</script>

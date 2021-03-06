@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid" style='letter-spacing:2px;font-weight:bold'>
+	<ul class="nav nav-tabs" id="myTabs">
+		<li><a href="/Sales/CurrentCourse">近期開班</a></li>
+		<li><a href="/Sales/Course">課程搜尋</a></li>
+		<li class="active"><a href="/Sales/interestSubject">感興趣</a></li>
+	</ul>
+</div>
+&nbsp;<p>
+
+
+  <div style='border:1px #eeeeee solid;padding:10px;border-radius:5px;margin-top:20px;width:400px'>
+
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;width:120px'>
+					分校<br> 
+					<select id="category_id" class="form-control">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+			</div>
+			<div class="td2" style='padding:5px;width:120px'>					
+					學員<br> 
+					<select id="category_id" class="form-control">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+			</div>
+			<div class="td2" style='padding:5px;width:120px'>					
+					類別<br> 
+					<select id="category_id" class="form-control">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+			</div>						
+			
+		</div>
+	</div>	
+	
+ </div>
+ <div style='width:400px' align='center'>
+		<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-success" onclick="location.href='/Course/SubjectEdit'">新增科目</button>
+ </div>
+
+
+&nbsp;<p>
+&nbsp;<p>
+	<!--DataTables的表格-->
+	<div style='width:900px'>
+	<table id="myDataTalbe" class="display">
+		<thead>
+		<tr>
+			<th width="30px">分校</th>
+			<th width="100px">學員</th>
+			<th width="100px">類別</th>
+			<th width="350px">科目</th>
+			<th width="100px">建立</th>
+			<th width="100px">時間</th>				
+		</tr>
+		</thead>
+	</table>
+	</div>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"iDisplayLength": 20,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getSubjectSetting",
+				data : function(d) {
+					d.category_id  = $("#category_id").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "subject_seq"}, 
+				{"data" : "subject_seq"}, 
+				{"data" : "category_name"}, 
+				{"data" : "name","render" : function(data, type, row, meta) {return data+" <b><font color='green'>"+row.abbr+"</font></b>";}}, 
+				{"data" : "price"},					
+				{"data" : "hrPrice_R","render" : function(data, type, row, meta) {return data+" %";}}
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			table.ajax.reload();
+		});
+	});
+</script>
+
+

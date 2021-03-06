@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+          
+	<div th:if="${isBook=='true'}" style='font-weight:bold;text-align:center;color:red;font-size:large;margin-top:50px;letter-spacing:3px;'>	
+		<img src='/images/prohibit.png' height='40px'/>
+		&nbsp;<p>&nbsp;<p>  請先將已訂期別取消, 才能進行換課 !
+	</div>	 	
+	<div th:if="${isBook=='false'}">				
+		<input type='hidden' id='subject_id' th:value='${subject_id}'>
+		<input type='hidden' id='old_Id' th:value='${old_Id}'>			
+			<div align='center' style='margin-top:50px'>
+				<div class="css-table" style=''>
+					<div class="tr">
+					    <div class="th3" style='font-weight:bold;color:white;background-color:#3e7e99;padding:2px;text-align:center;letter-spacing:10px;border-right:1px #ffffff solid'>原科目</div><div class="th3"></div><div class="th3" style='font-weight:bold;color:white;background-color:#3e7e99;padding:2px;text-align:center;letter-spacing:10px'>更換科目</div>	
+					</div>    				
+					<div class="tr">
+					    <div class="td" style='width:250px;height:200px;border:1px #dddddd solid'>
+					    </div>
+					    <div class="td" style='vertical-align:middle;padding:3px'><img src='/images/exchange4.png' height='15px'/></div>					    
+					    <!------------------------------->
+						<div class="td" style='width:400px;border:1px #dddddd solid;background-color:#ffefff;font-weight:bold;padding:10px'>								
+								<div class="tr">				
+									<div class="td" style='padding:3px'>
+										<select id='category' style="width:120px" class="form-control" onchange="subjectData(this.value)">
+											<option value="">~ 類別 ~</option>
+											<option th:each="item : ${categoryGroup}"
+												th:value="${item.category_seq}" th:utext="${item.name}" />
+										</select>
+									</div>
+									<div>&nbsp;&nbsp;</div>
+									<div class="td" style="width:200px;background-color:#ffefff">
+										<select id='subjectSel' class="form-control">
+											<option value="">~ 科目 ~</option>
+										</select>
+									</div>						
+								</div>
+								<div class="tr">				
+									<div class="td" style='padding:3px'>
+										<select id='category' style="width:120px" class="form-control" onchange="subjectData(this.value)">
+											<option value="">~ 類別 ~</option>
+											<option th:each="item : ${categoryGroup}"
+												th:value="${item.category_seq}" th:utext="${item.name}" />
+										</select>
+									</div>
+									<div>&nbsp;&nbsp;</div>
+									<div class="td" style="width:200px;background-color:#ffefff">
+										<select id='subjectSel' class="form-control">
+											<option value="">~ 科目 ~</option>
+										</select>
+									</div>						
+								</div>
+								<div class="tr">				
+									<div class="td"  style='padding:3px'>
+										<select id='category' style="width:120px" class="form-control" onchange="subjectData(this.value)">
+											<option value="">~ 類別 ~</option>
+											<option th:each="item : ${categoryGroup}"
+												th:value="${item.category_seq}" th:utext="${item.name}" />
+										</select>
+									</div>
+									<div>&nbsp;&nbsp;</div>
+									<div class="td" style="width:200px;background-color:#ffefff">
+										<select id='subjectSel' class="form-control">
+											<option value="">~ 科目 ~</option>
+										</select>
+									</div>						
+								</div>																
+						</div>
+					</div>			
+				</div>
+				<div style='height:10px'></div>
+				<div class="css-table"  th:if="${addMoney=='Y'}">		
+					<div class="tr">
+						<div class="th" style='color:red'>
+							&starf;&nbsp;(應繳總金額增加) : 需補價差
+						</div>
+						<div class="td">
+							<input type='text' id='addMoney' class="form-control" style="width:100px" placeholder='ex.1000'>
+						</div>
+						<div class="th">
+							元
+						</div>												
+					</div>
+				</div>	
+                <div>
+					<button type="button" class="btn btn-primary" onclick="subjectChange();">換 課</button>&nbsp;&nbsp;&nbsp;
+				</div>
+			</div>	  
+	</div>
+
+
+<script>
+    function subjectData(category_id) {
+	   if (category_id) {			
+		  $.ajax({
+			url : "/Course/getSubjectOption",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#subjectSel").html(data);
+			}
+		 });
+	   }
+    }
+    
+    function subjectChange() {
+    	    if($("#subjectSel").val()==''){
+    	    	alert("請選取科目!");
+    	    }else{
+				//新選值
+				var subjectSelStr= $("#subjectSel").val();
+				var subjectSelStr_0  = subjectSelStr.split("^")[0];
+				var subjectSelStr_1  = subjectSelStr.split("^")[1];
+				var subjectSelStr_0a = subjectSelStr_0.split("@")[0]; //subject name
+				var subjectSelStr_0b = subjectSelStr_0.split("@")[1]; //subject price
+				
+				//改舊值
+				var oldId = "#"+$('#old_Id').val();	
+				var subject_id= $("#subject_id").val();
+				$(oldId,opener.document).find('#subject_seq').val(subjectSelStr_1);
+	 		    $(oldId,opener.document).find('#replaceFrom').val(subject_id);
+				$(oldId,opener.document).find('.originPrice').val(subjectSelStr_0b);
+				$(oldId,opener.document).find('#Subject_name').text(subjectSelStr_0a);						
+				$(oldId,opener.document).find('.counselingName').text("");
+				$(oldId,opener.document).find('.lagnappeName').text("");
+				$(oldId,opener.document).find('.mockName').text("");
+				var addMoney = "0";
+				if($("#addMoney").val()){
+					if($("#addMoney").val()<0){
+						alert("輸入金額須大於零");
+						return;
+					}
+					addMoney = $("#addMoney").val();
+				}
+				
+				window.opener.SumOriginPrice(addMoney);				
+				window.close();
+    	    }	
+	}
+</script>
+
+
+

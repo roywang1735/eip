@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+<body style='background-color:lightcyan'>
+ &nbsp;<p>
+ <div style='text-align:center;letter-spacing:5px'>
+ 	<h3>EIP期別對應設定</h3>
+ 	<hr>
+ </div>
+	<form id='form1' th:action="@{/Course/referenceToEip_grade_seq}" method="post">
+		 <input type="hidden" id='JL_gradeId' name='JL_gradeId' th:value='${JL_gradeId}'/>
+		 <input type="hidden" id='grade_seq' name='grade_seq' th:value='${grade_seq}'/>
+		 <div align='center'>		  
+		        <div class="css-table" style='font-weight:bold;width:600px'>	
+					<div class="tr">
+						<div class="td2" style='padding:5px;text-align:left;letter-spacing:3px;font-size:large'>
+							選項1 &#10151; 已存在EIP期別(面授)編號
+							<input type='text' style='width:100px;border-radius:5px;border:1px #cccccc solid'>
+							<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+						</div>		
+					</div>
+					<div class="tr">
+						<div class="td2" style='padding:5px;text-align:left;letter-spacing:3px;font-size:large'>		
+		                	選項2 &#10151; <A href='javascript:openGrade()' style='text-decoration:underline'>新增1個EIP期別</A>
+						</div>
+					</div>
+			    </div>	
+		 </div>		
+	</form>	
+
+		  
+<script>
+$("#btnSave").click(function() {
+	var url = $("#form1").attr('action');
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: $("#form1").serialize(),
+        success: function(data)
+        {
+			window.close();
+			window.opener.location.reload();
+        }
+    });
+	e.preventDefault(); 	
+}) 
+
+ 	function openGrade() {
+ 		var grade_seq = $("#grade_seq").val();
+ 		var JL_gradeId = $("#JL_gradeId").val();
+ 		window.location="/Course/newCourse?action=popView&grade_seq="+grade_seq+"&JL_gradeId="+JL_gradeId;
+ 	}
+</script>
+
+
+

@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/CourseApproveFlow">課程通知<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${CourseApproveFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/ComboSaleFlow">課務通知<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${ComboSaleFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/PromoFlow">優惠簽核<span style='font-weight:normal;font-style:italic;color:red' th:text="${PromoFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/SpecialCase">特殊提報<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${SpecialCase_No}"></span></a></li>       
+  </ul>
+</div> 
+<div>&nbsp;</div>  
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div align='left' style='width:1000px'>  
+  <table id="myDataTalbe" class="display">
+	<thead>
+		<tr style='letter-spacing:2px'>
+			<th>Seq.</th>
+			<th>類別</th>
+			<th>單科/套裝名稱</th>
+			<th>科目</th>
+			<th>原價</th>
+			<th>售價</th>
+			<th>建立者</th>
+			<th>更新時間</th>
+			<th>備註</th>			
+		</tr>
+	</thead>
+  </table>
+</div>  	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script type="text/javascript">
+function subjectData(category_id) {
+	if (category_id) {
+		$.ajax({
+			url : "/Course/SubjectSearch",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#subject").html(data);
+			}
+		});
+	} else {
+		$("#subject").html("<option></option>");
+	}
+}
+</script>
+
+<script>
+$(function() {
+	$("#datepickerFrom").datepicker();
+	$("#datepickerTo").datepicker();
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"order": [ 1  , "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/CourseSale/getComboSale",
+			data : function(d) {
+				d.FlowStatus_code  = "3";
+				d.haveRead = "0";
+			},		
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 			
+			   {"data" : "comboSale_seq","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+					}				   
+			   },	 
+			   {"data" : "category_name","className":"text-center"}, 
+			   {"data" : "name",
+				  "render" : function(data, type, row, meta) {
+					if(row.isCombo==1){
+						return "<A style='color:blue;text-decoration:underline;font-weight:bold' href='javascript:void(0)' onclick='openGrade("+row.comboSale_seq+");'>[ "+data+" ]</A>";
+					}else{
+						return "<A style='color:blue;text-decoration:underline;font-weight:bold' href='javascript:void(0)' onclick='openGrade("+row.comboSale_seq+");'>"+data+"</A>";
+					}
+				  }	
+	           },
+			   {"data" : "subjectStr",
+				  "render" : function(data, type, row, meta) {
+						return data;
+				  }	
+			   }, 
+			   {"data" : "origin_price","className":"text-center"},
+			   {"data" : "sale_price","className":"text-center",
+				  "render" : function(data, type, row, meta) {
+					if(data==-1){
+						return "-";
+					}else{return data;}
+				  }	
+			   },
+			   {"data" : "creater","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+					}					   
+			   }, 
+			   {"data" : "update_time","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+					}					   
+			   }, 
+			   {"data" : "remark"}
+		]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+});
+
+	function openGrade(data) {
+ 		var feature = "width=1200,height=500";
+ 	    window.open("/CourseSale/editComboSale?haveRead=1&action=popView&comboSale_seq="+data, "", feature);
+ 	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>
+
+

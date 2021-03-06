@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+ 
+  <div align='center'>
+      <div style='font-weight:bold;letter-spacing:5px'>座號更改</div>
+	  <div class="css-table" style='background-color:#D7F2D4;font-weight:bold;border:1px #cccccc solid'>
+			<div class="tr"><div class="td2" th:utext="${classRoomStr}" style='width:200px;color:white;padding:5px'></div></div>	
+			<div class="tr"><div class="td2" id='seatSel' style='width:200px;color:white;padding:5px'>&nbsp;</div></div>  	 
+      </div>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary" onclick='studentSeatUpdate()'>儲存</button>
+  </div>
+
+
+
+ 
+<script th:inline="javascript">
+
+function getSeats(school_code,classRoom,slot){
+	$.ajax({
+		url : "/Adm/getSeats",
+		data : {
+			school_code : school_code,
+			classRoom : classRoom,
+			slot : slot
+		},
+		dataType : "text",
+		traditional: true,
+		success : function(data) {
+			$('#seatSel').html(data);
+		}
+	});    	
+} 
+
+
+function studentSeatUpdate(){
+	$.ajax({
+		url : "/Adm/studentSeatUpdate",
+		data : {
+			signRecordHistory_seq : [[${signRecordHistory_seq}]],
+			coujVideoHistory_seq  : [[${mockVideoHistory_seq}]],
+			mockBaseBook_seq      : [[${mockBaseBook_seq}]],
+			counselingBaseBook_seq: [[${counselingBaseBook_seq}]],
+			student_no            : [[${student_no}]],
+			setDate               : [[${setDate}]],
+			slot                  : [[${slot}]],
+			school_code           : [[${school_code}]],
+			classroom             : $('#classroom').val(),
+			seat                  : $('#seat').val()
+		},
+		dataType : "text",
+		success : function(data) {
+			window.close();
+			window.opener.GetAdmCalendarJob();					
+		}
+	});      	
+}	
+</script>

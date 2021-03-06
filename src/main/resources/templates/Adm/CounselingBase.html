@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/VideoBase">Video設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockBase">模考設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/CounselingBase">充電站設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/classroomSetting">教室&座位</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/onlineSetting">線上課程設置</a></li>				
+		</ul>
+	</div>
+	
+<div>&nbsp;</div>
+<div>
+    <div class="css-table">
+      <div class="tr">
+		<div class="td">    
+		  <div class="css-table" style='border:1px #dddddd solid;border-radius:5px;padding:10px;background-color:#FFF7FD'>
+			<div class="tr">
+				<div class="td"  style='text-align:center'>
+					分校
+					<select id="school_code" name='school_code'  style='height:30px;border-radius:5px;width:90px;background-color:#F3F4FF' onchange='getCounselingBaseTitle()'>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+				</div>
+				<div class="td" style='width:100px'></div>						
+			</div>
+		  </div>
+		</div> 
+		<div class='td'>&nbsp;</div>
+		<div class='td'><div class="td"><button type="button" class="btn btn-sm btn-success" onclick="addCounselingBaseTitle()">&#8883;新增</button></div></div> 
+	  </div>
+	</div>   					 
+</div>
+		
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+		<div style='width:450px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='letter-spacing:2px'>
+					<th style='width:100px'>分校</th>
+					<th style='width:150px'>類別</th>
+					<th style='width:150px'>細項<br>設置</th>
+					<th style='width:150px'>時段<br>設置</th>			
+				</tr>
+			</thead>
+		  </table>
+	   </div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	  		
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	
+<script>
+$(document).ready(function() {
+	getCounselingBaseTitle();
+});
+
+
+function getCounselingBaseTitle() {
+   let table = $('#myDataTalbe').DataTable({
+	    "bDestroy": true,
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Adm/getCounselingBaseTitle",
+			data : function(d) {
+				d.school_code     = $("#school_code").val();		
+			},
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "schoolName","className" : "text-center"}, 					 
+			{"data" : "categoryName","className" : "text-center",
+				   "render" : function(data, type, row, meta) {
+						   return "<span style='font-weight:bold'>"+data+"</span>";
+			        }				
+			},	
+			{"data" : "counselingBaseTitle_seq","className" : "text-center",
+				   "render" : function(data, type, row, meta) {
+						   return "<A href='javascript:void(0)' style='color:blue;text-decoration:underline;font-size:large' onclick='editCounselingBaseTitle("+data+")'>&hellip;</A>";
+			        }				
+			},			
+			{"data" : "counselingBaseTitle_seq","className" : "text-center",
+				   "render" : function(data, type, row, meta) {
+						   return "<A href='javascript:void(0)' style='color:blue;text-decoration:underline;font-size:large' onclick=openCounselingBaseTitle('"+data+"')><img src='/images/paper2.png' height='15px'/></A>";
+			        }				
+			}
+		 ]
+	});
+}
+
+
+
+function openCounselingBaseTitle(counselingBaseTitle_seq) {
+		var feature = "width=1050,height=600,left=200";
+ 	   	window.open("/Adm/openCounselingBaseTitle?counselingBaseTitle_seq="+counselingBaseTitle_seq,"",feature);
+} 	   	
+
+function editCounselingBaseTitle(counselingBaseTitle_seq){
+		var feature = "width=800,height=600,left=200";
+	   	window.open("/Adm/addCounselingBaseTitle?counselingBaseTitle_seq="+counselingBaseTitle_seq,"",feature);	
+}
+
+function addCounselingBaseTitle(){
+	var feature = "width=800,height=500,left=200";
+   	window.open("/Adm/addCounselingBaseTitle","",feature);	
+}
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+
+
+
+</script>		

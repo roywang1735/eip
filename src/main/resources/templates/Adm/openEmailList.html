@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+&nbsp;<p>
+<div align='center' style=''>
+<form id='form1' action="#" th:action="@{/Adm/SMSSend}" method="post">
+ 	<div style='padding-left:20px;padding-top:20px;font-size:normal;letter-spacing:2px;color:red;font-weight:bold'>
+		* 總計:<span style='color:blue' th:text='${amount}'></span>筆, 請檢視Email格式是否正確?
+	</div>
+	<div class="css-table">
+		<div class="tr">
+			<div class="td2" style='padding:5px;width:500px;background-color:#dddddd;text-align:left;vertical-align:bottom'>
+				<input type='text' name='EmailTitle' placeholder='Email標題' style='width:300px;border-radius:5px;border:1px #aaaaaa solid'></textarea>				  				  
+			</div> 	
+		</div>				
+		<div class="tr">
+			<div class="td2" style='padding:5px;width:500px;background-color:#dddddd;text-align:left;vertical-align:bottom'>
+				<textarea name='EmailContent' cols="60" rows="5" placeholder='Email內容' style='border-radius:5px;border:1px #aaaaaa solid'></textarea>				  				  
+			</div> 	
+		</div>
+    </div>
+        
+	<div class="css-table" style='padding:5px'>			
+		<div class="tr" style='background-color:#999999'>
+			<div class="th2" style='text-align:center;font-weight:bold;color:white;padding:5px;width:50px'>勾選</div>
+			<div class="th2" style='text-align:center;font-weight:bold;color:white;padding:5px;width:100px'>分校</div>		
+			<div class="th2" style='text-align:center;font-weight:bold;color:white;padding:5px;width:100px'>學號</div>
+			<div class="th2" style='text-align:center;font-weight:bold;color:white;padding:5px;width:100px'>姓名</div>
+			<div class="th2" style='text-align:center;font-weight:bold;color:white;padding:5px;width:100px'>手機</div>
+			<div class="th2" style='text-align:center;font-weight:bold;color:white;padding:5px;width:250px'>Email</div>
+		</div>
+    </div>
+
+	<div class="css-table" style='padding:5px;background-color:#ccffe5'>			
+		<div class="tr" style='' th:each="item : ${LStudent}">
+			<div class="td2" style='width:50px;text-align:center;border-bottom:1px #ffffff solid'><input type='checkbox' checked id='mobile' name='mobile'  th:value="${item.mobile_1}"></div>
+			<div class="td2" style='width:100px;border-bottom:1px #ffffff solid'></div>		
+			<div class="td2" style='width:100px;border-bottom:1px #ffffff solid' th:text="${item.student_no}"></div>
+			<div class="td2" style='width:100px;border-bottom:1px #ffffff solid' th:text="${item.ch_name}"></div>
+			<div class="td2" style='width:100px;border-bottom:1px #ffffff solid' th:text="${item.mobile_1}"></div>
+			<div class="td2" style='width:250px;border-bottom:1px #ffffff solid'><input type='text' th:value="${item.email_1}" style='width:250px'></div>
+		</div>
+    </div>
+        
+<!-- 	<div style='white-space:nowrap;text-align:center'>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">開始發送</button>&nbsp;&nbsp;
+	</div> -->
+</div>	
+</form>
+&nbsp;<p>
+&nbsp;<p>
+
+
+
+<script type="text/javascript">
+
+	$("#btnSave").click(function() {
+	    if($("#mobile").val()==''){
+	    	alert("請填寫類型!");
+		}else{
+			$("#form1").submit();
+		}	
+	});	
+	
+</script>

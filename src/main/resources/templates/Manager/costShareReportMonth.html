@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/orderChange">紀錄</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/costShare">學員費用</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/costShareReport">月報表</a></li>    
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/subjectCostShare">科目分攤比率</a></li>
+  </ul>
+</div> 
+<div>&nbsp;</div>
+	<div class="css-table" style="border-spacing:3px" id='myDataTalbe'>
+		<div class="tr">
+		    &#10074;<div class="td" style=""><A href="/Manager/costShareReport">月報表(進行中)</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Manager/costShareReportMonth">月報表(歷史存檔)</A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+<hr>
+<div th:utext="${fileName}"></div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+$("#titleWidth").width(170+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

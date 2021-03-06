@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+  <form id='form1' action="#" th:action="@{/My/AccountUpdate2}" th:object="${employee}" method="post" enctype="multipart/form-data">
+	<input type='hidden' th:field="*{employee_seq}">
+      <div id='myDataTalbe' style='border:1px #eeeeee solid;border-radius:5px;padding:3px;background-color:#ffefff'>  	
+		<div class="css-table">			
+		  <div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;vertical-align:top'>
+			        <div>&nbsp;</div>	
+					<div class="css-table">			
+						<div class="tr" style='font-size:small'>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>帳號</span><input type="text" style='border:0px' class="form-control" th:field="*{account0}" readonly/>
+							</div>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>* 密碼</span><input type="text"  id='drowssap' name='drowssap' class="form-control" value="**************" />
+							</div>
+						</div>
+						<div class="tr" style='font-size:small'>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>中文名</span><input type="text" style='border:0px' class="form-control" th:field="*{ch_name}" readonly/>
+							</div>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>英文名</span><input type="text" style='border:0px' class="form-control" th:field="*{en_name}" readonly/>
+							</div>
+						</div>						
+						<div class="tr" style='font-size:small'>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>部門</span><br> 
+									<select th:field="*{department}" class='form-control' disabled style='border:0px'>
+										<option value="">------------------</option>
+										<option th:selected="${item.id}"
+											th:each="item : ${departmentGroup}" th:value="${item.id}"
+											th:utext="${item.name}" />
+									</select>
+							</div>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>電話</span><input type="text" class="form-control" th:field="*{tel}" />
+							</div>
+						</div>
+						<div class="tr" style='font-size:small'>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>Email</span><input type="text" class="form-control" th:field="*{email}" style='width:230px' />
+							</div>
+							<div class="td2" style='padding:5px;width:230px'>
+									<span style='font-weight:bold'>分校</span><br> 
+									<select th:field="*{school}" class='form-control' style='border:0px' disabled>
+										<option value="">------------------</option>
+										<option th:selected="${item.code}" th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+									</select>
+							</div>
+						</div>
+						<div class="tr" style='font-size:small'>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>政龍帳號</span><input type="text" style='border:0px'class="form-control" readonly th:field="*{account}" />
+							</div>
+							<div class="td2" style='padding:5px'>
+									<span style='font-weight:bold'>建立者</span><input type="text" style='border:0px' class="form-control" th:field="*{creater}" readonly="readonly"/>
+							</div>
+						</div>				
+		           </div>
+				   <div style='padding:5px'>
+							<span><img src='/images/fb.png' style='width:22px'></span>&nbsp;<input type="text" th:field="*{fb}" style='width:350px;height:32px;border-radius:5px;border:1px #cccccc solid'/>
+				   </div>
+				   <div style='padding:5px'>
+							<span><img src='/images/line.png' style='width:22px'></span>&nbsp;<input type="text" th:field="*{line}" style='width:350px;height:32px;border-radius:5px;border:1px #cccccc solid'/>
+				   </div>		   
+		   </div> 
+	       <div class="td2"> 
+	            <div style='background-color:#ffefff;padding:5px;height:150px;width:200px'>
+	            	<img id="preview_progressbarTW_img"  th:src="@{${'/images/'+fileName}}" style='width:150px' src="#" />
+	            </div>
+	            <div><input type="file" id="progressbarTWInput" name="file"></div> 
+				<div style='border:1px #eeeeee solid;padding:5px;width:200px'>
+					<span style='font-weight:bold'>群組</span><br>
+					<span th:each="item: ${listAuthority}">
+							<span th:utext="${item}"></span>
+					</span>
+				</div>
+          </div>
+		</div>
+     </div>
+	</div>           																										
+	<div>
+		<div align='center'>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存 修 改</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;
+		</div>
+	</div>
+ </form>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+	$("#progressbarTWInput").change(function(){
+	  readURL(this);
+	});
+
+	function readURL(input){
+	  if(input.files && input.files[0]){
+	    var reader = new FileReader();
+	    reader.onload = function (e) {
+	       $("#preview_progressbarTW_img").attr('src', e.target.result);
+	    }
+	    reader.readAsDataURL(input.files[0]);
+	  }
+	}
+</script>
+
+<script>
+	$("#btnSave").click(function() {
+		if($("#drowssap").val()==""){
+			alert("請填寫密碼")
+		}else{
+			$("#form1").submit();
+		}	
+	});
+	$("#btnDisable").click(function() {
+		$('#employee_seq2').val($('#employee_seq').val());
+		if(confirm("確定停用此帳號?")){
+			$("#form2").submit();
+		}	
+	});
+	
+	$(document).ready(function() {
+		$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+	})	
+</script>
+

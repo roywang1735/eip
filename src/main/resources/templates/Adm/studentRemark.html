@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+ 
+  <div align='center'>
+      <div style='font-weight:bold;letter-spacing:5px'>新增學員備註</div>
+	  <div class="css-table" style='background-color:#D7F2D4;font-weight:bold;border:1px #cccccc solid'>
+	        <div class="tr">
+	           <div class="td2"><input type='text' class='form-control' id='comment' name='comment' style='width:250px'></div>
+			</div>  	 
+      </div>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary" onclick='commentUpdate()'>儲存</button>
+  </div>
+
+
+
+ 
+<script th:inline="javascript">
+
+function commentUpdate(){
+	$.ajax({
+		url : "/Adm/commentUpdate",
+		data : {
+			signRecordHistory_seq : [[${signRecordHistory_seq}]],
+			mockVideoHistory_seq  : [[${mockVideoHistory_seq}]],
+			mockBaseBook_seq      : [[${mockBaseBook_seq}]],
+			counselingBaseBook_seq: [[${counselingBaseBook_seq}]],
+			comment               : $('#comment').val()
+		},
+		dataType : "text",
+		success : function(data) {
+			window.close();
+			window.opener.GetAdmCalendarJob();					
+		}
+	});      	
+}	
+</script>

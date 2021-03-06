@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<body style='background-color:#FFFAF8'>  
+  <div align='center'>
+		<div style='border-color:#dddddd;border-width:1px;width:450px;background-color:white'>
+	        <div th:text="${category}" style='background-color:#FFFAF8;font-weight:bold;font-size:medium;letter-spacing:5px'></div>
+		    <div th:utext="${jobContent}" style='background-color:#FFFAF8'></div>	 
+		</div>  
+		<div style='width:450px;text-align:center'>
+				<button type="button" id="btnSave" class="btn btn-sm btn-primary">加 入</button>
+		</div>
+  </div>
+
+
+
+ 
+<script th:inline="javascript">
+$("#btnSave").click(function(){
+	var id='#'+[[${id}]];
+	var strAry = $("#jobContent2").val().split('\n');
+	var tmp ='';
+	for(var i=0;i<strAry.length;i++){		
+		tmp += 
+			"<div style='vertical-align:top;padding:0px'>"+
+			    "<A href='javascript:void(0)' style='padding:1px' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete2.png' height='10px'/></A><br>"+
+			    "<textarea name='"+[[${textareaName}]]+"' style='border:1px #eeeeee solid;padding:0px;overflow:hidden;height:20px;width:100%'>"+strAry[i]+"</textarea>"+
+			"</div>";
+	}
+
+	$('#'+[[${id}]],window.opener.document).append(tmp);
+	window.close();
+	
+})	
+</script>

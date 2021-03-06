@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Marketing/LectureSetting">建置講座</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting2?page=mkt">老師課表</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Marketing/LectureSetting"> 建置講座 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href="/Marketing/LectureCalendar"> 講座行事曆 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href="/Marketing/2/ActiveApply"> 活動報名表 </A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+<p>
+  <div style='border:1px #eeeeee solid;width:600px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					類別<br> 
+					<select id="category_id" class="form-control" onchange="subjectData(this.value)">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>					
+			</div>
+			<div class="td2" style='padding:5px'>
+					老師<br> 
+					<select id="teacher_id" class="form-control" style='width:130px'>
+							<option></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+					</select>			
+			</div>						
+		</div>
+	</div>						
+  </div>
+	<div align='center' style='width:600px'>
+		<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+		<span sec:authorize="hasAnyRole('cou','cou_mgr','mkt','mkt_mgr','approve_mgr')">
+		   <button type="button" class="btn btn-sm btn-success" onclick="location.href='/Marketing/LectureEdit'">&#8883;新增講座 </button>
+		</span>   
+	</div>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+		<div style='width:800px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr style='letter-spacing:2px'>
+					<th>日期</th>
+					<th>地點</th>					
+					<th>講座名稱</th>
+					<th>時間</th>
+					<th>類別</th>
+					<th>老師</th>			
+				</tr>
+			</thead>
+		  </table>
+	   </div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Marketing/getLectureList",
+				data : function(d) {
+					d.category_id = $("#category_id").val();
+					d.teacher_id  = $("#teacher_id").val();
+					d.active = 1;
+				},
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "lectureDate"}, 					 
+				{"data" : "location",
+					   "render" : function(data, type, row, meta) {	
+			 				return row.school_name+" "+data; 
+				        }					
+				},
+				{"data" : "lectureName",
+					   "render" : function(data, type, row, meta) {	
+			 				return "<A href='/Marketing/LectureEdit?lecture_id="+row.lecture_seq+"' style='color:blue;text-decoration:underline'>"+data+"</A>"; 
+				       }					
+				},
+				{"data" : "lectureTimeFrom","className" : "text-center",
+					   "render" : function(data, type, row, meta) {	
+			 				return data+"~"+row.lectureTimeTo; 
+				        }
+				},				
+				{"data" : "category_name","className" : "text-center"},
+				{"data" : "teacher_name","className" : "text-center"}
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

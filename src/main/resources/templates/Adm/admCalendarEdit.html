@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+		    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/admCalendar">行政行事曆</a></li>		
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/programSettingWait">排課表</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/classRemark">課程搜尋</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">	
+	  <div class="tr">
+	    &#10074;<div class="td" style=""><A href='/Adm/admCalendar'>行政行事曆</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Adm/admCalendarEdit'>行政行事曆-編輯</A></div><div class="td" style="width:20px"></div>
+	  </div>
+	</div>  
+	  <div class="css-table" style='background-color:#ffffff;margin-top:25px;margin-bottom:5px'>
+		<div class="tr">
+		    <div class="td" style='width:150px'>&nbsp;</div>
+			<div class="td" th:if="${school_code==null}">
+				<select  id='school_code' class="form-control" style='width:120px;background-color:#FFFFCC' onchange="GetAdmCalendarJob()">
+					<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code_self == item.code}"/>
+				</select>
+			</div>
+			<div class="td" th:if="${school_code!=null}">
+				<select  id='school_code' class="form-control" style='width:120px;background-color:#FFFFCC' onchange="GetAdmCalendarJob()">
+					<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}"/>
+				</select>
+			</div>			
+			<div class="td" style='width:30px'>&nbsp;</div>		
+			<div class="td"><button onclick="CalendarButton('left')" type="button" class="btn btn-secondary" style='font-size:large;padding:2px;background-color:#ffeeff;border:1px #dddddd solid;color:steelblue'>&nbsp;&#10094;&nbsp;</button></div>
+	        <div class="td" style='width:300px;text-align:center;font-weight:bold;vertical-align:middle;font-size:large;letter-spacing:3px'>
+	        	<span><input type='text' id='beginYear' th:value="${beginYear}" style='width:50px;border:0px'></span>年
+	        	<span><input type='text' id='beginMonth' th:value="${beginMonth}" style='width:27px;border:0px'></span>月
+	        	<span><input type='text' id='beginDay' th:value="${beginDay}" style='width:27px;border:0px'></span>日&nbsp;&nbsp;
+	        	<span><input type='text' id='weekName' th:value="${weekName}"  style='width:60px;border:0px'></span>
+	        </div>
+	        <div class="td"><button onclick="CalendarButton('right')" type="button" class="btn btn-secondary" style='font-size:large;padding:2px;background-color:#ffeeff;border:1px #dddddd solid;color:steelblue'>&nbsp;&#10095;&nbsp;</button></div>
+			<div class="td" style='width:50px'></div>
+			<div class="td" id='message' align='center' style=''></div>
+			<div class="td" style='width:100px'></div>
+			<div class="td" sec:authorize="hasAnyRole('adm_mgr','approve_mgr')">&#10074;<A href='/Adm/admRegularJob' style='text-decoration:underline;color:blue'>例行工作設置</A></div>		
+		</div>
+	  </div>
+	<form id='form1' action="#" th:action="@{/Adm/admCalendarUpdate}" method="post">
+	    <input type='hidden' name='school_code' id='school_code2'>
+	    <input type='hidden' name='yearMD' id='yearMD2'>
+	    <input type='hidden' name='editMode' value='1'>
+		<div id='myDataTalbe' style='background-color:#FFFAF8;width:1030px;margin-top:10px;border:1px #eeeeee solid;border-radius:5px' align='center'>
+		  <div id='jobArea' style='width:1010px;padding:3px;text-align:center'>
+		  	<!----------------->
+		  	<!----------------->
+		  </div>
+		</div>
+	</form> 	 
+    <div sec:authorize="hasAnyRole('adm','adm_mgr','approve_mgr')" style='width:1030px;background-color:#ffffff;padding:2px;text-align:center'>
+	  <button type="button" id="btnSave" class="btn btn-lg btn-primary expired" style='padding:2px'>&nbsp;&nbsp;&nbsp;儲&nbsp;&nbsp;存&nbsp;&nbsp;&nbsp;</button>
+    </div> 	
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div> 	 
+	
+<script th:inline="javascript">
+	$("#btnSave").click(function() {		
+		$("#school_code2").val($("#school_code").val());
+		$("#yearMD2").val($("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val());
+		
+		$("#form1").submit();
+	});
+	
+    $(document).ready(
+		function(){
+			if([[${saveMessage}]]){
+				alert("儲存成功!");
+			}
+			GetAdmCalendarJob();
+		}	
+	)
+
+	function GetAdmCalendarJob() {
+		 $(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		 });
+		
+		 $(document).ajaxStop(function(){
+			$('#message').text("");
+		 });	
+		
+		 $.ajax({
+			url : "/Adm/GetAdmCalendarJob",
+			data : {
+				beginYear   : $("#beginYear").val(),
+				beginMonth  : $("#beginMonth").val(),
+				beginDay    : $("#beginDay").val(),
+				school_code : $("#school_code").val(),
+				editMode    :  1
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#jobArea").html(data);
+				GetJobContentCode();
+				ExpiredCheck();
+			}
+		 });
+	}
+    
+//賦予已設定的工作者
+	function GetJobContentCode() {
+		 $(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		 });
+		
+		 $(document).ajaxStop(function(){
+			$('#message').text("");
+		 });	
+
+		 $.ajax({
+			url : "/Adm/GetJobContentCode",
+			data : {
+				school_code : $("#school_code").val(),
+				yearMD  : $("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val()
+			},
+			dataType : "text",
+			success : function(data) {
+				var strAry = data.split('@'); 
+				$('#a11').val(strAry[0]); $('#a12').val(strAry[1]); $('#a13').val(strAry[2]);
+				$('#a21').val(strAry[3]); $('#a22').val(strAry[4]); $('#a23').val(strAry[5]);
+				$('#a31').val(strAry[6]); $('#a32').val(strAry[7]); $('#a33').val(strAry[8]);
+				$('#a41').val(strAry[9]); $('#a42').val(strAry[10]); $('#a43').val(strAry[11]);
+				$('#a51').val(strAry[12]); $('#a52').val(strAry[13]); $('#a53').val(strAry[14]);
+				$('#a61').val(strAry[15]); $('#a62').val(strAry[16]); $('#a63').val(strAry[17]);				
+			}
+		 });		 
+	}
+	
+	function CalendarButton(direction){
+		if(direction=='left'){
+			var NowDay = $("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val();
+			getDate(NowDay,'-1');
+		}else if(direction=='right'){
+			var NowDay = $("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val();
+			getDate(NowDay,'1');			
+		}
+	}
+	
+	function getDate(NowDay,DayAdd) {
+			 $.ajax({
+				url : "/Adm/getDate",
+				data : {
+					NowDay : NowDay,
+					DayAdd : DayAdd				
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#beginYear").val(data.substring(0,4));
+					$("#beginMonth").val(data.substring(4,6));
+					$("#beginDay").val(data.substring(6,8));
+					$("#weekName").val(data.substring(8,11));
+					
+					GetAdmCalendarJob();
+				}
+			 });
+	}
+	
+	function addAdmJob(category){
+ 		var feature = "left=500,top=10,width=900,height=400";
+ 		var school_code = $("#school_code").val();
+ 	    window.open("/Adm/addAdmJob?category="+category+"&school_code="+school_code,"",feature); 		
+	}
+
+	function courseEdit(grade_seq,class_th){
+ 		var feature = "top=0,left=350,width=1120,height=700";
+ 	    window.open("/Course/newCourse?action=edit&grade_seq="+grade_seq+"&class_th="+class_th, "", feature);
+ 	}
+	
+	function ExpiredCheck(){
+		var dd   = new Date().getDate();
+		var mm   = new Date().getMonth()+1; 
+		var yyyy = new Date().getFullYear();
+		if(dd<10) {dd='0'+dd;} 
+		if(mm<10) {mm='0'+mm;} 
+		today = yyyy+mm+dd;	
+		var view_day = $("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val();
+		
+		//可修改
+		if(view_day>=today){
+			$(".expired").show();
+		//不可修改	
+		}else{
+			$(".expired").hide();
+		}
+	}
+	
+	function keepCheck(thisObj){
+		if($(thisObj).parent().find('#previousStatus').val()=='checked'){
+			thisObj.checked = true;
+		}
+	}
+	
+	function editClassJob(grade_id,class_th,job,textareaName){
+		var id = grade_id+class_th+job;
+ 		var feature = "left=500,top=10,width=500,height=300";
+ 		var school_code = $("#school_code").val();
+ 	    window.open("/Adm/addAdmJob?textareaName="+textareaName+"&category=3&school_code="+school_code+"&id="+id,"",feature); 
+	}
+	      	
+	
+	$("#titleWidth").width(170+$("#myDataTalbe").width()<1300?1300:170+$("#myDataTalbe").width());
+</script>
+

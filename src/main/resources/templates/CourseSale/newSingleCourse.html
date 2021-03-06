@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee solid;
+}
+</style>
+
+
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li><a href="/CourseSale/PromoSetting">促銷方案</a></li>
+		<li class="active"><a href="/CourseSale/SingleSaleSetting">售價設定</a></li>
+		<li><a href="/CourseSale/CourseCost">成本組合</a></li>
+	</ul>
+</div>
+&nbsp;
+<br>
+<div id="css-table" class="css-table" style="border-spacing: 3px">
+	<div class="tr">
+		<div class="td" style="background-color: lightyellow">
+			<A href='/CourseSale/SingleSaleSetting'>[ 單科售價 ]</A>
+		</div>
+		<div class="td" style="width: 20px"></div>
+		<div class="td">
+			<A href='/CourseSale/ComboSaleSetting'>[ 套裝售價 ]</A>
+		</div>
+		<div class="td" style="width: 20px"></div>
+		<div class="td">
+			<A href=''>[ 試聽售價 ]</A>
+		</div>
+		<div class="td" style="width: 20px"></div>
+	</div>
+</div>
+&nbsp;
+<p>
+<div class="row">
+	<div class="col-md-11">
+		<div class="panel panel-success" align='center'>
+			<div class="panel-heading" align='left'>
+				<h3 class="panel-title">新 增 單 科</h3>
+			</div>
+
+			<div id="css-table" class="css-table" style="border-spacing: 3px; width: 90%;">
+
+<!-- 名稱 -->
+				<div class="tr">
+					<div class="th" style="width: 50px; height: 55px;">名稱</div>
+					<div class="td dashedline" align='left' style="padding: 15px">
+						<input type="text" style="width: 250px" id="gradeName" />
+					</div>
+				</div>
+				
+<!-- 課程 -->				
+				<div class="tr">
+					<div class="th">課程</div>
+					<div class="td dashedline" align='left'>
+						<div class="row" style="padding: 5px">
+							<div class="col-md-8" style="min-height: 100px;">
+								<div style="height: 25px; color: #aaaaaa; padding: 1px">
+									<div class="col-md-6">科目</div>
+									<div class="col-md-2">任選</div>
+									<div class="col-md-2">定價</div>
+									<div class="col-md-2">講義</div>
+								</div>
+								<div id="subjectList" style="padding: 5px">
+									<!------------------->
+									<!------------------->
+								</div>
+							</div>
+							<div class="container-fluid col-md-1"></div>
+							<div class="container-fluid col-md-3">
+								<p>
+								<div id="css-table" class="css-table" style="padding: 5px; spacing: 5px;">
+									<div class="tr">
+										<div class="td" style="width: 130px;">
+											<select id='category' class="form-control"
+												onchange="subjectData(this.value)">
+												<option value="-1" selected>考科類別</option>
+												<option th:each="item : ${categoryGroup}"
+													th:value="${item.category_seq}" th:utext="${item.name}" />
+											</select>
+										</div>
+									</div>
+									<div class="tr">
+										<div class="td" style="width: 130px;">
+											<select id='subject' class="form-control">
+												<option value="" selected>科目</option>
+											</select>
+										</div>
+									</div>
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button" class="btn btn-sm btn-warning" onclick="AddCourseStr();">加入</button>
+											<button type="button" class="btn btn-sm btn-info" onclick="AddCourseStr('del');">重設</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+<!-- 教材 -->
+				<div class="tr">
+					<div class="th">教材</div>
+					<div class="td dashedline" align='left'>
+						<div class="row" style="padding: 5px">
+							<div class="col-md-8" style="min-height: 100px;">
+								<div style="height: 25px; color: #aaaaaa; padding: 1px">
+									<div class="col-md-6">教材</div>
+									<div class="col-md-2">原價</div>
+									<div class="col-md-2">售價</div>
+								</div>
+								<div id="materialList" style="padding:5px">
+									<!------------------->
+									<!------------------->
+								</div>
+							</div>
+							<div class="container-fluid col-md-1"></div>
+							<div class="container-fluid col-md-3">
+								<p>
+								<div id="css-table" class="css-table" style="padding: 5px; spacing: 5px;">
+									<div class="tr">
+										<div class="td" style="width: 130px;">
+											<select id='material' class="form-control">
+												<option value="" selected>教材</option>
+											</select>
+										</div>
+									</div>
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button" class="btn btn-sm btn-warning" onclick="AddMaterialStr();">加入</button>
+											<button type="button" class="btn btn-sm btn-info" onclick="AddMaterialStr('del');">重設</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+<!-- 模考 -->				
+				<div class="tr">
+					<div class="th">模考</div>
+					<div class="td dashedline" align='left'>
+						<div class="row" style="padding: 5px">
+							<div class="col-md-8" style="min-height: 100px;">
+								<div style="height: 25px; color: #aaaaaa; padding: 1px">
+									<div class="col-md-6">模考</div>
+									<div class="col-md-2">原價</div>
+									<div class="col-md-2">售價</div>
+								</div>
+								<div id="mockList" style="padding:5px">
+									<!------------------->
+									<!------------------->
+								</div>
+							</div>
+							<div class="container-fluid col-md-1"></div>
+							<div class="container-fluid col-md-3">
+								<p>
+								<div id="css-table" class="css-table" style="padding: 5px; spacing: 5px;">
+									<div class="tr">
+										<div class="td" style="width: 130px;">
+											<select id='mock' class="form-control">
+												<option value="" selected>模考</option>
+											</select>
+										</div>
+									</div>
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button" class="btn btn-sm btn-warning" onclick="AddMockStr();">加入</button>
+											<button type="button" class="btn btn-sm btn-info" onclick="AddMockStr('del');">重設</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+<!-- 輔導 -->				
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">輔導</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">贈品</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">他項</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">原價</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">售價</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">補課數</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+			</div>
+
+			<div class="col-md-7" align="center">
+				&nbsp;
+				<p>
+					<button type="button" id='draftSave' class="btn btn-sm btn-info">暫存草稿</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-sm btn-danger" onclick="">送審</button>
+					&nbsp;&nbsp;
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+	/* 	function getDate(clickDiv) {
+	 $(clickDiv).datepicker();
+	 $(clickDiv).datepicker('show');
+	 } */
+
+	function timeselector(clickDiv) {
+		$(clickDiv).timeselector();
+	}
+</script>
+
+<script>
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
+	$("#draftSave").click(function() {
+		$("#form1").submit();
+	});
+
+	function subjectData(category_id) {
+		if (category_id) {
+//課程			
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+//教材			
+			$.ajax({
+				url : "/Course/MaterialSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#material").html(data);
+				}
+			});		
+//模考
+			$.ajax({
+				url : "/Course/MockSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#mock").html(data);
+				}
+			});	
+		} else { alert("資料有誤!");}
+	}
+		
+
+	function AddCourseStr(del) {
+		 if(del){
+		    $("#subjectList").html("");
+		 }else{
+			$.ajax({
+				url : "/CourseSale/AddSubjectStr",
+				data : {
+					subject_seq : $("#subject").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subjectList").append(data);
+				}
+			});
+		 }
+	}
+
+	function AddMaterialStr(del) {
+		 if(del){
+			    $("#materialList").html("");
+		 }else{		
+			$.ajax({
+				url : "/CourseSale/AddMaterialStr",
+				data : {
+					material_seq : $("#material").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#materialList").append(data);
+				}
+			});
+		 }	
+	}
+	
+	function AddMockStr(del) {
+		 if(del){
+			    $("#mockList").html("");
+		 }else{			
+			$.ajax({
+				url : "/CourseSale/AddMockStr",
+				data : {
+					mock_seq : $("#mock").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#mockList").append(data);
+				}
+			});
+		 }	
+    }	
+	
+</script>

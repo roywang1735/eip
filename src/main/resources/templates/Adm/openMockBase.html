@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Adm/mockBaseSave}" method="post">
+  <input type="hidden" name='mockBaseTitle_seq' th:value = "${mockBaseTitle_seq}">
+  <input type="hidden" name='setDate' th:value = "${setDate}">
+  <div align='center' style=''>
+    <div th:utext = ${settingDate} style='font-weight:bold'></div>
+	<div class="css-table" style='border:1px #dddddd solid;font-weight:bold'>
+		<div class="tr">
+		    <div class="td2" style='padding:12px;width:80px;border-bottom:1px #dddddd solid;background-color:#ffffec;color:#777777'>回</div>
+		    <div class="td2" style='width:200px;border-bottom:1px #dddddd solid;padding:10px'>
+				<select  id='round' name='round' class="form-control" style='width:80px;background-color:#ffefff'>
+					<option value=''></option>
+					<option th:each="item : ${LTestRound}" th:value="${item.name}" th:utext="${item.name}"/>
+				</select>	    	
+		    </div>
+		</div>
+		<div class="tr" th:if="${Limit == null}">
+		    <div class="td2" style='padding:12px;border-bottom:1px #dddddd solid;background-color:#ffffec;vertical-align:middle;color:#777777'>時 段</div>
+		    <div class="td2" style='vertical-align:middle;border-bottom:1px #dddddd solid;padding:10px'>
+		        <input type='checkbox' name='slot' value='1' style='height:20px;width:20px'>&nbsp;早&nbsp;&nbsp;
+		        <input type='checkbox' name='slot' value='2' style='height:20px;width:20px'>&nbsp;午&nbsp;&nbsp;
+		        <input type='checkbox' name='slot' value='3' style='height:20px;width:20px'>&nbsp;晚   	
+		    </div>
+		</div>
+		<div class="tr" th:if="${Limit != null}">
+		    <div class="td2" style='padding:12px;width:80px;;border-bottom:1px #dddddd solid;background-color:#ffffec;vertical-align:middle;color:#777777'>人數<br>限制</div>
+		    <div class="td2" style=';width:200px;vertical-align:middle;border-bottom:1px #dddddd solid;padding:10px' th:utext=${Limit}></div>
+		</div> 		 	    
+	</div>
+	<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+</form>  
+
+<script>
+$("#btnSave").click(function() {
+	if($("#slot").val()==''){
+		alert("***請選取時段***");	
+	}else{
+		$("#form1").submit();
+	}	
+});
+</script>
+
+
+

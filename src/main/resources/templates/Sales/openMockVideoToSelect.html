@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+ 	<input type='hidden' id='Register_comboSale_seq' th:value='${Register_comboSale_seq}'>
+ 	<input type='hidden' id='Register_seq' th:value='${Register_seq}'>
+ 	<input type='hidden' id='comboSale_seq' th:value='${comboSale_seq}'>
+ 	<input type='hidden' id='subject_id' th:value='${subject_id}'>
+ 	<input type='hidden' id='parent_subject_id' th:value='${parent_subject_id}'>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+	<div class="css-table"  style='width:650px;margin:5px' align='center'>
+	  <div class="td2">
+	  	<span style='font-weight:bold'>學員選課分校 </span>
+	  	<span>
+	  		<select id='schoolCode' th:utext='${schoolStr}' style='letter-spacing:2px;background-color:lightyellow;padding:3px;border-radius:5px;width:100px;font-weight:bold' onchange="GetGradeToSelect('0')"></select>
+	  	</span> 	
+	  </div>	
+	</div>
+	
+	
+    <form>						
+	  <div id='gradeToSelDiv'  style='width:650px' align='center' >
+	    <!-------->
+	    
+	    <!-------->
+	  </div>	  
+      <div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='margin-top:10px' align='center'>   
+		 <button type="button" id="btnSave" class="btn btn-sm btn-success">儲 存</button>
+		 &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+      </div>    	  
+    </form>
+</div>    
+<div>&nbsp;</div>
+<div>&nbsp;</div>     
+<div>&nbsp;</div>
+<div>&nbsp;</div>  
+  
+<script th:inline="javascript"> 
+	$(document).ready(
+		function(){
+			GetMockVideoToSelect();
+		}		
+	)
+	
+    $("#btnSave").click(function() {
+        if(confirm("確定選取此期別?")){
+			$.ajax({
+				url : "/Sales/set_mock",
+				data : {
+					Register_seq : [[${Register_seq}]],
+					register_mock_seq : [[${register_mock_seq}]],
+			        grade_seq :  $("#grade_seq").val(),
+			        mockVideo_id : [[${mockVideo_id}]],
+			        schoolCode : $("#schoolCode").val(),
+			        student_seq : [[${student_seq}]],
+				},
+				dataType : "text",
+				success : function(data) {
+					alert("期別設定完成!")
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        }	
+	})
+    
+	function openGrade(data) {
+ 		var feature = "width=1000,height=800";
+ 	    window.open("/Course/newCourse?action=popView&grade_seq="+data, "", feature);
+ 	} 
+	
+
+	function GetMockVideoToSelect(){	
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});		
+		 $.ajax({
+			url : "/Sales/getMockVideoToSelect",
+			data : {
+				subject_id : [[${subject_id}]],
+				schoolCode : $("#schoolCode").val(),
+				student_seq : [[${student_seq}]],
+				register_mock_seq : $("#teacher_id").val(),
+				class_style : [[${class_style}]]
+			},
+			dataType : "text",
+			success : function(data) {
+					$("#gradeToSelDiv").html(data);			    
+			}
+		 });
+	}
+	
+</script>
+ 
+<style> 	
+ 	input[type="checkbox"] {
+ 		  cursor: pointer;
+ 		  -webkit-appearance: none;
+ 		  -moz-appearance: none;
+ 		  appearance: none;
+ 		  outline: 0;
+ 		  background: lightblue;
+ 		  height: 12px;
+ 		  width: 12px;
+ 		  border: 1px solid #888888;
+ 		}
+
+ 		input[type="checkbox"]:checked {
+ 		  background: #2aa1c0;
+ 		}
+
+ 		input[type="checkbox"]:hover {
+ 		  filter: brightness(90%);
+ 		}
+
+ 		input[type="checkbox"]:disabled {
+ 		  background: #e6e6e6;
+ 		  opacity: 0.6;
+ 		  pointer-events: none;
+ 		}
+ 		input[type="checkbox"]:after {
+ 			  content: '';
+ 			  position: relative;
+ 			  left: 35%;
+ 			  top: 22%;
+ 			  width: 15%;
+ 			  height: 50%;
+ 			  border: solid #fff;
+ 			  border-width: 0 3px 3px 0;
+ 			  transform: rotate(0deg);
+ 			  display: none;
+ 		}
+
+		input[type="checkbox"]:checked:after {
+		  display: block;
+		}
+
+		input[type="checkbox"]:disabled:after {
+		  border-color: #7b7b7b;
+		}
+</style>  			
+
+
+
+
+
+

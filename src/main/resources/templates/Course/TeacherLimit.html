@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>					
+
+  <script src="/js/jquery-1.9.1.min.js" type="text/javascript"></script> 
+  <script src="/js/moment.min.js" type="text/javascript"></script>
+  <script src="/js/fullcalendar.min.js" type="text/javascript"></script> 
+  <link rel="stylesheet" href="/css/fullcalendar.min.css">
+  <link rel="stylesheet" media="print" href="/css/fullcalendar.print.css">
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/Teacher">老師</a></li>
+	</ul>
+</div>
+&nbsp;<br>
+			<div class="css-table" style="border-spacing:3px">
+				<div class="tr">
+				    <div class="td" style='color:white;background-color:#F433FF;font-weight:bold;padding:3px' th:text="${session.teacher_name}"></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style=""><A href='/Course/TeacherProfile'> 基本資料 </A></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style=""><A href='/Course/TeacherSetting'> 課表 </A></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style="background-color:greenyellow"><A href='/Course/TeacherLimit'> 排課限制 </A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+
+&nbsp;<p>
+ <div style='background-color:#FFFFE0;width:400px;padding:2px;margin-left:20px'>
+	<div style='padding-left:20px;font-size:small;letter-spacing:2px;color:#004c99'>
+		✽ 點選行事曆日期區塊→設定該老師希望不排課及不排課時間
+	</div>
+ </div> 
+&nbsp;<p>
+<form id='form1' th:action="@{/Sales/ClassBookSave}" method="post">
+<!---------------------------------------------------------->
+<div id="calendar" style="color:gray;width:1100px;border-radius:10px;border-color:#ffffff;"></div>
+<!---------------------------------------------------------->
+</form>
+&nbsp;<p>
+&nbsp;<p>
+
+<style type="text/css">
+.fc-day-grid-event > .fc-content {
+   white-space: normal;
+   text-overflow: ellipsis;
+   max-height:50px;
+   font-size:small;
+   font-weight:normal;
+   color:brown;
+   margin-bottom:5px;
+   //background-color:#ccffe5;
+   
+}
+.fc-day-grid-event > .fc-content:hover {
+   max-height:none!important; 
+}
+.fc-today {
+    background: snow !important;
+    border-color:#eeeeee;
+}
+.fc-time{
+   display : none;
+}
+
+.fc-title{
+    font-size:small;
+    background:floralwhite;
+}
+
+
+.fc-event {
+    border-width: 0px; 
+}
+</style>
+
+
+<script>
+
+  $(document).ready(function() {
+    $('#calendar').fullCalendar({
+      events: {
+    	  url : '/sales/getNoClassEvent'
+      },     
+      selectable: true,
+      navLinks: true,     
+      dayClick: function(date, jsEvent, view) {
+    	  NoClass(date);
+      },      
+      
+      eventRender: function(event, element) { 
+        element.find('.fc-title').append(event.description);
+        element.find('.fc-title').append(event.description0);
+        var title = element.find( '.fc-title' );
+    	title.html( title.text() );
+      }     
+    });
+  });
+
+function NoClass(date){
+	var feature = "width=400,height=300";
+ 	window.open("/Course/noClass?dateSel="+date.format(),"",feature);		
+}
+
+</script>

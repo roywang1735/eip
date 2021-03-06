@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+ <br>					
+ <div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li class="active"><a href="/Sales/ClassBookHistory">預約紀錄</a></li>	
+	</ul>
+</div>
+<div>&nbsp;</div>
+		<div class="css-table" style="border-spacing:1px">
+			<div class="tr" style='background-color:#3e7e99'>
+			    <div class="th2" style='width:150px;;text-align:center;font-size:small;color:white;font-weight:bold'>學生</div>
+				<div class="th2" style='width:100px;;text-align:center;font-size:small;color:white;font-weight:bold'>上課日期</div>
+				<div class="th2" style='width:300px;text-align:center;font-size:small;color:white;font-weight:bold'>原課程</div>
+				<div class="th2" style='width:300px;text-align:center;font-size:small;color:white;font-weight:bold'>預約課程</div>
+				<div class="th2" style='width:100px;text-align:center;font-size:small;color:white;font-weight:bold'>Video點數</div>
+				<div class="th2" style='width:100px;text-align:center;font-size:small;color:white;font-weight:bold'>建立者</div>
+				<div class="th2" style='width:100px;text-align:center;font-size:small;color:white;font-weight:bold'>建立時間</div>
+			</div>
+        <div class="tr" th:each="SignRecordChange : ${LSignRecordChange}" style='font-size:small'>
+            <div class="td2" th:text="${SignRecordChange.student_id}" style='padding:4px;text-align:center;border-bottom:1px solid #eeeeee'></div> 
+            <div class="td2" th:text="${SignRecordChange.student_id}" style='text-align:center;border-bottom:1px solid #eeeeee'></div>           
+            <div class="td2" th:text="${SignRecordChange.fromClassStr}" style='text-align:center;border-bottom:1px solid #eeeeee'></div>           
+            <div class="td2" th:text="${SignRecordChange.toClassStr}" style='text-align:center;border-bottom:1px solid #eeeeee'></div>           
+            <div class="td2" th:text="${SignRecordChange.makeUpNoUsed}" style='text-align:center;border-bottom:1px solid #eeeeee'></div>
+            <div class="td2" th:text="${SignRecordChange.updater}" style='text-align:center;border-bottom:1px solid #eeeeee'></div> 
+            <div class="td2" th:text="${SignRecordChange.update_time}" style='text-align:center;border-bottom:1px solid #eeeeee'></div>                      
+        </div>			
+		</div>

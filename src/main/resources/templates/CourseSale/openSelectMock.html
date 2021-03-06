@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<body style='background-color:#ffefff'></body>  		
+ 		            <input type='hidden' id='category_id' th:value='${category_id}'>			
+ 					<input type='hidden' id='returnAreaId' th:value='${returnAreaId}'>
+                                <div>&nbsp;</div>
+                                <div>&nbsp;</div>
+								<div id="css-table" class="css-table" style="margin: 0px auto;">
+									<div class="tr"  style='height:50px'>
+										<div class="td" >
+											<select id='SelCategory_id' style="height:30px;width:150px;font-weight:bold" class="form-control" onchange="getSubItem(this.value)">
+												<option value="-1">~ 類別 ~</option>
+												<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+											</select>
+										</div>
+									</div>								
+									<div class="tr"  style='height:20px'>
+										<div class="td" >
+											<select id='mock_seq' style="width:250px;font-weight:bold" class="form-control">
+												<option value="-1"> ~ 模考 ~ </option>
+												<option th:each="item : ${LMock}"
+													th:value="${item.mock_seq}" th:utext="${item.mock_name}" />
+											</select>
+										</div>
+									</div>
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button"  style='margin-top:5px' class="btn-xs btn-warning" onclick="refreshParent();">加 入</button>
+										</div>
+									</div>
+								</div>
+
+
+
+
+<script>
+
+$(document).ready(
+		function byLoading() {
+		    var category_id = $("#category_id").val();
+			if(category_id){
+				$("#SelCategory_id").val(category_id);	
+				getSubItem(category_id);
+			}
+		}
+	)
+	
+   function getSubItem(category_id) {		
+		  $.ajax({
+			url : "/CourseSale/getMock",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				 $("#mock_seq").html(data);
+			}
+		 });
+    }
+
+function refreshParent() { 
+			var returnAreaId = window.opener.document.getElementsByClassName($("#returnAreaId").val());
+			
+			$(returnAreaId).append(
+					"<input type='hidden' name='mock_seq' value='"+$('#mock_seq').find(":selected").val()+"'>"+
+					" &bull;"+$('#mock_seq').find(":selected").text()+"<br>"
+			);			
+			window.close();
+    
+}
+</script>
+
+
+

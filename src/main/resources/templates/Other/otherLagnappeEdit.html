@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<div align='center'>
+<form id='form1' action="#" th:action="@{/Other/otherLagnappeEditSave}" th:object="${lagnappe}" method="post">
+  <input type="hidden" th:field="*{lagnappe_seq}">
+  <div style='border:1px #eeeeee solid;width:500px;border-radius:5px;background-color:#ffeeff;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;width:100px;font-weight:bold'>
+			         *名稱
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{lagnappe_name}" style='height:30px;border-radius:5px;border:1px #dddddd solid;width:250px'>     
+			 </div>
+		</div>							
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;width:100px;font-weight:bold'>
+			         *訂價     
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text" th:field="*{origin_price}" style='height:30px;border-radius:5px;border:1px #dddddd solid;width:120px'>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			         *售價     
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left'>			 	
+			 	     <input type="text"  th:field="*{sale_price}" style='height:30px;border-radius:5px;border:1px #dddddd solid;width:120px'>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			         發放條件     
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left;font-weight:bold'>			 	
+					<select th:field="*{payOffRelease}" class="form-control" style='width:200px'>
+						<option value="0"></option>
+						<option value="1">結清後領取</option>	
+						<option value="2">結清後系統自動發放</option>						
+					</select>    
+			 </div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='text-align:right;font-weight:bold'>
+			         *狀態
+			 </div>
+			 <div class="td2" style='padding:5px;text-align:left;font-weight:bold'>			 	
+					<select th:field="*{active}" class="form-control" style='width:100px'>
+						<option value="1">啟用</option>
+						<option value="0">停用</option>
+					</select>     
+			 </div>
+		</div>														           			
+	</div>
+  </div>
+  <div style='width:500px' align='center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" id="btnDelete" class="btn btn-sm btn-danger">刪 除</button>
+  </div> 
+</form>
+<form id='form2' action="#" th:action="@{/Other/LagnappeDelete}" method="post">
+	<input type="hidden" id='lagnappe_seq_del' name='lagnappe_seq_del'>
+</form>
+</div>   		
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+											
+<script>
+$("#btnSave").click(function() {
+	if($("#lagnappe_name").val()==''){
+		alert("***請輸入名稱***");
+	}else if($("#origin_price").val()==''){
+		alert("***請輸入訂價***");
+	}else if($("#sale_price").val()==''){
+		alert("***請輸入售價***");		
+	}else{
+		$("#form1").submit();
+	}	
+});
+
+$("#btnDelete").click(function() {
+	if(confirm("確認刪除? (請先確認無報名項目使用本贈品)")){
+		$("#lagnappe_seq_del").val($("#lagnappe_seq").val());
+		$("#form2").submit();
+	}	
+});
+</script>
+

@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<form id='form1' action="#" th:action="@{/Course/statusEditSave}"  method="post">
+    <input type='hidden' name='teacher_id' th:value='${teacher_id}'>
+    <input type='hidden' name='school_code' th:value='${school_code}'>
+	<input type='hidden' name='category_id' th:value='${category_id}'>
+	<input type='hidden' name='grade_id' th:value='${grade_id}'>
+
+	<div align='center'>
+	  <div style='font-weight:bold;letter-spacing:2px' th:utext='${name}'></div>
+	  <div style='border:1px #dddddd solid;width:300px;border-radius:5px;background-color:#ffeeff;padding:10px'>        
+		<div class="css-table" style='padding:5px'>			
+			<div class="tr">
+				<div class="td2" style='padding:5px;text-align:left'><input type='radio' name='FlowStatus' value='5' checked>正班下架</div>		
+			</div>
+			<div class="tr">
+				<div class="td2" style='padding:5px;text-align:left'><input type='radio' name='FlowStatus' value='8'> 正班/Video下架</div>			
+			</div>          			
+		</div>
+	  </div>
+	  <div style='width:300px' align='center' th:if="*{subject_seq==null}">
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+	  </div>
+	</div>      
+</form>  		
+											
+<script th:inline="javascript" type="text/javascript">
+	$("#btnSave").click(function() {
+		if(confirm("確定下架?")){
+			$("#form1").submit();
+		}	
+	});
+</script>
+

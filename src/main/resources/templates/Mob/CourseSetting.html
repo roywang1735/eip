@@ -1,0 +1,94 @@
+<meta name="viewport" content="width=device-width,initial-scale=1;charset=utf-8">
+<head th:include="/common/top_header_noMenu_Mob"></head>
+
+    <div>&nbsp;</div>
+    <div>
+		<table id="myDataTalbe" class="display" style='background-color:#eeeeee;font-size:14px'>
+			<thead>
+				<tr>
+					<th>狀態</th>
+					<th>分校</th>
+					<th>類別</th>
+					<th>期別</th>
+					<th>科目</th>
+				</tr>
+			</thead>
+		</table>
+    </div>
+    <div>&nbsp;</div>
+    <div>&nbsp;</div>
+    <div>&nbsp;</div>
+
+<script>
+	$("#menu-toggle").click(function(e) {
+	  e.preventDefault();
+	  $("#wrapper").toggleClass("toggled");
+	});
+</script>
+  
+<script>
+
+$(document).ready(function() {
+	DataTable();
+})
+
+function DataTable(){
+	let table = $('#myDataTalbe').DataTable({
+		"iDisplayLength": 10,
+		"order": [ 0, "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Course/getGradeList",
+			data : function(d) {
+				//d.category_id  = $("#category").val();
+			},											
+			dataSrc : function(data) {
+				return data;
+			},
+			error: function(){
+				 window.location.replace("/login");
+		    }			
+		},
+		"language": {loadingRecords: "<img src='/images/wait2.gif' style='width:25px'/> <span style='font-size:small'>讀 取 中 </span>"},	
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 			
+			{"data" : "status_name","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.status_code=='3'){
+						return "&nbsp;&nbsp;<img src='/images/wait.gif' height='15px'/>"+data;
+					}else{
+						return data;
+					}	
+				}						
+			},
+			{"data" : "school_name"}, 
+			{"data" : "category_name","className":"text-center"}, 
+			{"data" : "class_start_date",
+				"render" : function(data, type, row, meta) {
+					if(row.video_date){
+						return data+"<br>("+row.video_date+")";
+					}else{
+						return data;
+					}	
+				}				
+			},				
+			{"data" : "subject_name",
+				"render" : function(data, type, row, meta) {
+					if(row.class_style=='1'){
+						//return data+"<br>"+"(班內)";
+						return data+row.subjectContent_name+"<br><span style='color:#999999;font-size:x-small'>"+row.subject_abbr+"</span>";
+					}else if(row.class_style=='3'){
+						return data+row.subjectContent_name+"<span style='font-size:x-small;color:#999999'>&nbsp;(線上)</span><br><span style='color:#7777777;font-size:x-small'>"+row.subject_abbr+"</span>";
+					}	
+				}					
+			}
+		]
+	});
+};
+</script>
+
+

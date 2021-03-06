@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+ 	<input type='hidden' id='Register_comboSale_seq' th:value='${Register_comboSale_seq}'>
+ 	<input type='hidden' id='Register_seq' th:value='${Register_seq}'>
+ 	<input type='hidden' id='comboSale_seq' th:value='${comboSale_seq}'>
+ 	<input type='hidden' id='subject_id' th:value='${subject_id}'>
+ 	<input type='hidden' id='parent_subject_id' th:value='${parent_subject_id}'>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div id='message' align='left' style='margin-left:10px'></div>
+	<div class="css-table" align='center'>
+	  <div class="td2" style='width:600px;text-align:right'>
+	  	<span style='font-weight:bold'>學員選課分校 </span>
+	  	<span>
+	  		<select id='schoolCode' th:utext='${schoolStr}' style='letter-spacing:2px;background-color:lightyellow;padding:3px;border-radius:5px;width:100px;font-weight:bold' onchange="GetGradeToSelect('0')"></select>
+	  	</span>
+	  	<span style='font-weight:bold;margin-left:20px'>老師</span>
+		<span>
+				<select id="teacher_id" style='letter-spacing:2px;background-color:#ffeeff;padding:3px;border-radius:5px;width:100px;font-weight:bold' onchange="GetGradeToSelect('0')">
+					<option></option>
+					<option th:each="item : ${LSubjectTeacher}" th:value="${item.teacher_id}" th:utext="${item.teacher_name}" />
+				</select>				
+		</span>  	
+	  </div>	
+	</div>
+	
+	
+    <form>							
+	  <div id='gradeToSelDiv'>
+	    <!-------->
+	    
+	    <!-------->
+	  </div>	  
+     <div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='width:850px;margin-left:20px;margin-top:10px' align='center'>
+		 <span th:if="${parent_subject_id!=''}"><button type="button" id="btnSubjectCancel" class="btn btn-sm btn-danger" style='padding:0px'>&nbsp;&nbsp;&#8689; 改為原來[自由選]&nbsp;&nbsp;</button>&nbsp;&nbsp;&nbsp;&nbsp;</span>     
+		 <button type="button" id="btnSave" class="btn btn-sm btn-success">儲 存</button>
+		 &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重 設</button>
+     </div>	  
+    </form>
+    
+<div>&nbsp;</div>
+<div>&nbsp;</div>     
+<div>&nbsp;</div>
+<div>&nbsp;</div>  
+  
+<script th:inline="javascript"> 
+    function refreshParent(gradeNo2,gradeATimeStr) {
+        if(confirm("確定選取此期別?")){
+			$.ajax({
+				url : "/Sales/set_grade",
+				data : {
+					Register_comboSale_seq : $("#Register_comboSale_seq").val(),
+			        Register_seq : $("#Register_seq").val(),
+			        comboSale_seq : $("#comboSale_seq").val(),
+			        subject_id : $("#subject_id").val(),
+			        parent_subject_id : $("#parent_subject_id").val(),
+			        gradeATimeStr : gradeATimeStr,
+			        schoolCode : $("#schoolCode").val(),
+			        student_seq : [[${student_seq}]],
+			        gradeNo2 : gradeNo2 
+				},
+				dataType : "text",
+				success : function(data) {
+					alert("期別設定完成!")
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        }	
+	}
+    
+	function openGrade(data) {
+ 		var feature = "width=1000,height=800";
+ 	    window.open("/Course/newCourse?action=popView&grade_seq="+data,"",feature);
+ 	} 
+	
+	$("#btnSave").click(function() {
+		    var gradeATimeStr = "";
+		    $('input[name="gradeATime"]:checked').each(		    		
+		    	function() {
+		    		gradeATimeStr += this.value+"^"; //grade_seq@class_no@class_style@gradeNo2@gradeNoATime@teacher_id
+			    }
+		    );
+		    if(gradeATimeStr==''){
+		    	alert("請選取期別!");
+		    	return;
+		    }
+		    var mySplitResult = gradeATimeStr.split("^");
+		    var gradeNo2 = mySplitResult[0].split("@")[3];
+		    var gradeNoATime = mySplitResult[0].split("@")[4];
+		    var teacher_id = mySplitResult[0].split("@")[5];
+		    var teacher_id_ori = [[${teacher_id}]];
+		    if(teacher_id_ori!='-1'){ //已選班級的老師
+		    	teacher_id = teacher_id_ori;
+		    }
+		    for(var a=0;a<mySplitResult.length-1;a++) {
+		    	//檢視是否相同老師
+		    	if(a>0){
+			    	if(mySplitResult[a].split("@")[5] != teacher_id){
+			    		alert("請選取同一個老師");
+			    		return;
+			    	}
+		    	}	
+		    	//檢視應選同選是否格式正確
+		    	if(mySplitResult[a].split("@")[3] == '-' || mySplitResult[a].split("@")[4] == '-'){
+		    		alert("請至[課程設置]>[科目]>[老師&期別], 設定應選/同選期別");
+		    		return;
+		    	}		    	
+		    }
+
+	    	var gradeNoLeft = [[${gradeNoLeft}]];
+	    	if(gradeNoLeft != '-99'){
+	    		gradeNo2 = gradeNoLeft; //使用Register_comboSale.gradeNoLeft取代應選期別
+	    	}
+	    	if(mySplitResult.length-1 > gradeNoLeft && gradeNoLeft!='-99'){
+	    			alert("只能選取"+gradeNoLeft+"個期別");
+	        }else if((mySplitResult.length-1) < gradeNoATime && gradeNoLeft=='-99'){
+		    		alert("請同時選取"+gradeNoATime+"個期別");
+		    }else{
+		    	refreshParent(gradeNo2,gradeATimeStr); 
+		    }		   
+	})
+	
+	$("#btnSubjectCancel").click(function() {
+        if(confirm("確定回自由選重新選取科目?")){
+			$.ajax({
+				url : "/Sales/bookSubjectCancel",
+				data : {
+					Register_comboSale_seq : $("#Register_comboSale_seq").val(),
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        }			
+	})
+
+
+	$(document).ready(
+		function(){
+			//將原來已選班級老師帶入
+			var teacher_id_ori = [[${teacher_id}]];
+			if(teacher_id_ori!='-1'){
+				$("#teacher_id").val(teacher_id_ori);
+			}
+			GetGradeToSelect('0'); //初始值不指定
+		}		
+	)
+	
+	function checkTeacherSel(obj){
+		//老師未選時需重新篩選
+		if($("#teacher_id").val()==''){
+			var ar = new Array(); //定義一陣列
+			ar = obj.value.split("@")[5];
+			$("#teacher_id").val(ar);
+			//GetGradeToSelect('0',obj.value);
+		}	
+	}
+
+	function GetGradeToSelect(section,objValue){
+		var sameTeacher = 0;
+		for(i=0;i<document.getElementsByName("gradeATime").length;i++){
+			document.getElementsByName("gradeATime")[i].disabled = true;
+			sameTeacher = 1;
+		}
+		
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});		
+		 $.ajax({
+			url : "/Sales/getGradeToSelect",
+			data : {
+				section : section, //0為初始值
+				subject_id : $("#subject_id").val(),
+				schoolCode : $("#schoolCode").val(),
+				student_seq : [[${student_seq}]],
+				teacher_id : $("#teacher_id").val(),
+				class_style : [[${class_style}]]
+			},
+			dataType : "text",
+			success : function(data) {
+				if(section=='0'){
+					$("#gradeToSelDiv").html(data);
+				}else if(section=='1'){
+					$("#more1").html(data);
+					$('.more1').text("");
+				}else if(section=='2'){
+					$("#more2").html(data);
+					$('.more2').text("");
+				}
+				for(i=0;i<document.getElementsByName("gradeATime").length;i++){
+					document.getElementsByName("gradeATime")[i].disabled = false;
+					if(document.getElementsByName("gradeATime")[i].value == objValue){
+						document.getElementsByName("gradeATime")[i].checked = true; //再次勾上原來選的老師
+					}
+				}			    
+			}
+		 });
+	}
+	
+	function GetMore(section,objValue){
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});		
+		 $.ajax({
+			url : "/Sales/getGradeToSelect",
+			data : {
+				section : section,
+				subject_id : $("#subject_id").val(),
+				schoolCode : $("#schoolCode").val(),
+				student_seq : [[${student_seq}]],
+				teacher_id : $("#teacher_id").val(),
+				class_style : [[${class_style}]]
+			},
+			dataType : "text",
+			success : function(data) {
+				if(section=='0'){
+					$("#gradeToSelDiv").html(data);
+				}else if(section=='1'){
+					$("#more1").html(data);
+					$('.more1').text("");
+				}else if(section=='2'){
+					$("#more2").html(data);
+					$('.more2').text("");
+				}			    
+			}
+		 });
+	}	
+
+ 	function View1(thisId){
+		    if($(thisId).text()=='+'){
+		    	$(thisId).html("&minus;");
+		    	$(thisId).parent().parent().parent().find('.child1').show();
+		    }else if($(thisId).text()=='−'){
+		    	$(thisId).html("&plus;");
+		    	$(thisId).parent().parent().parent().find('.child1').hide();
+		    } 		
+	}
+ 	function View3(thisId){
+	    if($(thisId).text()=='+'){
+	    	$(thisId).html("&minus;");
+	    	$(thisId).parent().parent().parent().find('.child3').show();
+	    }else if($(thisId).text()=='−'){
+	    	$(thisId).html("&plus;");
+	    	$(thisId).parent().parent().parent().find('.child3').hide();
+	    } 		
+	}
+</script>
+ 
+<style> 	
+ 	input[type="checkbox"] {
+ 		  cursor: pointer;
+ 		  -webkit-appearance: none;
+ 		  -moz-appearance: none;
+ 		  appearance: none;
+ 		  outline: 0;
+ 		  background: lightblue;
+ 		  height: 12px;
+ 		  width: 12px;
+ 		  border: 1px solid #888888;
+ 		}
+
+ 		input[type="checkbox"]:checked {
+ 		  background: #2aa1c0;
+ 		}
+
+ 		input[type="checkbox"]:hover {
+ 		  filter: brightness(90%);
+ 		}
+
+ 		input[type="checkbox"]:disabled {
+ 		  background: #e6e6e6;
+ 		  opacity: 0.6;
+ 		  pointer-events: none;
+ 		}
+ 		input[type="checkbox"]:after {
+ 			  content: '';
+ 			  position: relative;
+ 			  left: 35%;
+ 			  top: 22%;
+ 			  width: 15%;
+ 			  height: 50%;
+ 			  border: solid #fff;
+ 			  border-width: 0 3px 3px 0;
+ 			  transform: rotate(0deg);
+ 			  display: none;
+ 		}
+
+		input[type="checkbox"]:checked:after {
+		  display: block;
+		}
+
+		input[type="checkbox"]:disabled:after {
+		  border-color: #7b7b7b;
+		}
+</style>  			
+
+
+
+
+
+

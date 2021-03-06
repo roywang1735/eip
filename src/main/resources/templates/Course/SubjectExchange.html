@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/LectureSetting">講座設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/Teacher">老師</a></li>
+	</ul>
+</div>
+			<div class="css-table" style="border-spacing:3px">
+				<div class="tr">
+				    &#10074;<div class="td"><A href='/Course/SubjectSetting'> 科目 </A></div><div class="td" style="width:20px"></div>
+					&#10074;<div class="td" style="background-color:greenyellow"><A href='/Course/SubjectExchange'> 科目互換 </A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+&nbsp;<p>
+
+<div class="css-table">
+  <div class="tr">
+    <div class="td2" style='vertical-align:bottom'>
+      <div style='background-color:#FFFFE0;width:440px;padding:5px'>
+	     <div style='padding-left:5px;font-size:small;letter-spacing:2px;color:#004c99'>
+	           &#10045; 先選取[類別], 再選取[科目], 便可加入科目, 左右兩個區塊為可互換的科目, 學員欲更換科目時, 請先確認取消已訂期別!
+	           &nbsp;<br>        
+	     </div>
+      </div> 
+    </div> 
+</div> 
+&nbsp;<p> 
+<form id='form1' action="#" th:action="@{/Course/subjectExchangeSave}"  method="post">  
+		<div style=''>
+			<select id='category_id' class="form-control title" style='width:120px;font-weight:bold' onchange="subjectData(this.value)">
+				<option value="-1"  selected> ~ 類別 ~</option>
+				<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+			</select>
+		</div>
+&nbsp;<p>
+  <div style='margin-left:100px'>     
+	<div class="css-table" style='padding:0px'>			
+		<div class="tr">
+			<div class="td" style='width:280px'>
+						<select id='subject_id_1' style='width:150px;padding:3px;border-radius:5px;font-size:small;margin-left:30px'>
+							<option value="-1"  selected> ~ 科目 1 ~</option>
+						</select>
+						<button type='button' style='font-size:x-small' class='btn-xs btn-info' onclick='AddSubject_1();'>加入</button>
+										
+			</div>
+			<div class="th"></div>		
+			<div class="td" style='width:280px'>					
+						<select id='subject_id_2' style='width:150px;padding:3px;border-radius:5px;font-size:small;margin-left:30px'>
+							<option value="-1"  selected> ~ 科目 2 ~</option>
+						</select>
+						<button type='button' style='font-size:x-small' class='btn-xs btn-info' onclick='AddSubject_2();'>加入</button>									
+			</div>
+		</div>		
+
+		<div class="tr">
+			<div class="td" id='subject_1' style='padding:5px;height:150px;background-color:lightgray'></div>		
+			<div class="td" style='padding:5px;font-size:large;vertical-align:middle'>&xhArr;</div>
+			<div class="td" id='subject_2' style='padding:5px;background-color:palegreen'>
+			</div>
+		</div>		
+	</div>	
+  </div>
+  <div style='width:580px;margin-left:100px' align='center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設" />
+  </div>
+</form>  		
+
+&nbsp;<p>
+&nbsp;<p>
+	<div style='width:780px'>			
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+				  <th style='width:300px'>科目 1</th>
+				  <th style='width:300px'>科目 2</th>
+				  <th style='width:90px'>建立者</th>
+				  <th style='width:90px'>日期</th>
+				</tr>
+			</thead>
+		</table>
+	 </div>	
+
+&nbsp;<p>
+&nbsp;<p>											
+<script>
+$("#btnSave").click(function() {
+	if($("#subject_id_1").val()=='' || $("#subject_id_2").val()==''){
+		alert("***請選取科目***");
+	}else{
+		$("#form1").submit();
+	}	
+});
+
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Course/getSubjectExchange",
+			data : {
+				//comboSale_seq : $("#comboSale_seq").val()
+			},			
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "subject_1_str"}, 					
+			{"data" : "subject_2_str"},
+		    {"data" : "creater"},
+		    {"data" : "update_time"}
+		]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+}); 
+
+function subjectData(category_id) {
+	if (category_id) {
+		$.ajax({
+			url : "/Course/SubjectSearch",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#subject_id_1").html(data);
+				$("#subject_id_2").html(data);
+			}
+		});
+	} else {
+		$("#subject").html("<option></option>");
+	}
+}
+
+function AddSubject_1(){
+	 var subjectName = $("#subject_id_1 :selected").text();
+	 var subjectId = $("#subject_id_1").val();	 
+	 $("#subject_1").append("<div><input type='hidden' name='subject_id_1' value='"+subjectId+"'><span  style='border-radius:5px;border:1px #ff9933 solid;font-size:small;color:darkblue;background-color:white'>&nbsp;"+subjectName+"&nbsp;</span></div>");
+}
+
+function AddSubject_2(){
+	 var subjectName = $("#subject_id_2 :selected").text();
+	 var subjectId = $("#subject_id_2").val();	 
+	 $("#subject_2").append("<div><input type='hidden' name='subject_id_2' value='"+subjectId+"'><span  style='border-radius:5px;border:1px #ff9933 solid;font-size:small;color:darkblue;background-color:white'>&nbsp;"+subjectName+"&nbsp;</span></div>");
+}
+</script>
+

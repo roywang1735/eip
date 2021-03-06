@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Sales/studentExperienceSave}" th:object="${studentExperience}" method="post">
+  <input type='hidden' name='student_seq' th:value='${student_seq}'>	
+  <div id='myDataTalbe' style='border:1px #eeeeee solid;width:600px;border-radius:5px;background-color:#ffeeff;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:200px'>學生</div>		
+			<div class="td2" style='padding:5px;width:600px;color:yellowgreen;font-weight:bold' th:text="${ch_name}"></div>
+		</div>			
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>*歷程類別</div>
+			<div class="td2" style='padding:5px'>
+					<select th:field="*{experience_id}" class="form-control" style='width:120px'>
+						<option value=''></option>
+						<option th:each="item:${LExperienceHistory}" th:value="${item.experience_id}" th:utext="${item.experience_name}" />
+					</select>			
+			</div>					
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>狀態</div>
+			<div class="td2" style='padding:5px'>
+				<input type="text" class="form-control" th:field="*{experience_state}" style='width:200px'/>
+			</div>					
+		</div>		
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>*內 容</div>
+			<div class="td2" style='padding:5px'>
+				<input type="text" class="form-control" th:field="*{experience_content}" style='width:400px'/>	
+			</div>					
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>分校</div>
+			<div class="td2" style='padding:5px'>
+				<input type="text" class="form-control" th:field="*{school_name}" style='width:100px' readonly />	
+			</div>					
+		</div>		
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>效期</div>
+			<div class="td2" style='padding:5px'>
+				<input type="text" class="form-control" th:field="*{validDate}" style='width:200px' readonly />	
+			</div>					
+		</div>		
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>更新者</div>
+			<div class="td2" style='padding:5px'>
+				<input type="text" class="form-control" th:field="*{creater}" style='width:100px' readonly />	
+			</div>					
+		</div>		
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>更新時間</div>
+			<div class="td2" style='padding:5px'>
+				<input type="text" class="form-control" th:field="*{createTime}" style='width:200px' readonly />	
+			</div>					
+		</div>
+	</div>
+  </div>
+  <div style='width:600px' align='center'>
+		<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲存</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+  </div>
+</form>  		
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+											
+<script>
+$("#btnSave").click(function() {
+	if($("#experience_id").val()==''){
+		alert("***請選取歷程類別***");
+	}else if($("#experience_content").val()==''){
+		alert("***請填寫內容***");		
+	}else{
+		$("#form1").submit();
+	}	
+});
+	
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>
+

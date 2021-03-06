@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/AccountSearch'> 帳號搜尋 </A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/groupAuthority'> 群組權限 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>  
+<form>
+  <div style='border:1px #eeeeee solid;width:620px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					中文名<br>
+					<input type="text" class="form-control" name="ch_name" style='width:100px' />
+			</div>
+			<div class="td2" style='padding:5px'>
+					英文名<br>
+					<input type="text" class="form-control" name="en_name" style='width:120px' />			
+			</div>
+			<div class="td2" style='padding:5px'>
+					分校<br>
+					<select id="school" class="form-control" style='width:120px'>
+						<option value=""></option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:220px'>
+					部門<br>
+					<select id="department" class="form-control" style='width:100px'>
+						<option value=""></option>
+						<option th:each="item : ${departmentGroup}" th:value="${item.id}" th:utext="${item.name}" />
+				    </select>	
+			</div>	
+			<div class="td2" style='padding:5px;width:120px'>
+					狀態<br>
+					<select id="enabled" class="form-control" style='width:100px'>
+						<option value="1">啟用</option>
+						<option value="0">停用</option>
+				    </select>	
+			</div>								
+		</div>
+	</div>
+  </div>
+  <div  align='center' style='width:700px;'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-success" onclick="location.href='/System/AccountCreate'">&#8883;新增帳號 </button>
+  </div>
+ </form> 
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+
+			<div style='width:1000px'>
+				<table id="myDataTalbe" class="display">
+					<thead>
+						<tr style='letter-spacing:2px'>
+							<th>帳號</th>
+							<th style='color:#aaaaaa'>政龍帳號</th>
+							<th>中文名</th>
+							<th>英文名</th>
+							<th>分校</th>
+							<th>部門</th>
+							<th>群組</th>
+							<th>電話</th>
+							<th>Email</th>
+							<th>狀態</th>							
+						</tr>
+					</thead>
+				</table>
+			</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"iDisplayLength": 20,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/System/getEmployee",
+				data : function(d) {
+					d.en_name    = $("input[name=en_name]").val();
+					d.ch_name    = $("input[name=ch_name]").val();
+					d.school     = $("#school").val();
+					d.tel        = $("input[name=tel]").val();
+					d.email      = $("input[name=email]").val();
+					d.department = $("#department").val();
+					d.enabled    = $("#enabled").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "account0",
+					"render" : function(data, type, row, meta) {
+						return "<A href='/System/AccountView?employee_seq="+row.employee_seq+"' style='color:blue;text-decoration:underline'>"+data+"</A>";
+					}					
+				},
+				{"data" : "account"}, 
+				{"data" : "ch_name"}, 
+				{"data" : "en_name"}, 
+				{"data" : "schoolName","className":"text-center"}, 
+				{"data" : "department","className":"text-center"}, 
+				{"data" : "authority_name"}, 
+				{"data" : "tel"}, 
+				{"data" : "email"}, 
+				{"data" : "enabled","className":"text-center",
+					"render" : function(data, type, full, meta) {
+						if(data==1){
+							return "啟用";
+						}else if(data==0){
+							return "停用";
+						}
+					}				
+			    }, 
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

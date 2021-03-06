@@ -1,0 +1,63 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq},firstPage=1)}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>		
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>
+</div>
+
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/StudentProfile?student_seq='+${student_seq}+'>基本資料</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="background-color:#eeeeee" th:utext="'<A href=/Sales/Rotation?student_seq='+${student_seq}+'>輪值</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/studentContract?student_seq='+${student_seq}+'>合約書</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/JL_History?student_seq='+${student_seq}+'>政龍資料</A>'"></div>	    
+	</div>
+</div>
+
+<div>&nbsp;</div>
+     
+ <div align='left' id='myDataTalbe'>     	 
+	<div style='font-weight:bold;letter-spacing:10px;text-align:left;'>&#8226;輪值<span style='font-weight:normal;letter-spacing:1px'>( 藍色表示在有效時間內及繳費未結清之項目 )</span></div>
+	<div style='overflow:auto;height:525px;background-color:#ffffff;border:1px #eeeeee solid;width:1080px;padding:10px;border-radius:5px;text-align:left'>  
+	  <div class="css-table" style='background-color:#ffffff;border-spacing:1px;'>	
+		<div class="tr" style='background-color:#7ba6b6;height:10px'>
+		    <div class="td2" style='color:#ffffff;text-align:center;width:100px;letter-spacing:7px'>承辦</div>
+		    <div class="td2" style='color:#ffffff;text-align:center;width:130px;letter-spacing:7px'>建立時間</div>
+		    <div class="td2" style='color:#ffffff;text-align:center;width:120px;letter-spacing:7px'>有效時間</div>
+	        <div class="td2" style='color:#ffffff;text-align:center;width:140px;letter-spacing:7px'>類別</div>
+	        <div class="td2" style='color:#ffffff;text-align:center;width:100px;letter-spacing:7px'>狀態</div>
+	        <div class="td2" style='color:#ffffff;text-align:center;width:100px;letter-spacing:7px'>分校</div>
+	        <div class="td2" style='color:#ffffff;text-align:center;width:120px;letter-spacing:7px'>諮詢課程</div>
+	        <div class="td2" style='color:#ffffff;text-align:center;width:270px;letter-spacing:7px'>諮詢內容</div>	       							
+		</div>   							
+	  </div> 
+	  <div style='border-spacing:1px;' class="css-table" th:utext="${rotationStr}"></div>		  
+	 </div>			 
+  </div>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+		 
+<script>
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+

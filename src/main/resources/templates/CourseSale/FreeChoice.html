@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee solid;
+}
+</style>
+
+<body style='background-color:#FAFAD2'>
+			<div class="css-table" style="background-color:#ffffff;border-spacing: 3px; width: 90%;">
+			<!-- 名稱 -->
+				<div class="tr">
+					<div class="td dashedline" align='center' style="padding:5px">
+						<div style='background-color:#ffeeff'><div class="th" style='color:blue;font-weight:bold'>自由選</div></div>
+					</div>
+				</div>			
+				<div class="tr">
+					<div class="td dashedline" align='left' style="padding:5px">
+                         <div>
+								<div class='tr'>
+									<div class='td' style='width:200px;font-size:x-small'>課程</div>
+									<div class='td' style='width:100px;font-size:x-small'>原價</div>
+									<div class='td' style='width:100px;font-size:x-small'>售價</div>					
+								</div>
+								<div th:each="comboSale_subject:${comboSale_subject}">
+								<div class='tr' style="padding:5px;height:20px;">
+									<!------------------->
+			                          <div class='td' th:utext="${comboSale_subject.subject_name}" style='width:200px;font-weight: bold; color:darkblue;background-color:#ffeeff;border: 1px #eeeeee solid; padding-top:2px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_subject.origin_price}" style='width:100px;border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>
+                                      <div class='td' th:text="${comboSale_subject.sale_price=='-1'?'-':comboSale_subject.sale_price}" style='width:100px;border: 1px ffeeff solid; padding-top:5px; border-top:0px'/>								
+									<!------------------->
+								</div>
+								<div>
+									      <div th:utext="${comboSale_subject.gradeStr}"></div>
+								</div>
+								</div>					    
+				         </div> 
+				   </div>
+				</div>	
+		 </div>
+
+&nbsp;<p>
+&nbsp;<p>
+
+		
+
+

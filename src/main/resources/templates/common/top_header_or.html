@@ -1,0 +1,104 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.3/sweetalert2.css" />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.3/sweetalert2.js" type="text/javascript"></script>
+   
+
+
+
+<link href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+<link href="/webjars/datatables/1.10.16/css/jquery.dataTables.min.css"
+	rel="stylesheet">
+<script src="/webjars/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<link href="https://www.jqueryscript.net/demo/time-picker-mouse-keyboard-interactions/theme/jquery.timeselector.css" rel="stylesheet">
+<script src="https://www.jqueryscript.net/demo/time-picker-mouse-keyboard-interactions/jquery.timeselector.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<div class="navbar navbar-duomi navbar-static-top" role="navigation" style="background-color:DodgerBlue;">
+	<div class="container-fluid" th:include="/common/top"></div>
+</div>
+
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<style type="text/css">
+    .css-table{
+        display: table;
+         border-radius: 5px;
+    }
+    .css-table .thead{
+        display:table-header-group;
+    }
+    .css-table .tbody{
+        display:table-row-group;
+    }
+    .css-table .tr{
+        display:table-row;
+    }
+    .css-table .th{
+        display:table-cell;
+        font-weight: bold;
+        border-radius: 5px;
+        vertical-align: middle;
+        letter-spacing: 4px;
+        color:#999999
+    }
+    .css-table .th1{
+        display:table-cell;
+        border-radius: 5px;
+        vertical-align: middle;
+        letter-spacing: 4px;
+        color:#999999
+    }
+    .css-table .th2{
+        display:table-cell;
+        border-radius: 3px;
+        letter-spacing: 3px;
+        padding:5px;
+        font-size:small;
+        color:#000000
+    }
+    .css-table .th3{
+        display:table-cell;
+        border-radius: 2px;
+        letter-spacing: 0px;
+        padding:1px;
+        text-align:left;
+        font-size:small;
+        color:#000000
+    }          
+    .css-table .td{
+        display:table-cell;
+        border-radius: 5px;
+    }
+
+    .css-table .td2{
+        letter-spacing: 1px;
+        display:table-cell;
+        border-radius: 0px;
+    }
+    .help-block{
+    	color:red;
+    	font-weight:bold;
+    	font-size:x-small;
+    }         
+</style>
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2" th:include="/common/menu"></div>
+		<div class="col-md-10">

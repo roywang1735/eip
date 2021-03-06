@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/Teacher">老師</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting3">課表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/MockSetting">模考</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/CourseSale/CounselingCost">充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/BillBoard">國定假日</a></li>    	
+	</ul>
+</div>
+<form>
+  <div style='width:600px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+				宣傳名<input type="text" class="form-control" name="name" />
+			</div>
+			<div class="td2" style='padding:5px'>
+				本名<input type="text" class="form-control" name="realName" />				
+			</div>
+			<div class="td2" style='padding:5px'>
+				代碼<input type="text" class="form-control" name="code"/>															
+			</div>
+		</div>
+	</div>
+  </div>
+  <div style='width:600px;text-align:center'>
+	<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+	<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<button type="button" class="btn btn-sm btn-success" onclick="location.href='/Course/TeacherProfile?teacher_id=-1'">&#8883;新增老師 </button>  
+  </div>										
+</form>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+				<div style='width:700px'>
+				  <table id="myDataTalbe" class="display">
+					<thead>
+						<tr>
+							<th>Seq.</th>
+							<th>宣傳名</th>
+							<th>虛擬</th>
+							<th>代碼</th>
+							<th>本名</th>
+							<th>手機</th>
+							<th>狀態</th>				
+							<th>編輯</th>
+						</tr>
+					</thead>
+				</table>
+			   </div>	
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			dom: "<'row'<'col-sm-3'l><'col-sm-3'f><'col-sm-6'p>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
+			"iDisplayLength": 20,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getTeacherAll",
+				data : function(d) {
+					d.name    = $("input[name=name]").val();
+					d.realName    = $("input[name=realName]").val();
+					d.code = $("input[name=code]").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "teacher_seq"}, 
+				{"data" : "name",
+					"render" : function(data, type, full, meta) {
+						return data;
+				    }
+				},	
+				{"data" : "virtual_teacher","className" : "text-center",
+					"render" : function(data, type, full, meta) {
+						if(data==1){
+							return "Y";
+						}else{
+							return "";
+						}
+				    }
+				},				
+				{"data" : "code"}, 
+				{"data" : "realName"},
+				{"data" : "tel"},
+				{"data" : "enabled","className" : "text-center",
+					"render" : function(data, type, full, meta) {
+						if(data==1){
+							return "啟用";
+						}else{
+							return "&#10008;";
+						}
+				    }
+				},				
+				{"data" : "teacher_seq","className" : "text-center",
+					"render" : function(data, type, full, meta) {
+						return "<A href='/Course/TeacherProfile?teacher_id="+data+"' style='font-size:large;text-decoration:underline;color:blue'>&hellip;</A>";
+				    }
+				}
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

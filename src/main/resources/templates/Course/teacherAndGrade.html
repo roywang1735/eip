@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+    <div>&nbsp;</div>
+    <div th:text ='${"&nbsp;&#10074;&nbsp;科目 : "+subject_name}' style='margin-left:100px;font-weight:bold;text-align:left'></div>	   
+    <div style='width:600px;margin-left:100px' align='center'>
+		<button type="button" class="btn btn-sm btn-success" style='padding:2px' onclick="newSubjectTeacher()">&nbsp;新 增 老 師&nbsp;</button>
+    </div>	
+	<!--DataTables的表格-->
+	<div style='width:670px;margin-left:50px'>
+	 <table id="myDataTalbe" class="display">
+		<thead>
+		  <tr>
+		    <th width="60px">狀態</th>
+			<th width="110px">藝名</th>
+			<th width="50px" style='padding:5px'>代碼</th>
+			<th width="110px">本名</th>
+			<th width="70px">應選<br>期別</th>
+			<th width="70px">同選<br>期別</th>
+			<th width="70px">預選<br>期別</th>
+			<th width="80px">預設<br>總堂數</th>
+			<th width="50px">編輯</th>
+	      </tr>
+		</thead>    		
+     </table>
+    </div> 
+    
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+											
+<script th:inline="javascript">
+
+ $(document).ready(function() {
+	var subject_name = [[${subject_name}]];
+	let table = $('#myDataTalbe').DataTable({
+		"iDisplayLength": 10,
+		"order": [ 0, "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Course/getSubjectTeacher",
+			data : function(d) {
+				d.subject_seq  =  [[${subject_seq}]];
+			},
+
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "teacher_enabled","className" : "text-center",
+				"render" : function(data, type, full, meta) {
+					if(data==1){
+						return "啟用";
+					}else if(data==0){
+						return "停用";
+					}else{
+						return data;
+					}
+			    }
+			},			
+			{"data" : "teacher_name",
+				"render" : function(data, type, full, meta) {
+					return "<span style='font-weight:bold'>"+data+"</span>";
+			    }
+			}, 
+			{"data" : "teacher_code"}, 
+			{"data" : "teacher_realName"},
+			{"data" : "gradeNo","className" : "text-center"}, 
+			{"data" : "gradeNoATime","className" : "text-center"}, 
+			{"data" : "isPreGrade","className" : "text-center",
+				"render" : function(data, type, full, meta) {
+					if(data==1){
+						return "&check;";
+					}else{
+						return "-";
+					}
+			    }				
+			},
+			{"data" : "totalClassNo","className" : "text-center",
+				"render" : function(data, type, full, meta) {
+					if(data){
+						return data;
+					}else{
+						return "-";
+					}
+			    }					
+			},
+			{"data" : "subjectTeacher_seq","className" : "text-center",
+				"render" : function(data, type, row, meta) {
+					return "<A href='/Course/teacherAndGradeEdit?subjectTeacher_seq="+data+"&teacher_id="+row.teacher_id+"&subject_id="+row.subject_id+"&teacher_name="+row.teacher_name+"' style='font-size:large;color:blue;text-decoration:underline'>&hellip;</A>";
+			    }
+			},			
+		 ]
+	});
+	$("#btnQuery").click(function() {
+		table.ajax.reload();
+	});
+ });
+ 
+ 
+	function newSubjectTeacher() {
+		var subject_id = [[${subject_seq}]];
+		location.href = "/Course/teacherAndGradeEdit?subject_id="+subject_id
+	} 
+	
+</script>
+

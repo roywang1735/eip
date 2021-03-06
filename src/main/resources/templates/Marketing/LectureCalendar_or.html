@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Marketing/LectureSetting">建置講座</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting2?page=mkt">老師課表</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style=""><A href="/Marketing/LectureSetting">建置講座 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Marketing/LectureCalendar">講座行事曆 </A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+			
+&nbsp;<p>
+
+  
+
+  <script src="/js/jquery-1.9.1.min.js" type="text/javascript"></script> 
+  <script src="/js/moment.min.js" type="text/javascript"></script>
+  <script src="/js/fullcalendar.min.js" type="text/javascript"></script> 
+  <link rel="stylesheet" href="/css/fullcalendar.min.css">
+  <link rel="stylesheet" media="print" href="/css/fullcalendar.print.css">
+ 
+
+<div id="calendar" style="margin-left:0px;color:gray;width:1000px"></div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<style type="text/css">
+.fc-day-grid-event > .fc-content {
+   white-space: normal;
+   text-overflow: ellipsis;
+   max-height:100px;
+   font-size:small;
+   font-weight:normal;
+   color:#000000;
+   margin-bottom:2px;   
+}
+.fc-day-grid-event > .fc-content:hover {
+   max-height:none!important; 
+}
+.fc-today {
+    background: gainsboro !important;
+}
+.fc-time{
+   display : none;
+}
+
+.fc-title{
+    font-size:small;
+    //background:white;
+}
+
+
+.fc-event {
+    border-width: 0px;  
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    $('#calendar').fullCalendar({
+      events: {
+    	  url : "/sales/getEventLecture"
+      },
+
+      eventRender: function(event, element) { 
+                var title = element.find( '.fc-title' );
+            	title.html( title.text() );
+            	element.find('.fc-title').append(event.description);
+      }     
+    });
+  });
+
+</script>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<div>&nbsp;</div>
+<div id='content' align='center'></div>
+<!--  
+<a href="/images/studentContract/2020-07-27-141440_45083_學生契約書.pdf">download</a>
+-->
+<script th:inline="javascript" type="text/javascript">
+$(document).ready( function() {
+       $("#content").load([[${includeStr}]]);
+});
+</script>    
+

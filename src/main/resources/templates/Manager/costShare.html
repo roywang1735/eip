@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/orderChange">紀錄</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/costShare">學員費用</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/costShareReport">月報表</a></li>    
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/subjectCostShare">科目分攤比率</a></li>
+  </ul>
+</div> 
+<div>&nbsp;</div>
+<form>
+  <div style='width:800px;margin-top:20px' align='center'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;text-align:left'>
+						開課分校<br> 
+						<select id="school_code" class="form-control"  style='width:120px'>
+							<option></option>
+							<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}"  th:selected="${school_code == item.code}" />
+						</select>
+			</div>				
+			<div class="td2" style='padding:5px;text-align:left'>
+						類別<br> 
+						<select id="category_id" class="form-control" onchange="subjectData(this.value)" style='width:100px'>
+							<option></option>
+							<option th:each="item : ${categoryGroup}"
+								th:value="${item.category_seq}" th:utext="${item.name}" />
+						</select>			
+			</div>
+			<div class="td2" style='padding:5px;text-align:left'>
+						科目<br> 
+						<select id="subject_id" class="form-control" style='width:200px'>
+							<option></option>
+						</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:110px;text-align:left'>
+						期別<br>
+						<input type="text" class="form-control" id="class_start_date_0" name="class_start_date_0" style='width:100px' placeholder='ex.190106'/>	
+			</div>	
+			<div class="td2" style='padding:5px;width:130px;text-align:left'>
+					老師<br> 
+					<select id="teacher_id" class="form-control" style='width:130px'>
+							<option></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+					</select>
+			</div>								
+		</div>
+	</div>
+  </div>
+  <div  align='center' style='width:800px;'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+  </div>
+ </form> 
+<div>&nbsp;</div>
+
+<!--DataTables的表格-->
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<table id="myDataTalbe" class="display" style='width:800px'>
+	<thead>
+		<tr style='letter-spacing:2px'>
+			<th>開課分校</th>
+			<th>類別</th>
+			<th>期別</th>
+			<th>班別</th>
+			<th>老師</th>
+			<th>正班<br>人數</th>
+			<th>學員<br>費用<br>累積</th>
+		</tr>
+	</thead>
+</table>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script>
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject_id").html(data);
+				}
+			});
+		} else {
+			$("#subject_id").html("<option></option>");
+		}
+	}
+</script>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		DataTable();
+	})
+	
+	$("#btnQuery").click(function() {
+		var table = $('#myDataTalbe').DataTable();
+		table.destroy();
+		DataTable();
+	});	
+	
+	function DataTable(){		
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			//"bStateSave" : true,
+			"order": [ 2, "desc" ],
+			"iDisplayLength": 20,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getGradeList2",
+				data : function(d) {
+					d.category_id  = $("#category_id").val();
+					d.subject_id   = $("#subject_id").val();
+					d.school_code  = $("#school_code").val();					
+					d.teacher_id   = $("#teacher_id").val();
+					d.class_start_date_0   = $("#class_start_date_0").val();
+				},					
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			"language": {loadingRecords: "<img src='/images/wait2.gif' style='width:25px'/> <span style='font-size:small'>讀 取 中 </span>"},	
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "school_name","className":"text-center"}, 
+				{"data" : "category_name","className":"text-center"},
+				{"data" : "subject_name",
+					"render" : function(data, type, row, meta) {
+						if(row.class_style=='1'){
+							//return data+"<br>"+"(班內)";
+							return row.class_start_date+' '+data+row.subjectContent_name;
+						}else if(row.class_style=='3'){
+							return row.class_start_date+' '+data+row.subjectContent_name+"<span style='font-size:x-small;color:#333333'>&nbsp;(線上)</span>";
+						}	
+					}					
+				},
+				{"data" : "gradeName","className":"text-center"},	
+				/**
+				{"data" : "subject_name",
+					"render" : function(data, type, row, meta) {
+						var gradeName = row.gradeName;
+						if(gradeName==''){
+							gradeName='';
+						}else{
+							gradeName='('+gradeName+')';
+						}
+						return row.class_start_date+" "+data+" "+gradeName;
+					}					
+				},
+				**/
+				{"data" : "teacher_name","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return data;
+					}						
+				},
+			    {"data" : "gradeNo","className":"text-center"},
+			    {"data" : "grade_seq","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						 return "<A href='#' onclick='openGradeStudentShare(\""+data+"\",\""+row.school_code+"\",\""+row.gradeName+"\")' style='font-size:large;color:blue;text-decoration:underline'>&hellip;</A>";						
+					}	
+			    }			    
+			]
+		});
+	}	
+
+
+
+	function openGradeStudentShare(grade_seq,school_code,gradeName) {
+		var feature = "width=1200,height=700";
+	    window.open("/Manager/openGradeStudentShare?grade_seq="+grade_seq+"&school_code="+school_code+"&gradeName="+gradeName, "", feature);
+	}
+	
+	$("#titleWidth").width(170+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

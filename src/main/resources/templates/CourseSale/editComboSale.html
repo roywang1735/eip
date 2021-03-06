@@ -1,0 +1,477 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<style type="text/css">
+</style>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1'>
+    <input type="hidden" id='isCombo' name='isCombo' th:value="${comboSale.isCombo}"/>
+    <input type="hidden" name='activeEdit' id='activeEdit'>
+			<div id="css-table" class="css-table" style="border-spacing:3px;margin-left:5px">
+				<div class="tr">
+					  <div class="td" style="background-color:#ffffff;padding:10px">
+						<div th:if="${comboSale.isCombo=='0'}" style='font-size:small;text-align:left;padding:5px;letter-spacing:2px;font-weight:bold'>
+								優惠類型
+								<select th:field="${comboSale.favor_id}" style="padding:4px;border:1px #dddddd solid;color:#555555;width:150px;font-size:small;letter-spacing:5px">
+									<option value="" selected></option>
+									<option value="1">講座</option>
+									<option value="2">進班試聽</option>
+									<option value="3">短期活動</option>
+									<option value="4">線上優惠</option>
+								</select>																
+						</div>	
+						<div style='display:inline-block;font-size:small'>
+								<select th:field="${comboSale.category_id}" disabled  class="form-control" style="width:110px;font-weight:bold;font-size:small">
+									<option value="-1" selected>~ 套裝類別 ~</option>
+									<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+								</select>																
+						</div>	
+						<div style='display:inline-block;font-size:small'>
+								<input type='text' th:value='${comboSale.name}' name='comboSaleName' style='width:300px' class='form-control' placeholder='名稱'>					
+						</div>						        													
+
+						<div th:if="${action=='edit'}" class="td" align='left' style="display:inline-block;background-color:#ffffff;padding:10px;text-align:center">
+							<div style='display:inline-block;font-size:small'>
+									<select  id='SelectCategoryId' class="form-control" style="width:110px;font-weight:bold;font-size:small">
+										<option value="-1" selected>~ 類別 ~</option>
+										<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+									</select>																
+							</div>	
+							<div style='display:inline-block;font-size:small'>
+									<button type="button" class="btn-xs btn-info" onclick="AddComboSale();">加入單科</button>																
+							</div>						        													
+					</div>											
+				</div>
+			</div>
+			
+			<div id="css-table" class="css-table" style="border-spacing:1px;width:1150px;background-color:#dddddd;text-align:center;margin-left:5px">			
+				<div class="tr" style='background-color:#999999;color:white;font-size:small' >
+					<div class="td2" style='padding:2px;width:330px'><br>科目</div>
+					<div class="td2" style='padding:2px;width:70px'>單科<br>原價</div>
+					<div class="td2" style='padding:2px;width:50px'>各科<br>實收</div>
+					<div class="td2" style='padding:2px;width:50px'>人事<br>管銷</div>
+					<div class="td2" style='padding:2px;width:120px'>
+						充電站<br>
+						<A th:if="${action=='edit'}"  href='javascript:void(0)'  onclick='openSelect("counselingArea")' title='新增充電站'><img src='/images/edit2.png' height='10px'/></A>&nbsp;
+						<A th:if="${action=='edit'}"  href='##' title='刪除此筆' onclick='$(".counselingArea").empty();'><img src='/images/delete.png' height='10px'/></A>
+					</div>					
+					<div class="td2" style='padding:2px;width:120px'>
+					          其他贈品<br> 
+						<A th:if="${action=='edit'}"  href='javascript:void(0)'  onclick='openSelect("lagnappeArea")' title='新增贈品'><img src='/images/edit2.png' height='10px'/></A>&nbsp;
+						<A th:if="${action=='edit'}"  href='##' title='刪除此筆' onclick='$(".lagnappeArea").empty();'><img src='/images/delete.png' height='10px'/></A>
+					</div>
+					<div class="td2" style='padding:2px;width:60px'>講義<br>印製</div>
+					<div class="td2" style='padding:2px;width:60px'>作業<br>批改</div>
+					<div class="td2" style='padding:2px;width:130px'>
+						模考<br> 
+						<A th:if="${action=='edit'}"  href='javascript:void(0)'  onclick='openSelect("mockArea")' title='新增外版書'><img src='/images/edit2.png' height='10px'/></A>&nbsp;
+						<A th:if="${action=='edit'}"  href='##' title='刪除此筆' onclick='$(".mockArea").empty();'><img src='/images/delete.png' height='10px'/></A>
+					</div>					
+					<div class="td2" style='padding:2px;width:60px'>課程<br>收入</div>
+					<div class="td2" style='padding:2px;width:150px'>
+					        外版書<br> 
+						<A th:if="${action=='edit'}"  href='javascript:void(0)'  onclick='openSelect("outPublisherArea")' title='外版書'><img src='/images/edit2.png' height='10px'/></A>&nbsp;
+						<A th:if="${action=='edit'}"  href='##' title='刪除此筆' onclick='$(".outPublisherArea").empty();'><img src='/images/delete.png' height='10px'/></A>
+					</div>										
+				</div>
+			</div>	
+			<div id="ListComboSale"  class="css-table" style="border-spacing:1px;width:1150px;margin-left:5px">		
+<!------------------------------------------------------------------------------------------->							
+ 				<div class='tr' th:each="LComboSale_subject:${LComboSale_subject}" style='font-size:small;height:20px;background-color:lightyellow' >
+		           <div class='td2' style='padding:2px;width:330px'>
+		               <A th:if="${action=='edit'}"  href='##' title='刪除此筆' onclick='$(this).parent().parent().remove();'><img src='/images/delete.png' height='8px'/></A>&nbsp;
+		               <span th:text='${LComboSale_subject.subject_name}'></span>
+		               <span style='font-size:x-small;color:#999999'>
+		               		<input type='hidden' id='subject_seq' name='subject_seq' th:value='${LComboSale_subject.subject_id+"@@@@@|"+LComboSale_subject.hrPrice_R+"@|"+LComboSale_subject.counselingPrice_R+"@|"+LComboSale_subject.lagnappePrice_R+"@|"+LComboSale_subject.handoutPrice_R+"@|"+LComboSale_subject.homeworkPrice_R+"@|"+LComboSale_subject.mockPrice_R}'>
+		               </span>	
+		           </div>
+		           <div class='td2' style='padding:2px;width:70px'><input type='text' class='originPrice' style='width:100%;border:1px dotted #eeeeee;text-align:center' readonly th:value='${LComboSale_subject.subject_price}'></div>
+				   <div class='td2' style='padding:2px;width:50px'><input type='text' class='salePrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /></div>
+		           <div class='td2' style='padding:2px;width:50px'><input type='text' class='hrPrice'   style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /></div>		           
+		           <div class='td2' style='padding:2px;width:120px'><input type='text' class='counselingPrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /><div class='counselingName' th:utext='${LComboSale_subject.CounselingStr}'></div></div>	
+		           <div class='td2' style='padding:2px;width:120px'><input type='text' class='lagnappePrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /><div class='lagnappeName' th:utext='${LComboSale_subject.LagnappeStr}'></div></div>		           
+		           <div class='td2' style='padding:2px;width:60px'><input type='text' class='handoutPrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /></div>
+		           <div class='td2' style='padding:2px;width:60px'><input type='text' class='homeworkPrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly></div>
+		           <div class='td2' style='padding:2px;width:130px'><input type='text' class='mockPrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /><div class='mockName' th:utext='${LComboSale_subject.MockStr}'></div></div>		           
+		           <div class='td2' style='padding:2px;width:60px'><input type='text' class='coursePrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly /></div>
+		           <div class='td2' style='padding:2px;width:150px'><input type='hidden' class='outPublisherPrice' style='width:100%;border:0px;background-color:lightyellow;text-align:center' readonly th:value='${LComboSale_subject.outPublisher_price}' /><div class='outPublisherName' th:utext='${LComboSale_subject.outPublisherStr}'></div></div>		           
+		        </div>           
+<!------------------------------------------------------------------------------------------->					
+			</div>	
+			<div id="" class="css-table" style="border-spacing:1px;width:1150px;text-align:center;margin-left:5px">							
+				<div class="tr" style='background-color:white;color:darkblue;font-size:small' >
+					<div class="td2" style='padding:2px;width:330px'></div>
+					<div class="td2" style='padding:2px;width:70px'></div>
+					<div class="td2" style='padding:2px;width:50px'></div>
+					<div class="td2" style='padding:2px;width:50px'></div>
+					<div class="td2 counselingArea" style='font-size:xx-small;padding:1px;width:120px;text-align:left;text-align:left;letter-spacing:0px'>
+					    <div th:each="LComboSale_counseling:${LComboSale_counseling}">
+							<input type='hidden' name='counseling_seq' th:value='${LComboSale_counseling.counseling_id}'>
+					        &bull;<span style='background-color:#E1E2FF' th:text='${LComboSale_counseling.counseling_name}'></span>
+					    </div>
+					</div>
+					<div class="td2 lagnappeArea" style='font-size:xx-small;padding:1px;width:120px;text-align:left;letter-spacing:0px'>
+						<div th:each="LComboSale_lagnappe:${LComboSale_lagnappe}">	
+							<input type='hidden' name='lagnappe_seq' th:value='${LComboSale_lagnappe.lagnappe_id}'>
+							<input type='hidden' name='lagnappe_no' th:value='${LComboSale_lagnappe.lagnappe_no}'>
+					        &bull;<span style='background-color:#E1E2FF' th:text='${LComboSale_lagnappe.lagnappe_name+"x"+LComboSale_lagnappe.lagnappe_no}'></span>
+					    </div>    					
+					</div>
+					<div class="td2" style='padding:2px;width:60px'></div>
+					<div class="td2" style='padding:2px;width:60px'></div>
+					<div class="td2 mockArea" style='font-size:xx-small;padding:1px;width:130px;text-align:left;letter-spacing:0px'>
+						<div th:each="LComboSale_mock:${LComboSale_mock}">	
+							<input type='hidden' name='mock_seq' th:value='${LComboSale_mock.mock_id}'>
+					        &bull;<span style='background-color:#E1E2FF' th:text='${LComboSale_mock.mock_name}'></span>
+					    </div>    					
+					</div>
+					<div class="td2" style='padding:2px;width:60px'></div>
+					<div class="td2 outPublisherArea" style='font-size:xx-small;padding:1px;width:150px;text-align:left;letter-spacing:0px'>
+						<div th:each="LComboSale_outPublisher:${LComboSale_outPublisher}">	
+							<input type='hidden' name='books_seq' th:value='${LComboSale_outPublisher.book_id}'>
+							<input type='hidden' class='outPublisherPrice' style='border:0px' readonly  th:value='${LComboSale_outPublisher.sellPrice}'/>
+					        &bull;<span style='background-color:#E1E2FF' th:text='${LComboSale_outPublisher.book_name}'></span>
+					    </div>    					
+					</div>															
+				</div>				
+			</div>
+			<div>&nbsp;</div>
+			<div id="" class="css-table" style="border-spacing:1px;width:1150px;margin-left:5px">							
+				<div class="tr" style='background-color:white;font-size:small;font-weight:bold' >
+					<div class="td2" style='padding:2px;width:130px'>
+					 	原價 <input type='text' th:value='${comboSale.origin_price}' name='originPriceTotal' id='originPriceTotal' style='width:60px;border:1px dotted #eeeeee;color:darkblue' readonly>&nbsp;					  
+					</div> 
+					<div class="td2" style='padding:2px;width:130px'>
+					 	折數 <input type='text'  id='discount' style='width:60px;border:1px dotted #eeeeee;color:darkblue' readonly>&nbsp;					  
+					</div> 						
+					<div class="td2" style='padding:2px;width:200px' th:if="${action=='edit'}" >					 
+					 	DM售價 <input type='text' th:value='${comboSale.sale_price}' name='salePriceTotal' id='salePriceTotal' style='width:80px;color:darkblue'>&nbsp;<button type='button' style='font-size:small' class='btn-xs btn-success' onclick='Comp();'>計算</button>
+					</div>
+					<div class="td2" style='padding:2px;width:200px' th:unless="${action=='edit'}" >					 
+					 	DM售價 <input type='text' th:value='${comboSale.sale_price}' name='salePriceTotal' id='salePriceTotal' style='width:80px;color:darkblue;border:1px dotted #eeeeee' readonly>
+					</div>										
+					<div class="td2" style='padding:2px;width:500px'></div> 									
+				</div>				
+			</div>						
+      <div>&nbsp;</div>
+	  <div style='width:1150px;text-align:center'>
+	       <div sec:authorize="hasAnyRole('cou','cou_mgr','approve_mgr')">
+				<div th:if="${comboSale.FlowStatus_code=='1' or comboSale.FlowStatus_code=='6'}" style='text-align:center;'> 				    										
+					<button type="button" id='draftButton' class="btn btn-sm btn-info">暫存草稿</button>&nbsp;&nbsp;
+					<button type="button" id='sendButton' class="btn btn-sm btn-primary" onclick="">送審</button>&nbsp;&nbsp;
+					<span th:if="${comboSale.comboSale_seq !=null}">
+						<button type="button" id='deleteButton' class="btn btn-sm btn-danger" onclick="">刪除</button>&nbsp;&nbsp;
+				    </span>
+				</div> 
+					  
+				<div th:if="${comboSale.FlowStatus_code=='2' and action=='popView'}" style='text-align:center'> 				    													    										
+					<button type="button" id='approveButton' class="btn btn-sm btn-primary">審核通過</button>&nbsp;&nbsp;
+					<button type="button" id='returnButton' class="btn btn-sm btn-danger" onclick="">退件</button>&nbsp;&nbsp;
+				</div>
+				
+				<!--待上架-->
+				<div th:if="${comboSale.FlowStatus_code=='3' and action=='edit'}" style='text-align:center'> 
+				    <button type="button" id='EditButton' class="btn btn-sm btn-warning">修改儲存</button>&nbsp;&nbsp;				    													    										
+					<button type="button" id='activeButton' class="btn btn-sm btn-primary">正班上架</button>&nbsp;&nbsp;
+					<button type="button" id='returnButton' class="btn btn-sm btn-danger">退件</button>&nbsp;&nbsp;
+				</div>
+				
+				<div th:if="${comboSale.FlowStatus_code=='4' and action=='edit'}" style='text-align:center'> 
+				    <button type="button" id='activeEditButton' class="btn btn-sm btn-danger">上架中修改</button>&nbsp;&nbsp;				    													    										
+					<button type="button" id='inactiveButton' class="btn btn-sm btn-primary">正班下架</button>&nbsp;&nbsp;
+				</div>
+				
+				<div th:if="${action=='edit'}">
+					<div th:if="${comboSale.FlowStatus_code=='5'}" style='display:inline-block;border-radius:5px;text-align:center;width:200px;padding:5px'> 				    													    										
+						<button type="button" id='reAtciveUpdateButton' class="btn btn-sm" style='background-color:red;color:white'>已下架重上架</button>
+					</div>				
+				</div>					
+		  </div>					
+	  </div>
+			<input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+			<input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}"/>	
+			<input type='hidden' name='status_code' id='status_code'> 
+			<input type="hidden" th:field="*{comboSale.comboSale_seq}"/>
+			<input type="hidden" id='action' th:value='${action}'/>
+</form>
+<div sec:authorize="hasAnyRole('approve_mgr')"><input type='hidden' id='approveRole' value='1'></div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+
+<script>
+
+	function submitAction(){
+	    var form = $('#form1')[0];
+	    var formData = new FormData(form);
+	    $.ajax({
+	        url:'/CourseSale/ComboSaleSave',
+	        type : "POST",
+	        data : formData,
+	        contentType: false,
+	        cache: false,
+	        processData: false,
+	        success : function(data) 
+	        {
+        		window.close();
+				window.opener.location.reload();
+	        },
+	        error: function(data) 
+	        {
+	            alert("不成功!");
+	        }
+	    })
+	};
+
+
+	$("#draftButton").click(function() {
+		if(checkInput()){
+			$("#status_code").val("1");
+			submitAction();
+		}
+	});
+    //送審
+	$("#sendButton").click(function() {
+		if(confirm("確定送審?")){
+			$("#status_code").val("3");
+			submitAction();
+		}
+	});	
+	//刪除
+	$("#deleteButton").click(function() {
+		if(confirm("確定刪除?")){
+			$("#status_code").val("7");
+			submitAction();
+		}
+	});
+	
+	$("#approveButton").click(function() {
+			$("#status_code").val("3");
+			submitAction();
+	});
+    //退件
+	$("#returnButton").click(function() {
+		if(confirm("確定退件?")){
+			$("#status_code").val("6");
+			submitAction();
+		}
+	});	
+	//上架
+	$("#activeButton").click(function() {
+		if(confirm("確定上架?")){
+			$("#status_code").val("4");
+			submitAction();
+		}
+	});
+	//待上架修改
+	$("#EditButton").click(function() {
+			$("#status_code").val("3");			
+			submitAction();
+	});	
+	
+	//上架中修改
+	$("#activeEditButton").click(function() {
+		if(confirm("確定上架中修改? 請通知已報名此單科/套裝之學員!")){
+			$("#status_code").val("4");
+			$("#activeEdit").val("yes");			
+			submitAction();
+		}
+	});	
+    //下架
+	$("#inactiveButton").click(function() {
+		if(confirm("確定下架?")){
+			$("#status_code").val("5");
+			submitAction();
+		}
+	});
+    //下架重新上架
+	$("#reAtciveUpdateButton").click(function() {
+		if(confirm("重新上架已下架單科套裝?")){
+			$("#status_code").val("4");
+			submitAction();
+		}	
+	});    
+	
+	function checkInput(){		
+		if($("#category_id").val()==-1){alert("請填寫[套裝類別]!"); return false;}
+		if($("#comboSaleName").val()==''){alert("請填寫[套裝名稱]!"); return false;}
+		$('.subject_seq').each(
+				function(){
+					if($(this).val()==''){
+						alert("請選擇[科目]!"); return false;
+					}
+				}
+		)
+		$('.class_style').each(
+				function(){
+					if($(this).val()==''){
+						alert("請選擇[上課方式]!"); return false;
+					}
+				}
+		)		
+		if($("#salePriceTotal").val()==''){alert("請填寫[DM售價]!"); return false;}		
+		return true;
+	}		
+	
+	
+	
+	
+//設定原價
+function SetOriginPrice(thisObj,optionStr){
+
+	var paramArray = new Array();
+		paramArray=optionStr.split("@");
+		$(thisObj).parent().parent().find('.originPrice').val(paramArray[1]);
+		$(thisObj).parent().parent().find('.counselingName').html(paramArray[2]);
+		$(thisObj).parent().parent().find('.lagnappeName').html(paramArray[3]);
+		$(thisObj).parent().parent().find('.mockName').html(paramArray[4]);
+		
+		//總原價
+		var sum1 = 0;
+		$('.originPrice').each(			
+		   function(){ sum1 = sum1 + Number($(this).val()); }
+		)
+		$('#originPriceTotal').val(sum1);		
+}
+
+//加入單科	
+	function AddComboSale() {
+	    var totalSubject = 0;
+	    var isCombo = $("#isCombo").val();
+		$('.salePrice').each(
+			function(){ 
+			   totalSubject = totalSubject+1;
+			}
+		)
+		if(totalSubject>0 && isCombo==0){
+			alert("新增單科需先刪除原來的科目!");
+		}else{
+			$.ajax({
+				url : "/CourseSale/AddComboSaleList",
+				data : {
+					SelectCategoryId : $("#SelectCategoryId").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#ListComboSale").append(data);
+				}
+			});
+		}	
+	}
+	
+//開視窗加入項目	
+    function openSelect(returnAreaId){
+    	var category_id = $("#category_id").val();
+ 		var feature = "left=200,top=200,width=400,height=250";
+ 	    window.open("/CourseSale/openSelect?category_id="+category_id+"&returnAreaId="+returnAreaId, "", feature);    	
+    }
+
+//編輯初始計算
+$(document).ready(function() {
+	Comp0();
+})
+//計算
+function Comp(){
+	Comp0(); 
+	alert(" 計算完成 ");	
+}
+
+function Comp0(){
+		//總原價
+		var sum1 = 0;		
+		$('.originPrice').each(				
+		   function(){ 
+			   sum1 = sum1 + Number($(this).val()); 
+		   }
+		)
+        //折數				
+		$('#discount').val(Number(($('#salePriceTotal').val()/sum1)).toFixed(2)); 	
+		
+		//外版書
+		var outPublisherTotal = 0;
+		$('.outPublisherPrice').each(
+		   function(){ 
+			   outPublisherTotal = outPublisherTotal + Number($(this).val()); 
+		   }
+		)				
+
+		//與售價價差
+		var downPrice = sum1-$('#salePriceTotal').val();
+		
+		//var downRate = downPrice / sum1;
+		var downRate = downPrice / ($('#salePriceTotal').val()-outPublisherTotal);
+		//各科實收下降
+	    var paramArray = new Array();
+		$('.salePrice').each(				
+		   function(){
+			  paramArray = $(this).parent().parent().find('#subject_seq').val().split("@");
+			  //上課方式
+			  var class_style =  $(this).parent().parent().find('#class_style').val();
+			  var class_style_split; 
+				/**  
+				  if(class_style=='1'){
+					  class_style_split = '0';
+					  if(paramArray[5].split("|")[0]==''){
+						  alert("實體科目成本分攤比率尚未設定!");
+						  return;
+					  }
+				  }else if(class_style=='3'){
+					  class_style_split = '1';
+					  if(paramArray[5].split("|")[1]==''){
+						  alert("線上科目成本分攤比率尚未設定!");
+						  return;
+					  }				  
+				  }
+				**/
+			  class_style_split = '1';
+			  if(paramArray[5].split("|")[1]==''){
+				  alert("科目成本分攤比率尚未設定!");
+				  return;
+			  }			
+			
+			  //扣除費用 
+			  var fee=0;
+			  //各科原價
+			  var curr_originPrice = $(this).parent().parent().find('.originPrice').val();
+			  //各科實收
+			  //var curr_salePrice = Number(Number(curr_originPrice)*(1-downRate)).toFixed();
+			  var curr_salePrice = Math.round((Number(curr_originPrice)/sum1)*($('#salePriceTotal').val()-outPublisherTotal));
+			  $(this).val(curr_salePrice);
+			 if($('#approveRole').val()==1){ 
+				  //人事管銷
+				  var hrPrice_R = paramArray[5].split("|")[class_style_split];	  
+				  $(this).parent().parent().find('.hrPrice').val(Number(curr_salePrice*hrPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*hrPrice_R/100).toFixed());
+				  //充電站
+				  var counselingPrice_R = paramArray[6].split("|")[class_style_split];
+				  $(this).parent().parent().find('.counselingPrice').val(Number(curr_salePrice*counselingPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*counselingPrice_R/100).toFixed());
+				  //其他贈品
+				  var lagnappePrice_R = paramArray[7].split("|")[class_style_split];
+				  $(this).parent().parent().find('.lagnappePrice').val(Number(curr_salePrice*lagnappePrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*lagnappePrice_R/100).toFixed());
+				  //講義印製
+				  var handoutPrice_R = paramArray[8].split("|")[class_style_split];
+				  $(this).parent().parent().find('.handoutPrice').val(Number(curr_salePrice*handoutPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*handoutPrice_R/100).toFixed());
+				  //作業批改
+				  var homeworkPrice_R = paramArray[9].split("|")[class_style_split];
+				  $(this).parent().parent().find('.homeworkPrice').val(Number(curr_salePrice*homeworkPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*homeworkPrice_R/100).toFixed());
+				  //模考
+				  var mockPrice_R = paramArray[10].split("|")[class_style_split];
+				  $(this).parent().parent().find('.mockPrice').val(Number(curr_salePrice*mockPrice_R/100).toFixed());
+				  fee += Number(Number(curr_salePrice*mockPrice_R/100).toFixed());
+				  //課程收入
+				  $(this).parent().parent().find('.coursePrice').val(Number(curr_salePrice-fee));
+			 } 
+		   }
+		)
+}    
+	
+</script>

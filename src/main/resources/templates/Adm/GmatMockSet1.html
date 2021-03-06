@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>					
+
+  <script src="/js/jquery-1.9.1.min.js" type="text/javascript"></script> 
+  <script src="/js/moment.min.js" type="text/javascript"></script>
+  <script src="/js/fullcalendar.min.js" type="text/javascript"></script> 
+  <link rel="stylesheet" href="/css/fullcalendar.min.css">
+  <link rel="stylesheet" media="print" href="/css/fullcalendar.print.css">
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockSetting">預約須知</a></li>
+   	    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/GmatMockSet1">GMAT</a></li>		
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockSetting">TOEFL-iBT</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockSetting">GRE</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockSetting">IELTS</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockSetting">TOEIC</a></li>		
+	</ul>
+</div>
+<div>&nbsp;</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Adm/GmatMockSet1"> 機考 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href="/Adm/GmatMockSet2"> 筆考 </A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+<div>&nbsp;</div>	
+	<div style='padding:5px'>
+		<select id="school_id" class="form-control" onchange='showCalendar()' style='width:180px;background-color:#eeffee'>
+			<option value='0'> ~ 選 擇 分 校 ~</option>
+			<option th:each="item : ${LSchool}" th:value="${item.school_seq}" th:utext="${item.name}" th:selected="${SchoolCode == item.code}"/>
+		</select>				
+	</div>
+			
+
+<input type='hidden' id='category_id' th:value='${category_id}'>
+<!---------------------------------------------------------->
+<div id="calendar" style="color:gray;width:1000px;border-radius:10px;border-color:#ffffff;"></div>
+<!---------------------------------------------------------->
+
+&nbsp;<p>
+&nbsp;<p>
+
+<style type="text/css">
+.fc-day-grid-event > .fc-content {
+   white-space: normal;
+   text-overflow: ellipsis;
+   max-height:50px;
+   font-size:small;
+   font-weight:normal;
+   color:brown;
+   margin-bottom:5px;
+   //background-color:#ccffe5;
+   
+}
+.fc-day-grid-event > .fc-content:hover {
+   max-height:none!important; 
+}
+.fc-today {
+    background: snow !important;
+    border-color:#eeeeee;
+}
+.fc-time{
+   display : none;
+}
+
+.fc-title{
+    font-size:x-small;
+    background:floralwhite;
+}
+
+
+.fc-event {
+    border-width: 0px;     
+}
+</style>
+
+<script>
+$(document).ready(function() {  
+	showCalendar();
+})
+
+function showCalendar() {
+	
+	$('#calendar').fullCalendar('destroy');
+    $('#calendar').fullCalendar({
+      events: {
+    	  url : "/Adm/getmockSetEvent?testMethod=1&category_id="+$('#category_id').val()+"&school_id="+$('#school_id').val()
+      },     
+      selectable: true,
+      navLinks: true,     
+      dayClick: function(date, jsEvent, view) {
+    	  openMockSet1(date);
+      },      
+      
+      eventRender: function(event, element) { 
+      	  if(event.description0!=null){
+        	  	element.find('.fc-title').append(event.description0);
+        	  	element.find('.fc-title').css('background-color','white');
+          }	
+          if(event.description!=null){
+          		element.find('.fc-title').append("<br/>" + event.description);
+                var title = element.find( '.fc-title' );
+            	title.html( title.text() );
+          }	
+      }     
+    });
+  };
+
+function openMockSet1(date){
+	var feature = "width=400,height=300";
+ 	window.open("/Adm/openMockSet1?category_id="+$("#category_id").val()+"&school_id="+$("#school_id").val()+"&dateSel="+date.format(),"",feature);		
+}
+
+</script>

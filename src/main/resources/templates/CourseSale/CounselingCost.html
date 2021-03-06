@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/Teacher">老師</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting3">課表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/MockSetting">模考</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/CourseSale/CounselingCost">充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/BillBoard">國定假日</a></li>    	
+	</ul>
+<div>&nbsp;</div>
+
+   <div style='border:1px #eeeeee solid;width:400px;padding:10px;border-radius:5px;margin-top:20px'>  
+		<div class="css-table">			
+			<div class="tr" style='font-size:small'>
+				<div class="td2" style='padding:5px'>
+						類別<br> 
+						<select id="category_id" class="form-control">
+							<option></option>
+							<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+						</select>					
+				</div>	
+				<div class="td2" style='padding:5px;width:120px'>
+						狀態<br> 
+						<select id="active" name="active" class="form-control">
+							<option value='1'>啟用</option>
+							<option value='0'>停用</option>
+							<option value=''></option>
+						</select>										
+				</div>								
+			</div>
+		</div>						
+   </div>
+		<div align='center' style='width:400px'>
+			<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+			<span sec:authorize="hasAnyRole('mkt','mkt_mgr','approve_mgr')">
+			   <button type="button" class="btn btn-sm btn-success" onclick="location.href='/CourseSale/CounselingCostEdit'">&#8883;新增充電站 </button>
+			</span>   
+		</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+		<div style='width:700px'>
+		  <table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+					<th>狀態</th>
+					<th>類別</th>
+					<th>名稱</th>
+					<th>原價</th>
+					<th>細項</th>				
+				</tr>
+			</thead>
+		  </table>
+	   </div>	
+	   
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+
+
+
+<script>
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"iDisplayLength": 15,
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/CourseSale/getCounseling2",
+			data : function(d) {
+				d.category_id = $("#category_id").val();
+				d.active = $("#active").val();
+			},
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "active","className":"text-center",
+			     "render" : function(data, type, row, meta) {
+			    	   if(data==1){
+			    		   return "啟用"
+			    	   }else if(data==0){
+			    		   return "停用"
+		    	       }
+	             }					
+			}, 			
+			{"data" : "category_name","className" : "text-center"},
+			{"data" : "counseling_name"},
+			{"data" : "origin_price","className" : "text-right"},
+		    {"data" : "counseling_seq","className" : "text-center",
+				   "render" : function(data, type, row, meta) {	
+			 				return "<A href='/CourseSale/CounselingCostEdit?counseling_seq="+data+"' style='font-size:large'>&hellip;</A>"; 
+				   }
+		    }	
+		 ]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+});
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+

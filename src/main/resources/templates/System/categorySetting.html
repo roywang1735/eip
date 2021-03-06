@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+		    &#10074;<div class="td" style=""><A href='/System/SchoolSetting'>分校</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/categorySetting'>類別</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href='/System/serviceContract'>合約</A></div><div class="td" style="width:20px"></div>  	    
+	</div>
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/System/categoryUpdate}" method="post">
+	<table style='margin-left:30px;background-color:#f5f5f5' id='myDataTalbe'>
+		<tr style="text-align:left;background-color:#ffffff";>
+			<th width="70px" style='padding:5px;text-align:center'>Seq.</th>
+			<th width="70px" style='padding:5px;text-align:center'>排序</th>
+			<th width="150px" style='padding:5px;text-align:center'>類 別 名 稱</th>
+			<th width="100px" style='padding:5px;text-align:center'>背 景 色 系</th>
+		</tr>
+        <tr th:each="category : ${LCategory}" style='border-bottom:1px solid #dddddd;text-align:left'>
+            <td style='padding:3px;text-align:center'><input type='text' style='background-color:#f5f5f5;border:0px;width:50px' name='category_seq' th:value="${category.category_seq}" readonly></td>
+            <td style='padding:3px;text-align:center'><input type='text' style='width:50px' name='ranks' th:value="${category.ranks}"></td>
+            <td th:style="'border:5px white solid;font-weight:bold;letter-spacing:2px;text-align:center;color:white;background-color:'+${category.bgColor}"><span th:text="${category.name}"></span></td>
+            <td style='padding:3px;text-align:center'><input type='text' name='bgColor' th:value="${category.bgColor}"></td>             
+        </tr>			
+	</table>
+	<div>&nbsp;</div>
+	<div style='margin-left:30px;width:470px;border-top:1px #aaaaaa solid' align='center'>	
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存修改</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-success" onclick="addCategory()">&#8883;新增類別</button>
+	</div>	
+</form>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script>
+	$("#btnSave").click(function() {
+		$("#form1").submit();
+	});
+	function addCategory(){
+ 		var feature = "top=0,left=350,width=520,height=350";
+ 	    window.open("/System/addCategory", "", feature);
+ 	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	

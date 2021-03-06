@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+				<!--DataTables的表格-->
+				<table id="myDataTalbe" class="display" style='width:4000px'>
+					<thead>
+						<tr>
+							<th>學號</th>
+							<th>姓名</th>
+							<th>身分</th>
+							<th>特殊身分</th>
+							<th>性別</th>
+							<th>英文名</th>
+							<th>生日</th>
+							<th>身分證</th>
+							<th>學生手機</th>
+							<th>目前單位</th>
+							<th>FB</th>
+							<th>Line</th>
+							<th>協辦人</th>
+							<th>準備考試</th>
+							<th>出國/時間</th>
+							<th>email1</th>
+							<th>介紹人姓名</th>
+							<th>介紹人學號</th>
+							<th>email2</th>
+							<th>媽姓名</th>
+							<th>媽手機</th>
+							<th>從何得知</th>	
+							<th>媽Line</th>
+							<th>媽email</th>
+							<th>地址1</th>							
+							<th>爸姓名</th>
+							<th>爸手機</th>
+							<th>地址2</th>
+							<th>爸Line</th>
+							<th>爸email</th>
+							<th>自訂</th>
+							<th>上課分校1</th>
+							<th>上課分校2</th>
+							<th>自訂</th>
+							<th>建立者</th>
+							<th>建檔日期	</th>
+							<th>自訂</th>
+							<th>更新人員</th>
+							<th>更新時間</th>
+							<th>自訂</th>
+							<th>自訂</th>													
+						</tr>
+					</thead>
+				</table>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+<script th:inline="javascript" type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"iDisplayLength": 15,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Sales/getStudentRecord",
+				data : {
+			 		student_seq : [[${student_seq}]] 
+			    },				
+				dataSrc : function(data) {
+					return data;
+				},
+				error: function(){
+					 window.location.replace("/login");
+			    }				
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "student_no"}, 
+				{"data" : "ch_name"},					
+				{"data" : "identity"},
+				{"data" : "special_idn"},
+				{"data" : "sex"},
+				{"data" : "en_name"},
+				{"data" : "birthday"},
+				{"data" : "idn"},
+				{"data" : "mobile_1"},
+				{"data" : "category"},
+				{"data" : "fb"},
+				{"data" : "line"},
+				{"data" : "cowork"},
+				{"data" : "exam"},
+				{"data" : "abroad_date"},
+				{"data" : "email_1"},
+				{"data" : "agent_studentName"},
+				{"data" : "agent_studentNo"},
+				{"data" : "email_2"},
+				{"data" : "parent_2_name"},
+				{"data" : "parent_2_mobile"},
+				{"data" : "derived"},
+				{"data" : "parent_2_line"},
+				{"data" : "parent_2_email"},
+				{"data" : "address_1"},
+				{"data" : "parent_1_name"},
+				{"data" : "parent_1_mobile"},
+				{"data" : "address_2"},
+				{"data" : "parent_1_line"},
+				{"data" : "parent_1_email"},
+				{"data" : "col_5"},
+				{"data" : "school_code"},
+				{"data" : "school_code2"},
+				{"data" : "col_6"},
+				{"data" : "creater"},
+				{"data" : "create_time"},
+				{"data" : "col_7"},
+				{"data" : "updater"},
+				{"data" : "update_time"},
+				{"data" : "col_8"},
+				{"data" : "col_9"}
+			 ],			
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+</script>
+
+

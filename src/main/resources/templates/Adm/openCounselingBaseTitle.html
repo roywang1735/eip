@@ -1,0 +1,156 @@
+ <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div class="container-fluid" th:if="${student_seq!='' and student_seq!=null}">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{${backURL}}">預約時段</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentCalendar(mock=1,student_seq=${student_seq},Register_seq=${Register_seq},mockDetail_seq=${mockDetail_seq},school_code=${school_code})}">學員行事曆</A><li>	
+	</ul>		
+</div>
+
+<div>&nbsp;</div>
+<div align='center'>
+	<div class="css-table" style='border:1px #dddddd solid;background-color:#ccffcc'>
+	  <div class="tr">
+	         <div class="td2" style='border-right:1px #dddddd solid;padding:10px'>
+				<select id="school_code" name='school_code'  style='height:30px;border-radius:5px;width:100px;background-color:#F3F4FF'>
+					<option th:selected="(${item.code} == ${school_code})"  th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+				</select>
+
+			 </div> 
+			 
+	         <div class="td2" style='border-right:1px #dddddd solid;padding:10px'>
+				<select id="category_id" name='category_id'  style='height:30px;border-radius:5px;width:200px;background-color:#F3F4FF' onchange='getCounselingMonth2()'>
+					<option value=''></option>
+					<option th:selected="(${item.category_seq} == ${category_id})" th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />				
+				</select>
+			 </div>   
+	  </div>  
+	</div>  	
+	<div id='counselingBaseList'></div>
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript" type="text/javascript">
+$(document).ajaxStart(function(){
+	$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+});
+
+$(document).ajaxStop(function(){
+	$('#message').text("");
+});	
+
+$(document).ready(
+		function(){
+			getCounselingMonth();
+		}
+)
+
+//月曆內容
+function getCounselingMonth(counselingBaseTitle_seq){
+	var counselingBaseTitle_seqTmp = "";
+	if(counselingBaseTitle_seq){
+		counselingBaseTitle_seqTmp = counselingBaseTitle_seq;
+	}else{
+		counselingBaseTitle_seqTmp = [[${counselingBaseTitle_seq}]];
+	}
+	$.ajax({
+		url : "/Adm/getCounselingMonth",
+		data : {
+			counselingBaseTitle_seq   : counselingBaseTitle_seqTmp,
+			student_seq               : [[${student_seq}]]
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#counselingBaseList").html(data);
+		}
+	});
+}
+
+//使用分校及類別查詢月曆內容
+function getCounselingMonth2(){
+	$.ajax({
+		url : "/Adm/getCounselingMonth2",
+		data : {
+			school_code  : $("#school_code").val(),
+			category_id  : $("#category_id").val()
+		},
+		dataType : "text",
+		success : function(data) {
+			getCounselingMonth(data);
+		}
+	});	
+}
+
+/**
+function getSlot(){
+	$.ajax({
+		url : "/Adm/getCounselingSlot",
+		data : {
+			counselingBaseTitle_seq   : $("#counselingBaseTitle_seq").val()
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#slot").html(data);
+		}
+	});
+}
+**/
+
+function openCounselingBase(setDate){
+	var feature = "width=400,height=400,left=500";
+	window.open("/Adm/openCounselingBase?counselingBaseTitle_seq="+[[${counselingBaseTitle_seq}]]+"&setDate="+setDate,"",feature);		
+}
+
+//學生預定時段回數或人數限制
+function CounselingBookDate(setDate,slot,round,counselingBase_id,counselingLimit_seq){
+
+	var slotName="";
+	if(slot==1){
+		slotName="早";
+	}else if(slot==2){
+		slotName="午";
+	}else if(slot==3){
+		slotName="晚";
+	}
+	
+	if(slotName=''){slotName='無';}
+
+
+	if(confirm("確定選取此時段?  -->日期:"+setDate+'  -->時段:'+slotName)){
+		$.ajax({
+			url : "/Sales/updateCounselingBaseBook",
+			data : {
+				student_seq    : [[${student_seq}]],
+				counselingBase_id    : counselingBase_id,
+				setDate        : setDate,
+				slot           : slot,
+				school_code    : $("#school_code").val(),
+				counselingLimit_seq : counselingLimit_seq,
+				register_counseling_seq : [[${register_counseling_seq}]]
+			},
+			dataType : "text",
+			success : function(data) {
+				if(confirm("預定成功! 關閉並重新整理視窗!")){
+					window.close();
+					self.opener.location.reload();
+				}
+			},
+	        error:function(){
+	        	alert("預定失敗!");
+	        }			
+		});        
+    }	
+}
+
+
+</script>
+
+
+

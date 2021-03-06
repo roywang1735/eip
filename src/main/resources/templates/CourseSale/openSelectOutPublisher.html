@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<body style='background-color:#ffefff'></body> 
+ 		            <input type='hidden' id='category_id' th:value='${category_id}'>			
+ 					<input type='hidden' id='returnAreaId' th:value='${returnAreaId}'>
+                                &nbsp;<p>
+								<div id="css-table" class="css-table" style="margin: 0px auto;">
+									<!--  
+									<div class="tr">
+										<div class="td" >
+											<select id='SelCategory_id' style="height:30px;font-size:small;width:150px" class="form-control"
+												onchange="getSubItem(this.value)">
+												<option value="-1">~ 類別 ~</option>
+												<option th:each="item : ${categoryGroup}"
+													th:value="${item.category_seq}" th:utext="${item.name}" />
+											</select>
+										</div>
+									</div>
+									-->
+									<div style='height:15px'></div>									
+									<div class="tr">
+										<div class="td" >
+											<select id='books_seq' style="font-size:small;width:300px" class="form-control">
+											</select>
+										</div>
+									</div>                                    
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button"  style='margin-top:5px' class="btn-xs btn-warning" onclick="refreshParent();">加 入</button>
+										</div>
+									</div> 
+								</div>
+
+<script>
+
+   $(document).ready(
+		function byLoading() {
+				getSubItem();
+		}
+	)
+	
+   function getSubItem() {		
+		  $.ajax({
+			url : "/CourseSale/getOutPublisher",
+			data : {},
+			dataType : "text",
+			success : function(data) {
+				 $("#books_seq").html(data);
+			}
+		 });
+    }
+
+function refreshParent() { 
+			var returnAreaId = window.opener.document.getElementsByClassName($("#returnAreaId").val());
+			var splitA = $('#books_seq').val().split("@");
+			$(returnAreaId).append(
+					
+					"<input type='hidden' name='books_seq' value='"+splitA[0]+"'>"+
+					"<input type='hidden' class='outPublisherPrice' style='border:0px;background-color:lightblue;width:100px' readonly value='"+splitA[1]+"'/>"+
+					" &bull;"+$('#books_seq').find(":selected").text()+"<br>"
+			);			
+			window.close();
+    
+}
+</script>
+
+
+

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div style='text-align:left;letter-spacing:10px;font-weight:bold'>&nbsp;&#10149;課表限制</div> 	
+&nbsp;<p> 
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/noClass">單時段</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'  class="active"><a href="/Course/noClass2">連續時段</a></li>
+	</ul>
+</div>
+
+ &nbsp;<p>
+ <div th:if="${teacher_id=='' or teacher_id==null}" style='text-align:center'>
+ 	<h3>請先選取老師, 才能開始設定!</h3>
+ </div>
+ <div th:unless="${teacher_id=='' or teacher_id==null}">
+		 <form id='form1' th:action="@{/Course/noClassSave}" method="post">
+		  <input type="hidden" id='dateSel' name='dateSel' th:value='${dateSel}'/>
+		  <input type="hidden" id='slot_id' name='slot_id' th:value='${slot}'/>	
+		  <input type="hidden" id='teacher_id' name='teacher_id' th:value='${teacher_id}'/>		
+				<div style='margin-left:20px;width:500px;font-size:small;padding:10px'>
+					<div class="tr">
+						<div class="td2" style='width:400px;padding:2px;text-align:left;border-radius:3px'>
+								日期 : <span style='font-weight:bold' th:text="${dateSel}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+								時段 : <span style='font-weight:bold' th:text="${slot_name}"></span>
+						</div>
+					</div>
+					<div class="tr">
+						<div class="td2" style='background-color:#ffeeff'>		
+								<div style='padding:5px;font-weight:bold'>&nbsp;<input type='radio' name='noClassType' value='1'> 希望不排課  </div>
+								<div style='padding:5px;font-weight:bold'>&nbsp;<input type='radio' name='noClassType' value='2'> 不排課  </div>
+								<div style='padding:5px;font-weight:bold'>&nbsp;<input type='radio' name='noClassType' value='0'> 可排  </div>		
+						</div>
+				</div>
+		  		<div style='margin-left:20px;width:450px' align='center'>
+					<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設" />
+		  		</div>
+		</form>	
+ </div>		  
+<script>
+$("#btnSave").click(function() {
+	var url = $("#form1").attr('action');
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: $("#form1").serialize(),
+        success: function(data)
+        {
+			window.close();
+			window.opener.location.reload();
+        }
+    });
+	e.preventDefault(); 	
+}) 
+</script>
+
+
+

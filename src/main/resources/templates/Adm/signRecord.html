@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+<!-- 
+<div style='padding-left:15px'>
+ 	<div class="css-table" style="border-spacing:1px">
+ 	    <div class="tr"><img src='/images/GreenSquare.png' height='9px'/>到課&nbsp;&nbsp;<img src='/images/RedSquare.png' height='9px'/>缺課&nbsp;&nbsp; 	    </div>
+ 		<div class="tr" th:utext="${recordTitle}" style='background-color:steelblue;color:white;font-size:small'></div>	    
+	    <div class="tr" style='font-size:small;background-color:white' th:each="recordList : ${recordList}" th:utext="${recordList}"></div>
+    </div>	
+</div>  
+-->
+<!-- 
+<div style='padding-left:15px'>
+ 	<div class="css-table" style="border-spacing:1px" th:utext="${recordListStr}">
+    </div>	
+</div>   
+-->
+<div>&nbsp;</div>
+
+<div align='center'>
+<input type='hidden' id='Register_comboSale_grade_seq' th:value='${Register_comboSale_grade_seq}'>
+<div class="css-table" style='border:1px solid #cccccc' th:if="${cancelRegister} != null">
+  <div class="tr">
+	<div class='td' style='background-color:white'>
+ 	  <div class="css-table">
+ 		 <div class="tr">
+ 		    <div class='th' style='width:600px;text-align:center;padding:5px;background-color:#95b8c5;color:white'>訂班取消條件</div>
+ 		 </div>	    
+	     <div class="tr">
+	    	<div class='td' style='padding:5px;text-align:left'>
+	    		1. 實體課未開課<br>
+				2. 實體課已開課（14天內未上過課 or 未領取講義）<br>
+				3. Video課訂班後14天內未預約或未上過課程<br>
+	    	</div>
+	     </div>
+	  	 <div class="tr">
+	    	<div class='td'>        
+		        <input type='text' style='width:500px' class='form-control' id='reason2' placeholder='取消原因'>
+            </div>
+         </div> 	  
+	  	 <div class="tr" style='text-align:center'>
+	    	<div class='td' style='padding:5px'>	        
+		        <button type="button" id="btnSave2" class="btn-xs btn-primary">訂班取消</button>
+            </div>
+         </div> 	     
+      </div>
+    </div>
+   </div>      
+</div> 
+  
+<div>&nbsp;</div>
+
+<div class="css-table" style='border:1px solid #cccccc;margin:10px' th:if="${cancelRegister} != null">
+  <div class="tr">
+	<div class='td' style='background-color:white'>
+ 	  <div class="css-table">
+ 	     <div class="tr">
+ 		    <div class='th' style='width:600px;text-align:center;padding:5px;background-color:#95b8c5;color:white'>課程保留條件</div>
+ 		 </div>	    
+	     <div class="tr">
+	    	<div class='td' style='padding:5px;text-align:left'>
+				1. 課程未進行至三分之一以前<br>
+	    	</div>
+	     </div>
+	  	 <div class="tr">
+	    	<div class='td' style='padding:5px'>        
+		        <input type='text' style='width:500px' class='form-control' id='reason3' placeholder='保留原因'>
+            </div>
+         </div>  	    
+	  	 <div class="tr">
+	    	<div class='td' style='padding:5px'>	        
+		        <button type="button" id="btnSave3" class="btn-xs btn-primary">課程保留</button>
+            </div>
+         </div> 	     
+      </div> 
+      </div>
+    </div>
+   </div> 
+
+
+<script>
+	$("#btnSave2").click(function() {		
+        if(confirm("確定取消此訂班?")){
+			$.ajax({
+				url : "/Adm/RegisterStatusUpdate",
+				data : {
+					register_status : 2,
+					Register_comboSale_grade_seq  : $("#Register_comboSale_grade_seq").val(),
+					reason : $("#reason2").val()
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        } 		
+	});
+	
+	$("#btnSave3").click(function() {
+        if(confirm("確定保留此訂班?")){
+			$.ajax({
+				url : "/Adm/RegisterStatusUpdate",
+				data : {
+					register_status : 3,
+					Register_comboSale_seq : $("#register_comboSale_id").val(),
+					reason : $("#reason3").val()
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        } 
+	});	
+</script>

@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+
+<div align='center' style='margin-top:100px'>
+<img src='/images/successfully.jpg' height='100px'/>
+<div>&nbsp;</div>
+<A href='javascript:refreshParent()' style='letter-spacing:3px;text-decoration:underline;font-size:x-large;font-weight:bold;color:blue;text-decoration:underline'>儲存成功! 關閉視窗</A>
+</div>
+<script> 
+function refreshParent() {
+	  window.close();
+	  var url=window.opener.location.href;		  
+	  //window.opener.location=url+"?noSession=0"
+	  window.opener.location=url;
+}
+</script>

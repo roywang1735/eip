@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+				<p>
+				<div id='myDataTalbe' class="row">
+					<div class="col-lg-8">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4>新增帳號</h4>
+							</div>
+							<div class="panel-body">
+								<div class="row">
+									<form id='form1' action="#" th:action="@{/System/AccountSave}"
+										th:object="${employee}" method="post">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-md-4">
+													* 帳號<input type="text" class="form-control"
+														th:field="*{account0}" />
+												<span th:if="${#fields.hasErrors('account0')}" class="help-block" th:errors="*{account0}"></span>		
+												</div>
+												<div class="col-md-4">
+													* 密碼<input type="text" class="form-control"
+														th:field="*{drowssap}" />
+												<span th:if="${#fields.hasErrors('drowssap')}" class="help-block" th:errors="*{drowssap}"></span>			
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													* 中文名<input type="text" class="form-control"
+														th:field="*{ch_name}" />
+														<span th:if="${#fields.hasErrors('ch_name')}" class="help-block" th:errors="*{ch_name}"></span>
+												</div>
+												<div class="col-md-4">
+													英文名<input type="text" class="form-control"
+														th:field="*{en_name}" />
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-4">
+													* 部門<br>
+													<select th:field="*{department}" class="form-control">
+														<option value=""> ------------------ </option>
+														<option th:each="item : ${departmentGroup}"
+															th:value="${item.id}"
+															th:utext="${item.name}" />
+													</select>
+													<span th:if="${#fields.hasErrors('department')}" class="help-block" th:errors="*{department}"></span>
+												</div>
+												<div class="col-md-4">
+													電話<input type="text" class="form-control" th:field="*{tel}" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													Email<input type="text" class="form-control"
+														th:field="*{email}" />
+												</div>
+												<div class="col-md-4">
+													* 分校<br>
+													<select th:field="*{school}" class="form-control">
+														<option value=""> ------------------ </option>
+														<option  th:each="item : ${schoolGroup}"
+															th:value="${item.code}"
+															th:utext="${item.name}" />
+													</select>
+													<span th:if="${#fields.hasErrors('school')}" class="help-block" th:errors="*{school}"></span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-8">
+													* 群組<br>
+													<div style="HEIGHT: 70px; overflow-y: scroll; border:1px #cccccc solid;">
+														<span th:each="item: ${authorityGroup}">
+															<input type="checkbox"  id='authorityCode' name='authorityCode' th:value="${item.code}" th:utext="${item.name}"/>
+														</span>
+													</div>
+													<span id='authorityGroupError'></span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													建立者<input type="text" class="form-control"
+														th:field="*{creater}" readonly="readonly"/>
+												</div>
+											</div>																						
+											<div class="row"><br>
+												<div class="col-md-8" align='center'>
+													<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;
+													<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+<script>
+$("#btnSave").click(function() {
+	var checkflag = 0;
+	$('input[name="authorityCode"]:checked').each(function() {
+		checkflag = 1;
+		}
+	); 
+	if(checkflag==0){
+		alert("***請至少選取一個群組***");
+	}else if($("#account0").val()==''){	
+		alert("請填寫帳號");
+	}else if($("#drowssap").val()==''){	
+		alert("請填寫密碼");
+	}else if($("#ch_name").val()==''){	
+		alert("請填寫中文名");
+	}else if($("#department").val()==''){	
+		alert("請填寫部門");	
+	}else if($("#school").val()==''){	
+		alert("請填寫分校");			
+	}else{
+		$("#form1").submit();
+	}	
+});
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+</html>

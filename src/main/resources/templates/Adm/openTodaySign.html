@@ -1,0 +1,272 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<body style='background-color:#3e7e99'></body>     
+
+<input type='hidden' id='SchoolCode' th:value="${SchoolCode}">
+ <div align='center' style='margin-top:30px'>
+    <div class="css-table">
+      <div class="tr">
+       <div class="td" style='width:120px' id='makeUpTotalDiv'>&nbsp;</div>
+       <div class="td" style='width:20px' id='makeUpTotalDiv'>&nbsp;</div>
+       <div class="td" style='width:200px;text-align:left' id='outPublisherDiv'>&nbsp;</div>
+       <div class="td" style='width:150px'>&nbsp;</div>
+	   <div class="td">
+	   <!-------------------->
+	    <div class="css-table" style=''>			
+		  <div class="tr">
+			  <div class="td2" id='studentPhotoDiv' style='padding:10px;height:80px'>
+					<img src='/images/nobody.png' height='80px'/>
+			  </div>
+		  </div>
+		  <div class="tr">	  	
+			<div class="td2" id='studentNameDiv' style='padding:0px;color:gold;font-weight:bold;font-size:large;letter-spacing:5px'>
+					-
+			</div>								
+		  </div>
+    	</div>	   
+	   <!-------------------->
+	   </div>
+	   <div class="td" style='width:100px'>&nbsp;</div>
+	   <div class="td" style='vertical-align:middle'>
+	   <!--------------------> 
+	    <form id='form1'>
+	    <div class="css-table">			
+		  <div class="tr">	  
+			<div class="td2" style='' align='center'>
+					<input type="text" class="form-control" placeholder='學 號'  name="student_no" id="student_no" style='width:150px' autofocus />			
+			</div>	
+			<div class="td2" style=''>
+					<input type="submit" class="btn btn-danger" style='background-color:#266489' value='搜 尋'>		
+			</div>								
+		  </div>
+    	</div>
+    	<input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+		<input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}"/>
+    	</form>
+       <!-------------------->	  
+	   </div>
+	  </div> 
+	</div>  
+	<div  align='center'>
+		<div class="css-table" style='width:1440px;font-size:large;color:white;margin-top:50px;font-weight:bold;background-color:#266489'>
+	 		<div class='tr'>
+	 			<div class='td2' style='width:220px;padding:4px;border:1px #777777 solid;letter-spacing:10px'>期別</div>
+	 			<div class='td2' style='width:80px;border:1px #777777 solid;letter-spacing:2px'>方式</div>
+	 			<div class='td2' style='width:130px;border:1px #777777 solid;letter-spacing:10px'>時間</div>
+	 			<div class='td2' style='width:120px;border:1px #777777 solid;letter-spacing:5px'>老師</div>
+	 			<div class='td2' style='width:60px;border:1px #777777 solid;letter-spacing:2px'>課堂</div>
+	 			<div class='td2' style='width:200px;border:1px #777777 solid;letter-spacing:10px'>領取</div>
+	 			<div class='td2' style='width:80px;border:1px #777777 solid;letter-spacing:2px'>教室</div>
+	 			<div class='td2' style='width:100px;border:1px #777777 solid;letter-spacing:2px'>座位</div>	 			
+	 			<div class='td2' style='width:300px;border:1px #777777 solid;letter-spacing:10px'>備註</div>
+	 			<div class='td2' style='width:150px;border:1px #777777 solid;letter-spacing:5px'>確認</div>
+	 		</div>	
+	 	</div> 		
+		<div class="css-table" id='attendClass' style='width:1440px;color:gold'></div>
+		<div id='attendRecord' style='margin-top:20px'></div>
+	</div> 
+  </div>
+	 
+
+
+<script>
+	$("#form1").submit(function(e) {
+		e.preventDefault();
+		$('#attendClass').text("");
+		$('#attendRecord').text("");
+		var school_code = $('#SchoolCode').val();
+	    var formData = new FormData(this);
+	    $.ajax({
+	        url:'/Adm/getStudentTodayGrade?school_code='+school_code,
+	        type : "POST",
+	        data : formData,
+	        contentType: false,
+	        cache: false,
+	        processData: false,
+	        success : function(data) 
+	        {	
+	          if(data=='?'){
+	        	  alert("學號有誤!");
+	        	  $('#studentPhotoDiv').html("<img src='/images/nobody.png' height='80px'/>");
+	        	  $('#studentNameDiv').text("xxx");
+	          }else{
+	        	$('#attendClass').html(data); 
+	        	$('#studentPhotoDiv').html($('#studentPhoto').val());
+	        	$('#studentNameDiv').html($('#studentName').val());
+	        	$('#outPublisherDiv').html($('#outPublisher').val()+$('#lagnappe').val());
+	        	$('#makeUpTotalDiv').html($('#makeUpTotal').val());      	
+	          }	
+	        },
+	        error: function(data) 
+	        {
+	            alert("搜尋不成功!");
+	        }
+	    })  
+	});
+
+	function callSpeech(){
+	    $.ajax({
+	        url:"/Adm/speech",
+	        dataType : "text",
+			data :{
+				speechText : $('#speechText').val()
+			},        
+	
+	        success : function(data) 
+	        {
+	
+	        },
+	        error: function(data) 
+	        {
+	 
+	        }
+	    })	
+	}
+
+    function signOk(thisObj,signRecordHistory_seq,student_id,grade_id,changeToReal,slot,student_no,school_code,needSeat){  	
+	        var seat;
+	        var classRoom;
+	        if(needSeat=='1'){        	
+	            seat = $(thisObj).parent().parent().find('#seat').val();
+	            classRoom = $(thisObj).parent().parent().find('#classRoom').val();
+	            if(seat=='' || classRoom=='')            
+	        	 alert("請填寫教室及座位!");
+	        	 return;
+	        }
+        
+	    	var arr1 = [];
+	        var classesMaterial_id = document.getElementsByName("classesMaterial_id");
+	        for(i=0;i<classesMaterial_id.length;i++){
+	        	if(classesMaterial_id[i].checked){
+	        		arr1.push(classesMaterial_id[i].value);
+	        	} 
+	        } 	
+			$.ajax({
+				url : "/Adm/signOk",
+				data : {
+					signRecordHistory_seq : signRecordHistory_seq,
+					student_id : student_id,
+					grade_id : grade_id,
+					classesMaterial_id : arr1,
+					changeToReal : changeToReal,
+					comment : $(thisObj).parent().parent().find('#comment').val(),
+					seat : seat,
+					classRoom : classRoom,
+					slot : slot,
+					student_no : student_no,
+					school_code : school_code
+				},
+				dataType : "text",
+				traditional: true,
+				success : function(data) {
+					$('#attendRecord').html(data);
+					alert("~ ~ ~ 點 名 成 功 ~ ~ ~");
+					//callSpeech();
+				}
+			});
+    }	
+
+    
+    function signOk_c(thisObj,mockVideoHistory_seq,student_id,slot,student_no,school_code){ 
+		var seat = $(thisObj).parent().parent().find('#seat').val();
+		var classRoom = $(thisObj).parent().parent().find('#classRoom').val();
+        if(seat=='' || classRoom==''){
+       	 	alert("請填寫教室及座位!")
+        }else{		
+			$.ajax({
+				url : "/Adm/signOk_c",
+				data : {
+					mockVideoHistory_seq : mockVideoHistory_seq,
+					comment : $(thisObj).parent().parent().find('#comment').val(),
+					seat : seat,
+					classRoom : classRoom,
+					slot : slot,
+					student_no : student_no,
+					school_code : school_code				
+				},
+				dataType : "text",
+				traditional: true,
+				success : function(data) {
+					$('#attendRecord').html(data);
+					alert("~ ~ ~ 點 名 成 功 ~ ~ ~");
+					//callSpeech();
+				}
+			});
+        }	
+    }
+    
+    function signOk_d(thisObj,mockBaseBook_seq,student_id,slot,student_no,school_code){ 
+		var seat = $(thisObj).parent().parent().find('#seat').val();
+		var classRoom = $(thisObj).parent().parent().find('#classRoom').val();
+        if(seat=='' || classRoom==''){
+       	 	alert("請填寫教室及座位!")
+        }else{	    	
+			$.ajax({
+				url : "/Adm/signOk_d",
+				data : {
+					mockBaseBook_seq : mockBaseBook_seq,
+					comment : $(thisObj).parent().parent().find('#comment').val(),
+					seat : seat,
+					classRoom : classRoom,
+					slot : slot,
+					student_no : student_no,
+					school_code : school_code				
+				},
+				dataType : "text",
+				traditional: true,
+				success : function(data) {
+					$('#attendRecord').html(data);
+					alert("~ ~ ~ 點 名 成 功 ~ ~ ~");
+					//callSpeech();
+				}
+			});
+        }	
+    }
+    
+    function signOk_e(thisObj,CounselingBaseBook_seq,student_id,slot,student_no,school_code){ 
+		var seat = $(thisObj).parent().parent().find('#seat').val();
+		var classRoom = $(thisObj).parent().parent().find('#classRoom').val();
+        if(seat=='' || classRoom==''){
+       	 	alert("請填寫教室及座位!")
+        }else{	    	
+			$.ajax({
+				url : "/Adm/signOk_e",
+				data : {
+					CounselingBaseBook_seq : CounselingBaseBook_seq,
+					comment : $(thisObj).parent().parent().find('#comment').val(),
+					seat : seat,
+					classRoom : classRoom,
+					slot : slot,
+					student_no : student_no,
+					school_code : school_code				
+				},
+				dataType : "text",
+				traditional: true,
+				success : function(data) {
+					$('#attendRecord').html(data);
+					alert("~ ~ ~ 點 名 成 功 ~ ~ ~");
+					//callSpeech();
+				}
+			});
+        }	
+    }      
+    
+    function getSeats(school_code,classRoom,thisObj){
+		$.ajax({
+			url : "/Adm/getSeats",
+			data : {
+				school_code : school_code,
+				classRoom : classRoom,
+				slot : $(thisObj).parent().find('.slot').val()
+			},
+			dataType : "text",
+			traditional: true,
+			success : function(data) {
+				$(thisObj).parent().parent().find('#seatSel').html(data);
+			}
+		});    	
+    }
+    
+</script>

@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee dashed;
+	text-align: center;
+}
+</style>
+
+	<input type='hidden' id='makeUpTotal' th:value="${makeUpTotal}">
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+	        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		    <li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+			<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+		</ul>		
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">				
+			&#10074;<div class="td"><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}"> 期別選課 </A></div><div class="td" style="width:20px"></div>
+			&#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/Book_attend(student_seq=${student_seq})}"> 預約/點名紀錄 </A></div><div class="td" style="width:20px"></div>
+			&#10074;<div class="td"><A th:href="@{/Sales/StudentCalendar(student_seq=${student_seq})}"> 行事曆 </A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>	
+
+    <div>&nbsp;</div>
+	<div class="css-table">
+		<div class="tr"> 
+		     <div class="td" style='width:50px'></div>     
+		     <div class="td" style='border:1px #eeeeee solid;width:20px;vertical-align:middle'><img src='/images/bookIcon.png' width='350px'/></div>	
+             <div class="td" style='width:5px'></div>     
+			 <div class="td" style='background-color:#ffffff;border:1px #eeeeee solid;width:270px;padding:5px;display: inline-block'>
+				<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+					 &#8227; <img src='/images/WhiteSquare.png' height='14px'/> 實體課程&nbsp;&nbsp;&nbsp;
+					<img src='/images/GreenSquare.png' height='14px'/> 到課&nbsp;&nbsp;&nbsp;
+					<img src='/images/RedSquare.png' height='14px'/> 缺課&nbsp;&nbsp;&nbsp;
+				</div>
+				<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+					 &#8227; <img src='/images/White_repeat.png' height='13px'/> Video課程&nbsp;&nbsp;&nbsp;
+					<img src='/images/Green_repeat.png' height='13px'/> 到課&nbsp;&nbsp;&nbsp;
+					<img src='/images/Red_repeat.png' height='13px'/> 缺課&nbsp;&nbsp;&nbsp;
+				</div>
+				<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+					 &#8227; <img src='/images/WhiteCloud.png' height='13px'/> 線上課程&nbsp;&nbsp;&nbsp;
+					<img src='/images/GreenCloud.png' height='13px'/> 到課&nbsp;&nbsp;&nbsp;
+					<img src='/images/RedCloud.png' height='13px'/> 缺課&nbsp;&nbsp;&nbsp;
+				</div>
+				<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+					&#8227; <span style='background-color:#F7FE8D;font-size:xx-small;border:1px #eeeeee solid'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 代表可進班上課
+				</div>
+				<div style='padding-left:10px;font-size:small;letter-spacing:1px'>	
+					&#8227; <img src='/images/book.jpg' height='13px'/> 預約或取消課程
+				</div>		
+			 </div>
+	    </div>
+	</div>   		 
+	 	 	 
+
+<div>&nbsp;</div>
+<div id='message' style='text-align:center'></div>	 
+<div id='bookAttendArea'>
+<!---------------->
+<!---------------->
+</div>
+ 			
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+
+
+<script th:inline="javascript">
+
+	$(document).ready(function() {
+		getBook_attend();
+	})
+	
+	function getBook_attend(){
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:30px'/> 讀 取 中 ...");
+		});	
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+	
+		$.ajax({
+			url : "/Sales/getBook_attend",
+			data : {
+						student_seq  : [[${student_seq}]],
+						grade_id     : [[${grade_id}]]
+				   },
+			dataType : "text",
+			success : function(data) {
+				$("#bookAttendArea").html(data);
+			}
+		});	
+	}
+
+ 	function ClassBook(Register_comboSale_grade_id,school_code,subject_id,class_start_date,class_th,class_style,signRecordHistory_seq,futureClass,makeUpNo,grade_seq,allowFreeAttend,attendDateCancel,remark,teacher_id) {
+	 		//var student_seq = [[${student_seq}]];
+	 		var student_seq = $("#student_seq").val();
+	 		var feature = "width=1050,height=700";
+	 		if(attendDateCancel=='1'){ //可取消課程
+	 			if(confirm("確定取消此課程?")){
+	 				window.open("/Sales/ClassBook?student_seq="+student_seq+"&cancelFlag=1&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq,"",feature);
+	 			}
+	 		}else{
+		 		if(allowFreeAttend<=0){ 			
+		 			if(confirm("課程已超過免費次數!\n再預約需要使用Video點數!")){
+		            	//if($("#makeUpTotal").val()==0 && futureClass=='false'){
+		            	if($("#makeUpTotal").val()<=0 && $("#makeUpTotal").val()>-3){
+		            		alert("您目前並無Video點數!\n但可先預約, 至多可至 -3 點數, 且在上課前須繳納!");
+		            	}else if($("#makeUpTotal").val()<=-3){
+		            		alert("很抱歉, 您目前Video點數無法預約!");
+		            		resurn;
+		            	}
+				 	    window.open("/Sales/ClassBook?teacher_id="+teacher_id+"&student_seq="+student_seq+"&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq+"&remark="+remark,"",feature);		            
+		            }	
+		 		}else{
+		 			window.open("/Sales/ClassBook?teacher_id="+teacher_id+"&student_seq="+student_seq+"&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq+"&remark="+remark,"",feature);  
+		 		}
+	 		}
+ 	}
+ 	
+ 	function ClassBookHistory() { 
+ 		var feature = "width=980,height=400";
+ 	    window.open("/Sales/ClassBookHistory", "", feature);
+ 	}
+ 	
+    function openClassMakeUp(student_seq){
+ 		var feature = "left=200,top=200,width=1050,height=400";
+ 	    window.open("/Sales/openClassMakeUp?student_seq="+student_seq, "", feature);    	
+    }
+
+    function openSignRecord(signRecordHistory_seq,attend){ 
+ 		var feature = "width=500,height=450";
+ 	    window.open("/Adm/editSignRecord?signRecordHistory_seq="+signRecordHistory_seq+"&attend="+attend, "", feature);
+ 	}
+     	
+ 	function View(thisId){
+ 		    if($(thisId).text()=='+'){
+ 		    	$(thisId).html("&minus;");
+ 		    	$(thisId).parent().parent().parent().parent().parent().parent().find('#child').show();
+ 		    }else if($(thisId).text()=='−'){
+ 		    	$(thisId).html("&plus;");
+ 		    	$(thisId).parent().parent().parent().parent().parent().parent().find('#child').hide();
+ 		    } 		
+ 	}
+ 	
+ 	$("#titleWidth").width(200+$("#bookAttendArea").width()<1400?1400:200+$("#bookAttendArea").width());
+ 	
+ 		
+    function openOnlineClass(class_id){
+ 		var feature = "left=200,top=200,width=1050,height=400";
+ 	    window.open("/Sales/openOnlineClass?class_id="+class_id, "", feature);    	
+    } 	
+</script>
+

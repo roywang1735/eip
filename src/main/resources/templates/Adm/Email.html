@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid" style='letter-spacing:2px;font-weight:bold'>
+	<ul class="nav nav-tabs" id="myTabs">
+		<li class="active"><a href="/Adm/Email">Email & 簡訊</a></li>
+
+	</ul>
+</div>
+      <div style='background-color:#ffffff;width:1000px;padding:2px;margin-left:20px'>
+	     <div style='padding-left:20px;font-size:small;letter-spacing:2px;color:#000000'>
+		       ✽ 輸入以下搜尋條件, 搜尋出欲發送簡訊的學生列表, 再點選[發送Email], 即可進入發送畫面!<br>
+    
+	     </div>
+      </div>
+<form>
+  <div style='padding:10px;border-radius:5px;margin-top:20px;width:830px'>
+	<div class="css-table" style='margin-top:3px'>			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					類別 &nbsp;&raquo;<br> 
+					<select id="category" class="form-control" onchange="subjectData(this.value)">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>							
+			</div>
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					科目 &nbsp;&raquo;<br> 
+					<select id="subject" class="form-control" style='width:200px' onchange="gradeData(this.value)">
+						<option></option>
+					</select>						
+			</div>							
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					期別&nbsp;&raquo;<br>
+					<select id="grade_id" class="form-control" style='width:200px'>
+						<option></option>
+					</select>				
+			</div>			
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					堂數<br>
+					<select id="class_th" class="form-control" style='width:60px'>
+					    <option value=''></option>
+						<option value='1'>1</option>
+						<option value='2'>2</option>
+						<option value='3'>3</option>
+						<option value='4'>4</option>
+						<option value='5'>5</option>
+						<option value='6'>6</option>
+						<option value='7'>7</option>
+						<option value='8'>8</option>
+						<option value='9'>9</option>
+						<option value='10'>10</option>
+						<option value='11'>11</option>
+						<option value='12'>12</option>
+						<option value='13'>13</option>
+						<option value='14'>14</option>
+						<option value='15'>15</option>
+					</select>				
+			</div>						
+		</div>
+	</div>	
+	
+ </div>
+
+ <div style='width:800px' align='center'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-success" onclick='openEmailList()'>&#8883;發送Email</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-success" onclick='openSMSList()'>&#8883;發送簡訊</button>&nbsp;&nbsp;
+		<!-- <A href='' style='text-decoration:underline'>發送紀錄</A> -->
+ </div>
+</form> 
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+	    <div style='text-align:left'>		
+		<table id="myDataTalbe"  style='background-color:#D4DBD3;border:1px #555555 solid'>
+				<tr>
+				    <th style='width:30px;border-right:1px #555555 solid;text-align:center;height:30px'></th>
+					<th style='width:100px;border-right:1px #555555 solid;text-align:center;height:30px'>學 號</th>
+					<th style='width:100px;border-right:1px #555555 solid;text-align:center'>姓 名</th>
+					<th style='width:100px;border-right:1px #555555 solid;text-align:center'>手 機</th>
+					<th style='width:300px;border-right:1px #555555 solid;text-align:center'>Email</th>
+					<th style='width:100px;border-right:1px #555555 solid;text-align:center'>FB</th>
+					<th style='width:100px;border-right:1px #555555 solid;text-align:center'>Line</th>					
+					<th style='width:300px;border-right:1px #555555 solid;text-align:center'>目 前 單 位</th>
+					<th style='width:100px;border-right:1px #555555 solid;text-align:center'>建 立</th>
+				</tr>
+		</table>
+		<table id="studentList"  style='background-color:#D4DBD3;border:1px #555555 solid'>
+        <!----------->
+        <!----------->
+		</table>		
+		</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script type="text/javascript">
+
+$("#btnQuery").click(function() {
+	$.ajax({
+		url : "/Adm/getStudentList",
+		data : {
+			grade_id   : $("#grade_id").val(),
+			class_th   : $("#class_th").val()
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#studentList").html(data);
+		}
+	 });
+})	
+	
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+	function gradeData(subject_id) {
+		if (subject_id) {
+			$.ajax({
+				url : "/Course/GradeSearch",
+				data : {
+					subject_id : subject_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#grade_id").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+ 	function openEmailList() {
+ 		alert("功能尚未完成!");
+ 		/**
+ 		var feature = "width=750,height=500";
+ 		var param = "ch_name="+$("#ch_name").val()+"&en_name="+$("#en_name").val()+"&eip_student_no="+$("#eip_student_no").val()+
+ 		"&student_no="+$("#student_no").val()+"&mobile="+$("#mobile").val()+"&email="+$("#email").val()+"&school="+$("#school").val()+"&category="+$("#category").val()+"&subject="+$("#subject").val()+"&grade="+$("#grade").val();
+ 	    window.open("/Adm/openEmailList?"+param,"", feature);
+ 	    **/
+ 	}
+ 	
+ 	function openSMSList() {
+ 		alert("功能尚未完成!");
+ 		/**
+ 		var feature = "width=700,height=500";
+ 		var param = "ch_name="+$("#ch_name").val()+"&en_name="+$("#en_name").val()+
+ 		"&student_no="+$("#student_no").val()+"&mobile="+$("#mobile").val()+"&email="+$("#email").val()+"&school="+$("#school").val()+"&category="+$("#category").val()+"&subject="+$("#subject").val()+"&grade="+$("#grade").val();
+ 	    window.open("/Adm/openSMSList?"+param,"", feature);
+ 	    **/
+ 	} 	
+ 	
+ 	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>
+
+

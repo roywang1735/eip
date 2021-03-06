@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<body style='background-color:#ffefff'></body> 
+ 		            <input type='hidden' id='category_id' th:value='${category_id}'>			
+ 					<input type='hidden' id='returnAreaId' th:value='${returnAreaId}'>
+                                &nbsp;<p>
+								<div id="css-table" class="css-table" style="margin: 0px auto;">
+									<!--  
+									<div class="tr">
+										<div class="td" >
+											<select id='SelCategory_id' style="height:30px;font-size:small;width:150px" class="form-control"
+												onchange="getSubItem(this.value)">
+												<option value="-1">~ 類別 ~</option>
+												<option th:each="item : ${categoryGroup}"
+													th:value="${item.category_seq}" th:utext="${item.name}" />
+											</select>
+										</div>
+									</div>
+									-->
+									<div style='height:15px'></div>									
+									<div class="tr">
+										<div class="td" >
+											<select id='lagnappe_seq' style="font-size:small;width:200px" class="form-control">
+											</select>
+										</div>
+									</div>
+                                    &nbsp;<br>
+									<div class="tr">
+										<div class="td" >
+											<span style=''>數量&nbsp;</span>
+											<span>
+											  <select id='lagnappe_no' style="border-radius:5px;padding:5px;font-size:small;width:70px">
+												<option value='1'>1</option>
+												<option value='2'>2</option>
+												<option value='3'>3</option>
+												<option value='4'>4</option>
+												<option value='5'>5</option>
+												<option value='6'>6</option>
+												<option value='7'>7</option>
+												<option value='8'>8</option>
+												<option value='9'>9</option>
+												<option value='10'>10</option>
+											  </select>
+											</span>
+										</div>
+									</div>                                    
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button"  style='margin-top:5px' class="btn-xs btn-warning" onclick="refreshParent();">加 入</button>
+										</div>
+									</div> 
+								</div>
+
+
+
+
+<script>
+
+   $(document).ready(
+		function byLoading() {
+				getSubItem();
+		}
+	)
+	
+   function getSubItem() {		
+		  $.ajax({
+			url : "/CourseSale/getLagnappe",
+			data : {},
+			dataType : "text",
+			success : function(data) {
+				 $("#lagnappe_seq").html(data);
+			}
+		 });
+    }
+
+function refreshParent() { 
+			var returnAreaId = window.opener.document.getElementsByClassName($("#returnAreaId").val());
+			
+			$(returnAreaId).append(
+					"<input type='hidden' name='lagnappe_seq' value='"+$('#lagnappe_seq').find(":selected").val()+"'>"+
+					"<input type='hidden' name='lagnappe_no' value='"+$('#lagnappe_no').find(":selected").val()+"'>"+
+					" &bull;"+$('#lagnappe_seq').find(":selected").text()+"X"+$('#lagnappe_no').find(":selected").text()+"<br>"
+			);			
+			window.close();
+    
+}
+</script>
+
+
+

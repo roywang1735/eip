@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header_noMenu"></head>
+
+<body style='margin:30px'>
+	<div style='padding:5px;font-size:small;letter-spacing:2px;color:#004c99;border-radius:10px;width:780px'>
+		&#10045; 1日約訪&rarr;效期為邀約日當日, 填寫之邀約日限定在30日內, 超過邀約日或該學員填寫紙本初訪，即算結束&nbsp;&nbsp;&nbsp;<br>
+		&#10045; 60日初訪&rarr;效期為填紙本初訪單當日算起~至60日
+	</div>
+ 
+<form id='form1' action="#" th:action="@{/Sales/ConsultRecordSave}" th:object="${consultRecord}" method="post"  enctype="multipart/form-data">
+  <input type="hidden" th:field='*{consultRecord_seq}'/>
+  <input type='hidden' name='student_seq' th:value='${student_seq}'>
+
+  <div style='border:1px #eeeeee solid;width:1050px;border-radius:5px;background-color:#ffefff;padding:10px'>     
+	<div class="css-table">
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:190px;letter-spacing:3px;font-weight:bold'>學生 :</div>		
+			<div class="td2" style='padding:5px;width:710px;color:yellowgreen;font-weight:bold;background-color:#ffefff' th:text="${ch_name}"></div>
+		</div>				
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>分校 :</div>		
+			<div class="td2" style='padding:5px'><input type="text"  th:field="*{employee_school}" style='border:0px;width:100px;background-color:#ffefff' readonly/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>建立者 :</div>			
+			<div class="td2" style='padding:5px'><input type="text"  th:field="*{employee_name}" style='border:0px;width:100px;background-color:#ffefff' readonly/></div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>建立日期 :</div>
+			 <div class="td2" style='padding:5px'><input type="text"  th:field="*{createDate}" style='border:0px;width:180px;background-color:#ffefff' readonly/></div>
+		</div>
+				
+		<div class="tr" style='padding:2px'>	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>&starf;諮詢課程 :</div>
+			 <div class="td2" style='padding:5px'>
+					<span style='padding:3px' th:each="category: ${ACategory}" th:utext="${category}"></span>
+			 </div>
+		</div>			
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>&starf;名單來源 :</div>
+			 <div class="td2" style='padding:5px'>
+			 	<span style='padding:3px' th:each="nameFrom: ${ANameFrom}" th:utext="${nameFrom}"></span>
+			 </div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>&starf;從何得知 :</div>
+			 <div class="td2" style='padding:5px'>
+			 	<span style='padding:3px' th:each="infoFrom: ${AInfoFrom}" th:utext="${infoFrom}"></span>
+			 </div>
+		</div>
+		
+		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;font-weight:bold'>&starf;效期建立 :</div>
+			 <div class="td2" style='padding:5px'>
+            	<span th:each="consultCategory : ${LConsultCategory}" style=''>
+                	&nbsp;<input type="radio" class='consultCategory'  th:field="*{consultCategory_id}" th:value="${consultCategory.id}" th:text="${consultCategory.name}" />&nbsp;
+            	</span>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px;'>1日約訪邀約日 :</div>
+			 <div class="td2" style='padding:5px' id='oneDayValidDiv'>
+			 	<input type="text" autocomplete="off" placeholder='&#128197;' onchange='dayVerify()' th:field="*{oneDayValid}" style='height:30px;width:130px;border-radius:5px;border:1px #aaaaaa solid'/>
+			 </div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px'>紙本初訪60日期限 :</div>
+			 <div class="td2" style='padding:5px' id='validDateDiv'>
+			 	<div class="css-table">			
+		           <div class="tr">
+		              <div class="td2"><input type="text" autocomplete="off" placeholder='&#128197;' th:field="*{validDate}" style='height:30px;width:130px;border-radius:5px;border:1px #aaaaaa solid'  readonly/></div>
+		              <div class="td2" style='width:70px'>&nbsp;</div>
+		              <div class="td2">初訪單(圖檔)<img src='/images/upload.png' height='12px'/><br>(jpg,gif,png..)</div>
+		              <div class="td2"><input type="file" name="file" /></div> 
+			 	   </div>
+			 	</div>  
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px'>跨分校60日期限 :</div>
+			 <div class="td2" style='padding:5px' id='crossDateDiv'>
+			 	<input type="text" autocomplete="off" placeholder='&#128197;'  th:field="*{crossDate}" style='height:30px;width:130px;border-radius:5px;border:1px #aaaaaa solid'  readonly/>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;letter-spacing:3px'>講座活動14日期限 :</div>
+			 <div class="td2" style='padding:5px' id='lectureDateDiv'>
+			 	<input type="text" autocomplete="off" placeholder='&#128197;'  th:field="*{lectureDate}" style='height:30px;width:130px;border-radius:5px;border:1px #aaaaaa solid'  readonly/>
+			 </div>
+		</div>								
+
+							
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;letter-spacing:3px;font-weight:bold'>&starf;諮詢內容 :</div>
+			 <div class="td2" style='padding:5px'>
+			 	<textarea th:field="*{content}" cols="60" rows="4"></textarea>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;letter-spacing:3px;font-weight:bold'>備註 :</div>
+			 <div class="td2" style='padding:5px'>
+			 	<textarea th:field="*{remark}" cols="40" rows="3"></textarea>
+			 </div>
+		</div>																
+	</div>
+  </div>
+  <div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" style='width:1050px' align='center'>
+		<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+  </div>
+</form> 
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div style='background-color:#FEFFEE;text-align:center'>
+	<div style='margin-top:10px;letter-spacing:15px;color:#555555;background-color:white'>--------------------- 初 訪 單 ---------------------</div>
+	<div th:utext="${deleteFun}" style='text-align:left'></div>
+	<div id='uploadFile' th:utext="${uploadFile}" style='margin-top:20px;height:800px;width:1000px;overflow:auto;'></div>
+</div>	  		
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>											
+<script>
+
+$("#btnSave").click(function() {
+	var checkflag = 0;
+	$('#category_id:checked').each(function() {
+		checkflag = 1;
+		}
+	); 
+	var checkflag1 = 0;
+	$('#nameFrom:checked').each(function() {
+		checkflag1 = 1;
+		}
+	); 
+	var checkflag2 = 0;
+	$('#infoFrom:checked').each(function() {
+		checkflag2 = 1;
+		}
+	); 	
+	if(checkflag==0 && $('#category_id_text_1').val()==""){
+		alert("***請至少選取一個[諮詢課程]***");
+	}else if(checkflag1==0 && $('#nameFrom_text_1').val()=="" && $('#nameFrom_text_2').val()==""){
+		alert("***請至少選取一個[名單來源]***");
+	}else if(checkflag2==0 && $('#infoFrom_text_1').val()==""){
+		alert("***請至少選取一個[從何得知]***");			
+	}else if(typeof($("input[name='consultCategory_id']:checked").val())== "undefined"){		
+	    alert("***請選取效期建立***");
+	}else if($('#content').val()==""){		
+	    alert("***請填寫諮詢內容***");	    
+	}else{
+		$("#form1").submit();
+	}
+	
+
+});
+
+	$(function() {
+		//$("#validDate").datepicker();
+		$("#oneDayValid").datepicker();
+		//$("#crossDate").datepicker();
+	});
+
+
+	$(document).ready(function() {
+		if($("#validDate").val()==""){$("#validDateDiv").hide();}
+		if($("#oneDayValid").val()==""){$("#oneDayValidDiv").hide();}
+		if($("#crossDate").val()==""){$("#crossDateDiv").hide();}
+	})
+	$(".consultCategory").click(function(){
+		   $("#validDate").val("");		   
+		   $("#oneDayValid").val("");
+		   $("#crossDate").val("");
+		   $("#validDateDiv").hide();
+		   $("#oneDayValidDiv").hide();
+		   $("#crossDateDiv").hide();
+		   $("#lectureDateDiv").hide();
+			
+		   var catId =$("input[name='consultCategory_id']:checked").val();
+		   if(catId==1){
+			   confirm("請填寫1日約訪邀約日,且必須在30日內");
+			   $("#oneDayValidDiv").show();
+		   }else if(catId==2){
+			   	confirm("有效期為60日,且必須上傳初訪單");
+			   	$("#validDateDiv").show();
+		   		var today = new Date();
+		   		today.setDate(today.getDate() + 60);
+		   		function twoDigit(n) { return (n < 10 ? '0' : '') + n; }
+		   		$("#validDate").val(twoDigit(today.getMonth() + 1)+"/"+twoDigit(today.getDate())+"/"+today.getFullYear());
+		   }else if(catId==3){
+			   confirm("有效期為60日");
+			   $("#crossDateDiv").show();
+		   		var today = new Date();
+		   		today.setDate(today.getDate() + 60);
+		   		function twoDigit(n) { return (n < 10 ? '0' : '') + n; }
+		   		$("#crossDate").val(twoDigit(today.getMonth() + 1)+"/"+twoDigit(today.getDate())+"/"+today.getFullYear());			   
+		   }else if(catId==4){
+			   confirm("有效期為14日");
+			   $("#lectureDateDiv").show();
+		   		var today = new Date();
+		   		today.setDate(today.getDate() + 14);
+		   		function twoDigit(n) { return (n < 10 ? '0' : '') + n; }
+		   		$("#lectureDate").val(twoDigit(today.getMonth() + 1)+"/"+twoDigit(today.getDate())+"/"+today.getFullYear());			   
+		   }		   
+	})
+	
+    function dayVerify() {	
+		var selDay = new Date($("#oneDayValid").val());
+		var today = new Date();
+		var limitDay = new Date();
+		limitDay.setDate(today.getDate()+30);
+		if(selDay>limitDay){
+			alert("此日期超過30日!");
+			$("#oneDayValid").val("");
+		}
+	}
+	
+	function deleteUploadFile(fileName){
+		if(confirm("確定刪除此檔案?")){
+			$.ajax({
+				url : "/Sales/deleteUploadFile",
+				data : {
+					fileName : fileName
+				},
+				dataType : "text",
+				success : function(data) {	
+					alert("刪除完成!");
+					window.location.reload();
+				}
+			});
+		}	
+	}
+	
+</script>
+

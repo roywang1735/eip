@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<body style='background-color:#ffefff'></body> 		
+ 					<input type='hidden' id='returnAreaId' th:value='${returnAreaId}'>
+ 					<input type='hidden' id='category_id' th:value='${category_id}'>
+
+                                <div>&nbsp;</div>
+                                <div>&nbsp;</div>
+								<div id="css-table" class="css-table" style="margin: 0px auto;">
+								
+									<div class="tr" style='height:50px'>
+										<div class="td" >
+											<select id='SelCategory_id' style="font-size:small;width:150px;font-weight:bold" class="form-control" onchange="getSubItem(this.value)">
+												<option value="-1" selected>~ 類別 ~</option>
+												<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+											</select>
+										</div>
+									</div>						
+									<div class="tr" style='height:20px'>
+										<div class="td" >
+											<select id='counseling_seq' style="font-size:small;width:200px;font-weight:bold" class="form-control">
+												<option value="-1" selected> ~ 充電站 ~ </option>
+											</select>
+										</div>
+									</div>
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button" class="btn-xs btn-warning" onclick="refreshParent();">加 入</button>
+										</div>
+									</div>
+								</div>
+
+
+
+
+<script>
+   $(document).ready(
+		function byLoading() {
+		    var category_id = $("#category_id").val();
+			if(category_id!=null && category_id!=''){
+				$("#SelCategory_id").val(category_id);
+				getSubItem(category_id);
+			}
+		}
+	)	
+   function getSubItem(category_id) {		
+		  $.ajax({
+			url : "/CourseSale/getCounseling",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				 $("#counseling_seq").html(data);
+			}
+		 });
+    }
+ 
+	function refreshParent() { 
+			var returnAreaId = window.opener.document.getElementsByClassName($("#returnAreaId").val());
+			
+			$(returnAreaId).append(
+					"<input type='hidden' name='counseling_seq' value='"+$('#counseling_seq').find(":selected").val()+"'>"+
+					" &bull;"+$('#counseling_seq').find(":selected").text()+"<br>"
+			);			
+			window.close(); 
+	}
+
+</script>
+
+
+

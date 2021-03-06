@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee solid;
+}
+</style>
+
+
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li class="active"><a href="/CourseSale/CourseSaleSetting">課務設置</a></li>
+		<li><a href="">教材</a></li>
+		<li><a href="">模考</a></li>
+    	<li><a href="">輔導</a></li>	
+    	<li><a href="">贈品</a></li>	
+	</ul>
+</div>
+&nbsp;
+<p>
+<div class="row">
+	<div class="col-md-11">
+		<div class="panel panel-success" align='center'>
+			<div class="panel-heading" align='left'>
+				<h3 class="panel-title">新 增 課 務</h3>
+			</div>
+
+			<div id="css-table" class="css-table" style="border-spacing: 3px;width: 90%;">
+
+				&nbsp;
+				<p>
+				<div class="tr">
+					<div class="th" style="width:50px;height:40px;">名稱</div>
+					<div class="td dashedline" align='left' style="padding:5px">
+						<input type="text" style="width: 200px"
+							id="gradeName" />
+					</div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th">課程</div>
+					<div class="td dashedline" align='left'>
+
+						<form id='form1' action="#" th:action="@{/Course/courseSave}"
+							th:object="${course}" method="post">
+							<div class="panel-body">
+								<div class="row" style="background-color: #ffffff; padding:10px">
+									<div class="col-md-7" style="height: 230px;">
+										<div style="height: 20px;">
+											<div class="col-md-8" style='border: 0px #ffeeff solid; text-align:center'>科目</div>
+											<div class="col-md-2" style='border: 0px #ffeeff solid;'>任選</div>
+											<div class="col-md-2" style='border: 0px #ffeeff solid;'>定價</div>
+										</div>
+										<div class="dashedline" id="subjectList" style="height:220px;padding:20px">
+											<!------------------------------>
+											<!------------------------------>
+										</div>
+
+									</div>
+									<div class="container-fluid col-md-1"></div>
+									<div class="container-fluid col-md-4">
+										<p>
+										<div id="css-table" class="css-table" 
+											style="padding: 5px; spacing: 5px;">
+											<div class="tr">
+												<div class="td" style="width: 160px;">
+													<select th:field="*{category}" class="form-control"
+														onchange="subjectData(this.value)">
+														<option value="-1" selected>考科類別</option>
+														<option th:each="item : ${categoryGroup}"
+															th:value="${item.category_seq}" th:utext="${item.name}" />
+													</select>
+												</div>
+											</div>
+											<div class="tr">
+												<div class="td" style="width: 60px;">
+													<select th:field="*{subject}" class="form-control">
+														<option value="" selected>科目</option>
+													</select>
+												</div>
+											</div>
+											<div class="tr">
+												<div class="td">
+													<button type="button" class="btn btn-sm btn-success"
+														onclick="AddCourseStr();">加入</button>
+												</div>
+											</div>
+										</div>
+
+
+									</div>
+
+								</div>
+							</div>
+						</form>
+
+					</div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">教材</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">模考</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">輔導</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">贈品</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">他項</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">原價</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">售價</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+				<div class="tr" style="height: 30px;">
+					<div class="th" style="height: 70px;">補課數</div>
+					<div class="td dashedline" align='left'></div>
+				</div>
+			</div>
+
+			<div class="col-md-7" align="center">
+				&nbsp;
+				<p>
+					<button type="button" id='draftSave' class="btn btn-sm btn-info">暫存草稿</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-sm btn-danger" onclick="">送審</button>
+					&nbsp;&nbsp;
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+	/* 	function getDate(clickDiv) {
+	 $(clickDiv).datepicker();
+	 $(clickDiv).datepicker('show');
+	 } */
+
+	function timeselector(clickDiv) {
+		$(clickDiv).timeselector();
+	}
+</script>
+
+<script>
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
+	$("#draftSave").click(function() {
+		$("#form1").submit();
+	});
+
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+
+	function AddCourseStr() {
+		if (true) {
+			$.ajax({
+				url : "/CourseSale/AddSubjectStr",
+				data : {
+					subject_seq : $("#subject").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subjectList").append(data);
+				}
+			});
+		}
+	}
+
+	function AddComboStr() {
+		if (true) {
+			$.ajax({
+				url : "/CourseSale/AddComboStr",
+				data : {
+					combo_seq : $("#combo_seq").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subjectList").append(data);
+				}
+			});
+		}
+	}
+</script>

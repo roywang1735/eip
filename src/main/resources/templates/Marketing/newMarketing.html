@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li class="active"><a href="/Marketing/Marketing Setting">行銷活動</a></li>
+	</ul>
+</div>
+&nbsp;
+<p>
+<div style='border-style: dashed; border-color: #dddddd; border-width: 1px; padding: 10px; width: 60%'>
+	<div style='display: inline-block'>
+		* 分校 <select id='school_code' class="form-control"
+			style='width: 100px' name>
+			<option value="-1" selected></option>
+			<option th:each="item : ${schoolGroup}" th:value="${item.code}"
+				th:utext="${item.name}" />
+		</select>
+	</div>
+	<div style='display: inline-block'>
+		* 類別 <select id='category_id' class="form-control" style='width: 90px'
+			onchange="subjectData(this.value)">
+			<option value="-1" selected></option>
+			<option th:each="item : ${categoryGroup}"
+				th:value="${item.category_seq}" th:utext="${item.name}" />
+		</select>
+	</div>
+	<div style='display: inline-block'>
+		* 科目 <select id='subject_id' class="form-control" style='width: 150px'>
+			<option value="" selected></option>
+		</select>
+	</div>
+</div>
+<div>
+	<div style='white-space:nowrap; padding:10px;'>
+			<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>
+			&nbsp;&nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>
+			&nbsp;&nbsp;
+ 			<button type="button" class="btn btn-sm btn-success" onclick="location.href='/Marketing/newMarketing'">新增活動</button>
+	</div>
+</div>
+
+
+
+
+
+<script>
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject_id").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+</script>

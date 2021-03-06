@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>           
+
+<div>&nbsp;</div>
+ <div id='myDataTalbe' class="css-table" style='width:1050px'>			
+  <div class="tr" style=''>
+	<div class="td2" style='padding:5px'>
+      <div style='width:450px;background-color:#7ba6b6;letter-spacing:50px;text-align:center;font-weight:bold;padding:2px;border-radius:2px;color:white'>公佈欄 </div>  
+      <div style='overflow-y:scroll;border-style:solid;border-color:#dddddd;border-width:1px;padding:3px;width:450px;height:250px;border-radius:2px'>   
+         <div th:each="myBillBoard : ${LmyBillBoard}" th:text="'&bull; '+${myBillBoard}" style='padding:3px'></div>
+      </div>
+    </div>
+    <div class="td2" style='width:50px'>&nbsp;</div>   
+    <div class="td2" style='padding:5px'>
+      <div style='width:550px;background-color:#7ba6b6;letter-spacing:50px;text-align:center;font-weight:bold;padding:2px;border-radius:2px;color:white'>我的工作 </div>
+      <div style='overflow-y:scroll;border-style:solid;border-color:#dddddd;border-width:1px;padding:3px;width:550px;height:250px;border-radius:2px'>
+         <div th:each="myJob : ${LmyJob}" th:utext="'&bull; '+${myJob}" style='padding:3px'></div>
+      </div>
+    </div>  
+  </div>       
+</div> 
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+	})	
+</script>          
+

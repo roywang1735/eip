@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+		    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/admCalendar">行政行事曆</a></li>		
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/programSettingWait">排課表</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/classRemark">課程搜尋</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style=""><A href='/Adm/admCalendar'>行政行事曆</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href='/Adm/admCalendarEdit'>行政行事曆-編輯</A></div><div class="td" style="width:20px"></div>
+		</div>
+	</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Adm/admRegularJobUpdate}" method="post">
+	  <input type='hidden' name='school_code' id='school_code'>	
+      <div style='width:70px;padding:5px;border:1px #dddddd solid;margin-left:30px;background-color:#FFFFCC;text-align:center' th:text="${school_name_self}"></div>	
+	  <div id='myDataTalbe' class="css-table" style='width:850px;margin-left:30px;border:1px #eeeeee solid;background-color:#FFFAF8'>
+		<div class="tr">
+		    <div class="td" style='width:50px;font-weight:bold;text-align:center;border-right:1px #eeeeee solid'>刪 除</div>
+		    <div class="td" style='width:800px;font-weight:bold;text-align:center'>例 行 工 作 設 置</div>
+		</div>
+		<div class="tr" th:each="admRegularJob : ${LadmRegularJob}">
+		    <div class="td" style='background-color:white;text-align:center;border-bottom:1px #eeeeee solid;vertical-align:middle'><A href='javascript:void(0)' style='vertical-align:middle;padding:1px' title='刪除此筆'  onclick='$(this).parent().parent().remove();'><img src='/images/delete2.png' height='11px'/></A></div>
+		    <div class="td" style='height:36px;vertical-align:middle'><input type='text' style='border:1px solid #eeeeee;height:33px;width:790px' name='jobContent' th:value="${admRegularJob.jobContent}"></div>
+		</div>
+		<div><div style='height:10px'></div><div></div></div>
+	  </div>	
+
+	<div style='margin-left:30px;width:850px;border-top:1px #cccccc solid' align='center'>	
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存修改</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+		<button type="button" id="btnAdd" class="btn btn-sm btn-success">&#8883;新增</button>&nbsp;&nbsp; 
+	</div>	
+</form>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script th:inline="javascript">
+	$(document).ready(function(){
+		if([[${saveMessage}]]){
+			alert([[${saveMessage}]]);
+		}		
+	})    
+	$("#btnSave").click(function() {
+		$("#school_code").val([[${school_code_self}]]);
+		$("#form1").submit();
+	});
+	$("#btnAdd").click(function() {
+		$("#myDataTalbe").append("<div class='tr'><div class='td' style='text-align:center;border:1px #eeeeee solid;vertical-align:middle'></div><div class='td'><input type='text' style='border:1px solid #eeeeee;height:33px;width:790px' name='jobContent'></div></div>");
+	});	
+	function addCategory(){
+ 		var feature = "top=0,left=350,width=520,height=350";
+ 	    window.open("/System/addCategory", "", feature);
+ 	}
+	
+	$("#titleWidth").width(170+$("#myDataTalbe").width()<1300?1300:170+$("#myDataTalbe").width());	
+</script>	

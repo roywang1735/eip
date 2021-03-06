@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/CourseSale/PromoSetting">促銷方案</a></li>
+    <li><a href="/CourseSale/ComboSaleSetting">銷售設定</a></li>
+    <li class="active"><a href="/CourseSale/CourseCost">成本組合</a></li>
+  </ul>
+</div>
+&nbsp;<br>
+			<div id="css-table" class="css-table" style="border-spacing: 3px">
+				<div class="tr">
+					<div class="td" style="background-color:lightyellow"><A href='/CourseSale/CourseCost'>[ 課程/教材預估成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href='/CourseSale/MockCost'>[ 模考成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href='/CourseSale/MaterialCost'>[ 教材成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 贈品成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href='/CourseSale/CounselingCost'>[ 輔導成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 它項成本 ]</A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+<!-- &nbsp;<p>
+
+	<div class="row">
+	<div class="col-md-8">
+		<div class="panel panel-default col-md-9">
+			<div class="panel-body">
+				<div class="row">
+					<form name="myForm" action="" method="post">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-4">
+									類別<br> <select id="category" class="form-control"
+										onchange="subjectData(this.value)">
+										<option></option>
+										<option th:each="item : ${categoryGroup}"
+											th:value="${item.category_seq}" th:utext="${item.name}" />
+									</select>
+								</div>
+								<div class="col-md-4">
+									科目<br> <select id="subject" class="form-control">
+										<option></option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									代碼<input type="text" class="form-control" name="issue" />
+								</div>
+							</div>
+							<div class="row">
+								<br>
+								<div class="col-md-12" align='center'>
+									<button type="button" id="btnQuery" class="btn btn-sm btn-primary" onclick="showCombo()">查詢</button>
+									&nbsp;&nbsp; <input type="reset" value="重設"> 
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-sm btn-success"
+										onclick="location.href='/Account/AccountCreate'">新增科目
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> -->
+&nbsp;<p>
+<!--DataTables的表格-->
+	<table id="myDataTalbe" width="90%">
+		<tr style="border:1px solid #DDDDDD;text-align:left;color:#aaaaaa;background-color:#ffefff";>
+			<td width="10%" style='padding:5px'>考科類別</td>
+			<td width="25%">科目</td>
+			<td width="10%">縮寫</td>
+			<td width="7%">課程<br>原價</td>
+			<td width="7%">教材<br>成本</td>
+			<td width="5%">堂數</td>
+			<td width="5%">補課章</td>
+			<td width="15%">備註</td>
+			<td width="10%">編輯</td>
+		</tr>
+	</table>
+&nbsp;<p>
+<script>
+$(document).ready(
+		function showCombo() {
+			$.ajax({
+				url : "/Course/getSubjectTrWithCost",
+				dataType : "text",
+				success : function(data) {
+					$("#myDataTalbe").append(data);
+				}
+			});
+	}
+)		
+</script>
+
+
+
+
+
+<script>
+$(document).ready(
+	function subjectDatacategory_id() {
+		if (true) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+)	
+</script>
+

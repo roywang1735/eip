@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+<div>&nbsp;</div>
+<div style='margin:15px'>
+    <div style='background-color:#ffeeff;width:450px;padding:2px;margin-left:5px'>
+	    <div style='font-size:small;letter-spacing:1px'>
+	      		 ✽點選以下點名紀錄圖案 ex.<img src='/images/GreenSquare.png' height='10px'/> ,將可手動修改點名紀錄及領取內容!<br>  
+	    </div>
+    </div>
+    <div>&nbsp;</div>
+ 	<div class="css-table" style="border-spacing:1px" th:utext="${recordListStr}">
+<!-------->
+<!-------->
+    </div>	
+</div>  
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script>
+function signRecordSave(data,student_no,class_th,grade_id){
+	$.ajax({
+		url : "/Adm/signRecordSave",
+		data : {
+			student_no : student_no,
+			class_th : class_th,
+			grade_id : grade_id			
+		},
+		dataType : "text",
+		success : function(data) {
+			if(data!=''){
+				alert(data);
+			}else{
+				window.location.reload(true);
+			}
+		}
+	});		
+}
+
+function changeAttend(signRecordHistory_seq,attend){
+	var feature = "left=10,top=10,width=500,height=300";
+    window.open("/Adm/editSignRecord?signRecordHistory_seq="+signRecordHistory_seq+"&attend="+attend,"", feature); 	
+}
+</script>

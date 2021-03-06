@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee dashed;
+	text-align: center;
+}
+</style>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li><a href="/Sales/StudentProfile">基本資料</a></li>
+		<li class="active"><a href="/Sales/Register">報名繳費</a></li>
+		<li><a href="/Sales/">劃位</a></li>
+		<li><a href="/Sales/">異動</a></li>
+		<li><a href="/Sales/">歷程紀錄</a></li>
+	</ul>
+</div>
+
+&nbsp;<br>
+			<div id="css-table" class="css-table" style="border-spacing: 3px">
+				<div class="tr">
+					<div class="td" style="background-color:lightyellow"><A href='/CourseSale/SingleSaleSetting'>[ 單科銷售 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href='/CourseSale/ComboSaleSetting'>[ 套裝銷售 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 繳費紀錄 ]</A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+&nbsp;<p>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li><a href="/Course/CourseSetting">課程設置</a></li>
+		<li><a href="/Course/LectureSetting">講座設置</a></li>
+		<li class="active"><a href="/Course/SubjectSetting">科目</a></li>
+    	<li><a href="/Course/Teacher">老師</a></li>
+    	<li><a href="/Course/ClassroomSetting">教室</a></li>		
+	</ul>
+</div>
+<div>&nbsp;</div>
+
+	<table id="myDataTalbe" width="90%">
+		<tr style="border:1px solid #dddddd;text-align:left;color:#999999;background-color:#ffefff";>
+			<td width="10%" style='padding:5px'>類別</td>
+			<td width="20%">科目</td>
+			<td width="10%">原價</td>
+			<td width="10%">人事<br>管銷</td>
+			<td width="10%">充電站</td>
+			<td width="10%">其他<br>贈品</td>
+			<td width="10%">講義<br>印製</td>
+			<td width="10%">作業<br>批改</td>
+			<td width="10%">模考</td>
+			<td width="10%">Video錄影</td>
+		</tr>
+        <tr th:each="subject : ${LSubject}" style='font-size:x-small;border-bottom:1px solid #dddddd;text-align:left'>
+            <td style='padding:5px'><span th:text="${subject.category_name}"></span></td>
+            <td><span style='font-weight:bold' th:text="${subject.name}"></span>&nbsp;(<span th:text="${subject.abbr}"></span>)</td>
+            <td><span th:text="${subject.price}"></span></td>
+            <td><span th:text="${subject.hrPrice_R}"></span> %</td>
+            <td><span th:text="${subject.counselingPrice_R}"></span> %</td>
+            <td><span th:text="${subject.lagnappePrice_R}"></span> %</td>
+            <td><span th:text="${subject.handoutPrice_R}"></span> %</td>
+            <td><span th:text="${subject.homeworkPrice_R}"></span> %</td>
+            <td><span th:text="${subject.mockPrice_R}"></span> %</td>
+            <td>
+              <span th:if="${subject.isVideo == '1'}">V</span>
+              <span th:if="${subject.isVideo == '0'}">-</span>
+            </td>             
+        </tr>			
+	</table>
+<div>&nbsp;</div>
+
+
+
+
+
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/Teacher">老師</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting3">課表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/MockSetting">模考</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/CourseSale/CounselingCost">充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/BillBoard">國定假日</a></li>    	
+	</ul>
+</div>
+
+<div>&nbsp;</div>
+
+		<div class="css-table" style="border-spacing:3px">
+			<div class="tr">
+			    <div class="td" style='color:white;background-color:#F433FF;font-weight:bold;padding:3px' th:text="${session.teacher_name}"></div><div class="td" style="width:20px"></div>
+			    &#10074;<div class="td" style=""><A href='/Course/TeacherProfile'> 基本資料 </A></div><div class="td" style="width:20px"></div>
+			    &#10074;<div class="td" style=""><A href='/Course/TeacherSetting2'> 個人課表 </A></div><div class="td" style="width:20px"></div>
+			    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Course/Discontinued'> 課程停售 </A></div><div class="td" style="width:20px"></div>
+			</div>
+		</div>
+
+<div>&nbsp;</div>
+      <input type='hidden' id='teacher_id' th:value='${teacher_id}'>
+	  <div style='border:1px #eeeeee solid;width:550px;padding:10px;border-radius:5px;margin-top:20px'>  
+		<div class="css-table">			
+			<div class="tr" style='font-size:small'>
+				<div class="td2" style='padding:5px'>
+						分校<br> 
+						<select id="school_code" class="form-control" style='width:120px'>
+							<option value=''>~ All ~</option>
+							<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />							
+						</select>				
+				</div>
+				<div class="td2" style='padding:5px;width:120px'>
+						類別<br> 
+						<select id="category_id" class="form-control" onchange="subjectData()">
+							<option value=''>~ All ~</option>
+							<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${category_id == item.category_seq}" />							
+						</select>				
+				</div>
+				<div class="td2" style='padding:5px;width:280px;vertical-align:bottom'>
+						<input type='checkbox' id='grade_status_1'  checked>未上架&nbsp;&nbsp;
+						<input type='checkbox' id='grade_status_2'  checked>正班上架&nbsp;&nbsp;
+						<input type='checkbox' id='grade_status_3'  checked>Video未下架&nbsp;&nbsp;		
+				</div>			
+			</div>
+		</div>	
+	  </div>
+	  <div style='width:550px;text-align:center'>
+	  			<button type="button" onclick="teacherGradeSearch()" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+				<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+	  </div>	
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div id='message' style='text-align:center'></div>
+
+	<div class="css-table" id='myDataTalbe'>			
+		<div class="tr" style='font-size:small;background-color:#7ba6b6;color:white'>
+			<div class="td2" style='width:100px;text-align:center;padding:2px;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>狀態</div>
+			<div class="td2" style='width:100px;text-align:center;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>分校</div>
+			<div class="td2" style='width:150px;text-align:center;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>類別</div>
+			<div class="td2" style='width:150px;text-align:center;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>老師</div>
+			<div class="td2" style='width:300px;text-align:center;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>期別</div>
+			<div class="td2" style='width:100px;text-align:center;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>結業</div>
+			<div class="td2" style='width:100px;text-align:center;border:1px #ffffff  solid;font-weight:bold;letter-spacing:5px'>下架</div>							
+		</div>
+	</div>
+	<div class="css-table" id='gradeList'></div>
+	
+	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script>
+	$(document).ready(
+		function(){
+			teacherGradeSearch();
+		}	
+	)
+	
+	function teacherGradeSearch(){
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});	
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+		$.ajax({
+			url : "/Course/teacherGradeSearch",
+			data : {
+						school_code  : $("#school_code").val(),
+						category_id : $("#category_id").val(),
+						teacher_id  : $("#teacher_id").val(),
+						grade_status_1  : $("#grade_status_1").is(":checked"),
+						grade_status_2  : $("#grade_status_2").is(":checked"),
+						grade_status_3  : $("#grade_status_3").is(":checked"),
+				   },
+			dataType : "text",
+			success : function(data){
+				$("#gradeList").html(data);
+			}
+		});	
+	}
+	
+	function statusEdit(teacher_id,school_code,category_id,grade_id,name) {
+			var feature = "top=0,left=800,width=500,height=350";
+		    window.open("/Course/statusEdit?teacher_id="+teacher_id+"&school_code="+school_code+"&category_id="+category_id+"&grade_id="+grade_id+"&name="+name,"",feature);
+	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+

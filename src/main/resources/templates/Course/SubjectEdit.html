@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Course/SubjectEditSave}" th:object="${subject}" method="post">
+<input type='hidden' id='updateFlag' name='updateFlag'>
+  <input type="hidden" th:field='*{subject_seq}'/>
+  <input type="hidden" th:field='*{parent_seq}'/>
+
+<!--  
+  <div  th:if="*{parent_seq!=null and parent_seq!=''}" style='letter-spacing:2px'>&#10149; <A href='javascript:void(0)' onclick='lastVersion()' style='text-decoration:underline'>檢視前一版</A></div>
+--> 
+<div style='text-align:right;width:700px'><A href='javascript:void(0)'  onclick='SubjectVer()' style='color:blue;text-decoration:underline;letter-spacing:2px'>&#10097;版本檢視</A></div>
+	 
+<div style='margin-left:100px'>
+  <span style='letter-spacing:1px'>&starf;科目修改儲存後, 舊有學員報名的科目[原價]仍保留舊有的值, 其餘資料將全部更新為最新版</span>
+  <div style='text-align:center;color:red;font-size:large' th:utext="${message}"></div>
+  <div style='border:1px #dddddd solid;width:600px;border-radius:5px;background-color:#ffeeff;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*類別</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+					<select th:field="*{category_id}" class="form-control" style='width:120px'>
+						<option value=""  selected></option>
+						<option th:each="item : ${LCategory}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+			 </div>
+		</div>			
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>*名稱</div>		
+			<div class="td2" style='padding:5px;text-align:left'><input type="text" class="form-control" th:field="*{name}" style='width:200px'/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>代碼</div>			
+			<div class="td2" style='padding:5px;text-align:left'><input type="text" class="form-control" th:field="*{abbr}" style='width:130px'/></div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*原價</div>
+			 <div class="td2" style='padding:5px;text-align:left'><input type="text" th:field="*{price}" style='width:100px;border:1px #cccccc solid;height:32px;border-radius:5px' /></div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*內容等級</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+					<select th:field="*{subjectContent_code}" class="form-control" style='width:120px'>
+						<option th:each="item : ${LSubjectContent}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+			 </div>			 
+		</div>
+		<div class="tr">
+		     <div class="td2" style='padding:5px;text-align:right'>*可上次數<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 每堂課可上而不扣Video點數的次數! </span>"><img src='/images/message.png' height='7px'/></A></div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<select th:field="*{free_makeUpNo}" style='width:50px;height:30px;border-radius:3px'>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+				</select>
+			 </div>
+	    </div>		 			
+<!--  	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>成本(班內)</div>
+			 <div class="td2" style=''>
+			 	<div class="css-table" style='padding:5px'>	
+			 		<div class="tr">
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>人事管銷<br><input type="text" id='hrPrice_R1' name='hrPrice_R1' th:value="${subject_R1.hrPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>充電站<br>  <input type="text" id='counselingPrice_R1' name='counselingPrice_R1' th:value="${subject_R1.counselingPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>其他贈品<br><input type="text"  id='lagnappePrice_R1' name='lagnappePrice_R1' th:value="${subject_R1.lagnappePrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>講義印製<br><input type="text"  id='handoutPrice_R1' name='handoutPrice_R1' th:value="${subject_R1.handoutPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>作業批改<br><input type="text"  id='homeworkPrice_R1' name='homeworkPrice_R1' th:value="${subject_R1.homeworkPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>模考<br>    <input type="text" id='mockPrice_R1' name='mockPrice_R1' th:value="${subject_R1.mockPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 		</div>
+			 	</div>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>成本(線上)</div>
+			 <div class="td2" style=''>
+			 	<div class="css-table" style='padding:5px'>	
+			 		<div class="tr">
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>人事管銷<br><input type="text" id='hrPrice_R3' name='hrPrice_R3' th:value="${subject_R3.hrPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>充電站<br>  <input type="text" id='counselingPrice_R3' name='counselingPrice_R3' th:value="${subject_R3.counselingPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>其他贈品<br><input type="text"  id='lagnappePrice_R3' name='lagnappePrice_R3' th:value="${subject_R3.lagnappePrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>講義印製<br><input type="text"  id='handoutPrice_R3' name='handoutPrice_R3' th:value="${subject_R3.handoutPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>作業批改<br><input type="text"  id='homeworkPrice_R3' name='homeworkPrice_R3' th:value="${subject_R3.homeworkPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 			<div class="td2" style='padding:5px;text-align:center;width:70px;font-size:x-small'>模考<br>    <input type="text" id='mockPrice_R3' name='mockPrice_R3' th:value="${subject_R3.mockPrice_R}" style='width:40px;font-size:small;font-weight:bold'/>%</div>
+			 		</div>
+			 	</div>
+			 </div>
+		</div>
+-->										
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*正班補課</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<select th:field="*{isVideo}" style='width:90px;height:30px;border-radius:3px' onchange="subjectData(this.value)">
+						<option value="1">不可</option>
+						<option value="0">可</option>
+				</select>
+			 </div>			 
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*自由選<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 為一虛擬科目, 如好神6900自由選, 裡面包含多種可選科目! </span>"><img src='/images/message.png' height='7px'/></A>&nbsp;&#10097;</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<select th:field="*{isVirtual}"  style='width:50px;height:30px;border-radius:3px' onchange="showVisibility()">
+						<option value="0">否</option>
+						<option value="1">是</option>
+				</select>	 
+			 </div>			 
+		</div>	
+		<div class="tr virtualSubjectDiv" style='display:none'>	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;font-size:large;color:#aaaaaa'>&hellip;</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+				<div class="css-table" style='padding:5px;border:1px #dddddd solid;background-color:#ffefff'>	
+					<div class="tr">	
+			 		  <div class="td2" style='width:220px;vertical-align:middle;color:darkblue'>
+							&nbsp;類別
+							<select id="category"  onchange="subjectData(this.value)" style='height:30px;border-radius:3px;background-color:lightyellow'>
+								<option></option>
+								<option th:each="item:${LCategory}" th:value="${item.category_seq}" th:utext="${item.name}" />
+							</select><br>				
+
+							&nbsp;科目
+							<select id="virtualSubject_id" style='margin-top:10px;height:30px;border-radius:3px;width:150px;background-color:lightyellow'>
+								<option></option>
+							</select><br>
+							<button type="button" style='margin-top:10px;margin-left:80px' class="btn-xs btn-info" onclick="AddSubjectVirtual();">加入科目</button>						 			
+			 		 </div>			 
+			 		 <div id='DivVirtualSubject_id' th:utext="${virtualSubjectStr}" class="td2" style='width:200px;height:200px;background-color:white;padding:5px;text-align:left;border:1px #cccccc solid'>
+						<!-------->
+						<!-------->
+			 		 </div>		
+			        </div>
+			     </div>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*狀態</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<select th:field="*{active}" onchange="disableAlert()" style='width:90px;height:30px;border-radius:3px'>
+			 	        <option value="1">啟用</option>
+						<option value="0">停用</option>						
+				</select>
+			 </div>			 
+		</div>								
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>備註</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<textarea th:field="*{remark}" cols="40" rows="3"></textarea>
+			 </div>			 
+		</div> 
+		<div class="tr" th:if="*{subject_seq!=null and active=='1'}">	
+			 <div class="td2" style='padding:5px;text-align:right;color:red'>上架行程<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 修改上述資料, 當按下[修改儲存]時, 若設定此行程日期, 將於此日期更改, 若未設定, 將立即更改! </span>"><img src='/images/message.png' height='7px'/></A></div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<input type='text' readonly name='schedule_time' placeholder='ex. 20200512' style='background-color:#ECFFE8;width:140px;border:1px #aaaaaa solid;height:30px;border-radius:3px' onclick='$(this).datepicker({dateFormat: "yymmdd",});$(this).datepicker("show")'>
+			 	<span style='background-color:#FFFFCC' th:utext="${schedule_flag}"></span>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>更新者</div>
+			 <div class="td2" style='padding:5px;text-align:left' th:text="*{updater}"></div>
+		</div>	  
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>更新時間</div>
+			 <div class="td2" style='padding:5px;text-align:left' th:text="*{update_time}"></div>			 
+		</div> 						           			
+	</div>
+  </div>
+<div sec:authorize="hasAnyRole('cou_mgr','approve_mgr')">
+  <div style='width:600px' align='center' th:if="*{subject_seq!=null and active=='1'}">
+		<!--<button type="button" id="btnSave"class="btn btn-sm btn-primary">進 版 儲 存</button>&nbsp;&nbsp;&nbsp;&nbsp;  -->
+		<button type="button" id="btnUpdate" class="btn btn-sm btn-primary">修 改 儲 存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <div style='width:600px' align='center' th:if="*{subject_seq==null}">
+		<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+</div>  
+    
+</form>  		
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>											
+<script th:inline="javascript" type="text/javascript">
+
+	$("#btnUpdate").click(function() {
+		$("#updateFlag").val("true"); 
+		fieldCheck()
+	});
+	
+	$("#btnSave").click(function() {
+		fieldCheck();
+	});
+	
+	function fieldCheck(){
+		if($("#category_id").val()==''){
+			alert("***請選取類別***");
+		}else if($("#name").val()==''){
+			alert("***請輸入名稱***");
+		}else if($("#price").val()==''){
+			alert("***請輸入原價***");
+/**			
+		}else if(
+				   !(
+					  (	
+					    $("#hrPrice_R1").val()!='' && 
+						$("#counselingPrice_R1").val()!='' && 
+						$("#lagnappePrice_R1").val()!='' && 
+						$("#handoutPrice_R1").val()!='' && 
+						$("#homeworkPrice_R1").val()!='' && 
+						$("#mockPrice_R1").val()!=''
+	                  )
+					  ||
+					  (	
+					    $("#hrPrice_R3").val()!='' && 
+						$("#counselingPrice_R3").val()!='' && 
+						$("#lagnappePrice_R3").val()!='' && 
+						$("#handoutPrice_R3").val()!='' && 
+						$("#homeworkPrice_R3").val()!='' && 
+						$("#mockPrice_R3").val()!=''
+					  )
+				   )	  
+			  ){
+			alert("***成本分攤比率至少填寫一組***");
+**/			
+		}else if($("#isVideo").val()==''){
+			alert("***請輸入實體補課***");
+		}else if($("#isVirtual").val()==''){
+			alert("***請輸入自由選***");			
+		}else{
+			$("#form1").submit();
+		}
+	}
+	
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#virtualSubject_id").html(data);
+				}
+			});
+		} else {
+			$("#virtualSubject_id").html("<option></option>");
+		}
+	}
+	
+	$(document).ready(function() {
+		 showVisibility();
+	})
+	
+	function showVisibility(){
+		if($("#isVirtual").val()==1){
+			$('.virtualSubjectDiv').css('display','');
+		}else{
+			$('.virtualSubjectDiv').css('display','none');
+		}
+		
+	}
+		
+	function AddSubjectVirtual() {
+			$.ajax({
+				url : "/Course/AddSubjectVirtual",
+				data : {
+					virtualSubject_id : $("#virtualSubject_id").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#DivVirtualSubject_id").append(data);
+				}
+			});	
+	}
+
+	
+	function lastVersion() {
+		location.href = '/Course/SubjectEdit?subject_seq='+$('#parent_seq').val();
+ 	}
+	
+	function SubjectVer(){
+ 		var feature = "top=50,left=400,width=1250,height=250";
+ 		var subject_seq = $("#subject_seq").val();
+ 	    window.open("/Course/SubjectVer?subject_seq="+subject_seq, "", feature);
+ 	}
+	
+	function disableAlert(){
+		if($("#active").val()=='0'){
+			alert("此科目停用前, 請確認此科目之單科 / 套裝 / 課程, 均已結束或下架! ");
+		}
+	}
+	
+</script>
+

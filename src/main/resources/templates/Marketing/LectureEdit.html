@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div>&nbsp;</div>
+ 
+<form id='form1' th:action="@{/Marketing/LectureEditSave}" th:object="${lecture}" method="post">
+<input type='hidden' name='lecture_seq' th:field='*{lecture_seq}'/>
+  <div id='myDataTalbe' style='border:1px #eeeeee solid;width:820px;border-radius:5px;background-color:#ffefff;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold'>*地 點</div>
+			 <div class="td2" style='padding:5px;width:700px'>
+			 	<span style='margin-left:20px'>
+			 	       班內 
+					<select  th:field="*{school_id}" style='padding:3px;border-radius:5px;width:100px;border:1px #dddddd solid'>
+						<option value=''></option>
+						<option th:each="item : ${LSchool}" th:value="${item.school_seq}" th:utext="${item.name}" />
+					</select>
+				</span>
+				<span style='margin-left:50px'>				 	
+			 	       班外&nbsp;<input type="text"  th:field="*{location}" style='height:30px;border-radius:5px;border:1px #dddddd solid;width:350px' placeholder='ex. 康橋秀岡'/>
+			 	</span>       
+			 </div>
+		</div>
+		<div style='height:1px'></div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*日 期/時 間</div>
+			 <div class="td2" style='padding:5px'>
+			 	<span style='margin-left:20px'>
+					<input type="text"  placeholder='&#128197;' autocomplete="off" style='height:30px;border-radius:5px;border:1px #dddddd solid;width:120px' th:field="*{lectureDate}"/>			
+				</span>
+				<span style='margin-left:50px'>				 	
+			 	        時間&nbsp;
+			 	        <input type="text" th:field="*{lectureTimeFrom}" style='height:30px;border-radius:5px;border:1px #eeeeee solid;width:80px;' placeholder='ex. 0900'/>
+			 	        ~
+			 	        <input type="text" th:field="*{lectureTimeTo}" style='height:30px;border-radius:5px;border:1px #eeeeee solid;width:80px;' placeholder='ex. 1200'/>
+			 	</span>			 
+			 </div>			 
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*類 別</div>
+			 <div class="td2" style='padding:5px'>
+					<select th:field="*{category_id}" style='margin-left:20px;padding:3px;border-radius:5px;width:120px;border:1px #dddddd solid'>
+						<option value=''></option>
+						<option th:each="item : ${LCategory}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>			 
+			 </div>			 
+		</div> 
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*講 座 名 稱</div>
+			 <div class="td2" style='padding:5px'>
+			 	<input type="text" th:field="*{lectureName}" style='margin-left:20px;height:30px;border-radius:5px;border:1px #dddddd solid;width:350px' placeholder='ex. GRE讀書會'/>
+			 </div>			 
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*老 師</div>
+			 <div class="td2" style='padding:5px'>
+					<select th:field="*{teacher_id}" style='margin-left:20px;padding:3px;border-radius:5px;width:120px;border:1px #dddddd solid'>
+						<option value=''></option>
+						<option th:each="item : ${LTeacher}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+					</select>			 
+			 </div>			 
+		</div> 				
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;font-weight:bold'>講 座 特 色</div>
+			 <div class="td2" style='padding:5px'>
+			 	<textarea th:field="*{charText}"  cols="40" rows="2" style='margin-left:20px;border-radius:3px;border:1px #dddddd solid'></textarea>
+			 </div>			 
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;font-weight:bold'>備 註</div>
+			 <div class="td2" style='padding:5px'>
+			 	<textarea  th:field="*{remark}"  cols="50" rows="3" style='margin-left:20px;border-radius:3px;border:1px #dddddd solid'></textarea>
+			 </div>			 
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>更 新 者</div>
+			 <div class="td2" style='padding:5px' th:text="*{creater}">
+			 </div>			 
+		</div>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>更 新 時 間</div>
+			 <div class="td2" style='padding:5px' th:text="*{createTime}">
+			 </div>			 
+		</div>											           			
+	</div>
+  </div>
+
+  <div style='width:800px' align='center'>
+		<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲 存</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="btnDelete" class="btn btn-sm btn-danger">刪 除</button>
+  </div>   
+</form> 
+
+<form id='form2'  th:action="@{/Marketing/DeleteLecture}"  th:object="${lecture}" method="post">
+  <input type='hidden' name='lecture_seq' th:field='*{lecture_seq}'/>
+</form>  		
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+											
+<script>
+$(function() {
+	$("#lectureDate").datepicker();
+});
+
+
+$("#btnSave").click(function(){
+ 	if($("#school_id").val()=='' && $("#location").val()==''){
+		alert("***請填寫地點***");
+	}else if($("#lectureDate").val()==''){
+		alert("***請填寫日期***");
+	}else if($("#category_id").val()==''){
+		alert("***請填寫類別***");
+	}else if($("#lectureName").val()==''){
+		alert("***請填寫講座名稱***");
+	}else if($("#teacher_id").val()==''){
+		alert("***請填寫老師***");
+	}else{
+		$("#form1").submit();
+	} 
+});
+
+$("#btnDelete").click(function() {
+	if(confirm("確定刪除此資料?")){
+		$("#form2").submit();
+	}	
+});
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+

@@ -1,0 +1,150 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+	<li style='letter-spacing:2px;font-weight:bold'><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>	
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style=""><A href="/System/JL_grade">政龍EIP對應</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href="/System/JL_gradeRegister">政龍報名</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href="/System/JL_studentPay">政龍繳費</A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td" style=""><A href="/System/JL_studentPayRecord">政龍繳費方式</A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td" style="background-color:#eeeeee"><A href="/System/JL_grade_not">政龍EIP未對應</A></div><div class="td" style="width:20px"></div>		    		    
+	</div>
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<!--DataTables的表格-->
+<div style='width:1150px'>
+<table id="myDataTalbe" class="display">
+	<thead>
+		<tr style='letter-spacing:2px'>
+			<th style='width:40px'>EIP<br>代碼</th>
+			<th style='width:70px'>狀態</th>
+			<th style='width:70px'>分校</th>
+			<th style='width:40px'>類別</th>
+			<th style='width:60px'>期別</th>
+			<th style='width:250px'>科目</th>
+			<th>班別</th>
+			<th>時段</th>
+			<th>上課時間</th>		
+			<th>老師</th>			
+			<th>建立</th>
+		</tr>
+	</thead>
+</table>
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript" th:inline="javascript">
+
+$(document).ready(function() {		
+	showData();   
+});
+
+function showData(){
+
+	let table = $('#myDataTalbe').DataTable({	
+		"iDisplayLength": 20,
+		"order": [ 3, "asc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Course/getGradeListNotInJL",
+			data : function(d) {
+			},											
+			dataSrc : function(data) {           
+				return data;
+			}
+		},
+		"language": {loadingRecords: "<img src='/images/wait2.gif' style='width:27px'/> <span style='font-size:small'>讀 取 中 </span>"},	
+		orderMulti : false,
+
+		"columns" : [ 
+		    {"data" : "grade_seq",
+			       "className" : "text-center",
+				   "render" : function(data, type, row, meta) {
+			 				return "<a href='javascript:void(0)'  onclick='courseEdit("+data+")' style='font-size:small;color:blue;text-decoration:underline'>"+data+"</A><br><A href='javascript:void(0)'  onclick=Add_JL("+data+","+row.subject_id+",\'"+row.school_code+"\')><img src='/images/edit.png' height='14px'/></A>";
+				    }
+			},				
+			{"data" : "status_name","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.status_code=='3'){
+						return "&nbsp;&nbsp;<img src='/images/wait.gif' height='18px'/>"+data;
+					}else{
+						return data;
+					}	
+				}						
+			},
+			{"data" : "school_name"}, 
+			{"data" : "category_name","className":"text-center"}, 
+			{"data" : "class_start_date",
+				"render" : function(data, type, row, meta) {
+					if(row.video_date){
+						return data+"<br>("+row.video_date+")";
+					}else{
+						return data;
+					}	
+				}				
+			},				
+			{"data" : "subject_name",
+				"render" : function(data, type, row, meta) {
+					if(row.class_style=='1'){
+						//return data+"<br>"+"(班內)";
+						return data+" <span style='font-size:xx-small;color:#888888'>("+row.subjectContent_name+")</span>"+"<br><span style='color:#999999;font-size:x-small'>"+row.subject_abbr+"</span>";
+					}else if(row.class_style=='3'){
+						return data+"<span style='font-size:xx-small;color:#888888'>("+row.subjectContent_name+")</span><span style='font-size:x-small;color:#999999'>&nbsp;(線上)</span><br><span style='color:#7777777;font-size:x-small'>"+row.subject_abbr+"</span>";
+					}	
+				}					
+			},
+			{"data" : "gradeName","className":"text-center"},	
+			{"data" : "slot_name","className":"text-center"},
+			{"data" : "timeFrom","className":"text-center",
+					"render" : function(data, type, row, meta) {
+						return data+"~"+row.timeTo;
+					}					
+			},
+			{"data" : "teacher_name","className":"text-center"},
+		    {"data" : "creater","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					return "<span style='font-size:x-small'>"+data+"</span><br><span style='font-size:x-small'>"+row.update_time+"</span>";
+				}			    	
+		    }
+		]				
+	});
+	$("#btnQuery").click(function() {
+		table.ajax.reload();
+	});	
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+}
+	
+ 	function openGrade(data) {
+ 		var feature = "width=700,height=500";
+ 	    window.open("/CourseSale/ComboSaleContentDetail?comboSale_seq="+data,"",feature);
+ 	}
+ 	
+	function courseEdit(grade_seq){
+ 		var feature = "top=0,left=350,width=1120,height=700";
+ 	    window.open("/Course/newCourse?action=edit&grade_seq="+grade_seq, "", feature);
+ 	}
+	
+	function Add_JL(grade_seq,subject_id,schoolAbbr){
+ 		var feature = "top=0,left=350,width=650,height=600";
+ 	    window.open("/Course/Add_JL?grade_seq="+grade_seq+"&subject_id="+subject_id+"&schoolAbbr="+schoolAbbr,"",feature);
+ 	}	
+	
+</script>

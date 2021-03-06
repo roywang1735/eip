@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/CourseApproveFlow">課程通知<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${CourseApproveFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/ComboSaleFlow">課務通知<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${ComboSaleFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/PromoFlow">優惠簽核<span style='font-weight:normal;font-style:italic;color:red' th:text="${PromoFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/SpecialCase">特殊提報<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${SpecialCase_No}"></span></a></li>       
+  </ul>
+</div> 
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	<!--DataTables的表格-->
+	<div style='width:620px'>			
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>				  
+				  <th style='width:50px'>Seq.</th>
+				  <th style='width:100px;letter-spacing:2px'>日期</th>
+				  <th style='width:100px;letter-spacing:2px'>分校</th>
+				  <th style='width:100px;letter-spacing:2px'>學生</th>
+				  <th style='width:100px;letter-spacing:2px'>學號</th>					  
+				  <th style='width:100px;letter-spacing:2px'>建立者</th>
+				  <th style='width:70px;letter-spacing:2px'>內容</th>	
+				</tr>
+			</thead>
+		</table>
+	 </div>	
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">   	
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Manager/getSpecialCase",
+				data : function(d) {
+					d.haveRead = "0";
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "studentExperience_seq","className":"text-center"},				    			    
+				{"data" : "createTime",
+					"render" : function(data, type, full, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+				    }					
+				},
+				{"data" : "school_name","className":"text-center"},				
+				{"data" : "ch_name","className":"text-center"},				
+			    {"data" : "student_no","className":"text-center"},
+			    {"data" : "creater","className":"text-center"},
+			    {"data" : "studentExperience_seq","className":"text-center",
+					"render" : function(data, type, full, meta) {
+						return "<A href='javascript:void(0)' onclick='openSpecialCase("+data+");' style='font-size:large;text-decoration:underline;color:blue'>&hellip;</A>";
+				    }			    	
+			    }
+			]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	
+	function openSpecialCase(data) {
+ 		var feature = "top=10,left=350,width=700,height=250";
+ 	    window.open("/Manager/openSpecialCase?haveRead=1&studentExperience_seq="+data, "", feature);
+ 	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

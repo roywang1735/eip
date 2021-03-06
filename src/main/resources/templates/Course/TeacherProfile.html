@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<script src="/js/jquery.twzipcode.min.js" type="text/javascript"></script> 
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/Teacher">老師</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting3">課表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/MockSetting">模考</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/CourseSale/CounselingCost">充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/BillBoard">國定假日</a></li>    	
+	</ul>
+</div>
+
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Course/TeacherProfileSave}" th:object="${teacher}" method="post">
+			<div class="css-table" style="border-spacing:3px" th:if="*{teacher_seq!=null}">
+				<div class="tr">
+				    <div class="td" style='color:white;background-color:#F433FF;font-weight:bold;padding:3px' th:text="${session.teacher_name}"></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Course/TeacherProfile'> 基本資料 </A></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style=""><A href='/Course/TeacherSetting2'> 個人課表 </A></div><div class="td" style="width:20px"></div>
+				    &#10074;<div class="td" style=""><A href='/Course/Discontinued'> 課程停售 </A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+
+<div>&nbsp;</div>
+
+<input type='hidden' th:field="*{teacher_seq}">
+
+  <div id='myDataTalbe' style='border:1px #eeeeee solid;width:800px;border-radius:5px;background-color:#ffeeff;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr">
+			<div class="td2" style='width:120px;padding:5px;text-align:right'>*代碼</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{code}" style='width:150px'/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>*宣傳名</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{name}" style='width:150px'/></div>
+		</div>	
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>*本名</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{realName}" style='width:150px'/></div>
+		</div>	
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>身分證字號</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{IDN}" style='width:150px'/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>手機</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{Tel}" style='width:200px'/></div>
+		</div>	
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;vertical-align:middle'>地址</div>		
+			<div class="td2" style='padding:5px;width:650px'>
+					<div id="zipcode3" name='zipcode3'>
+						<div class="f4" data-role="county"></div>
+						<div class="f5" data-role="district"></div>
+					</div>
+					<input type="text" th:field="*{address}" class="f11 address form-control">		
+			</div>
+		</div>	
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>所屬分校</div>		
+			<div class="td2" style='padding:5px'>
+						<select th:field="*{school_id}" class='form-control' style='width:150px'>
+							<option value="">------------</option>
+							<option th:each="item : ${schoolGroup}" th:value="${item.school_seq}" th:utext="${item.name}" />
+						</select>			
+			</div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>Email</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{email}" style='width:200px'/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'><img src='/images/line.png' style='width:22px'></div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{line}" style='width:200px'/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'><img src='/images/fb.png' style='width:21px'></div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{fb}" style='width:200px'/></div>
+		</div>			
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>習慣聯絡方式</div>		
+			<div class="td2" style='padding:5px' th:utext="*{checkStr}"></div>
+		</div>
+																
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*虛擬老師</div>
+			 <div class="td2" style='padding:5px'>
+			 	<select th:field="*{virtual_teacher}"  style='width:50px;height:30px;border-radius:3px' onchange="showVirtual_teacher()">
+						<option value=""></option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+				</select>				 
+			 </div>
+		</div>
+			
+		<div class="tr virtual_teacherDiv" style='display:none'>	
+			 <div class="td2" style='padding:5px;text-align:right;vertical-align:middle;font-size:x-large;color:#aaaaaa'>&rdca;</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+				<div class="css-table" style='padding:5px;border:1px #dddddd solid;background-color:#ffefff'>	
+					<div class="tr">	
+			 		  <div class="td2" style='width:250px;vertical-align:middle;color:darkblue'>
+							&nbsp;老師						
+							<select id="teacher_seqSel"  style='height:30px;width:150px;border-radius:3px;background-color:lightyellow'>
+								<option></option>
+								<option th:each="item:${LTeacher}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+							</select><br>
+							<button type="button" style='margin-top:10px;margin-left:80px' class="btn-xs btn-info" onclick="AddTeacher();">加入老師 </button>						 			
+			 		 </div>			 
+			 		 <div id='virtual_teacherStr' th:utext="${virtual_teacherStr}" class="td2" style='width:250px;height:100px;background-color:white;padding:5px;text-align:left;border:1px #cccccc solid'>
+						<!-------->
+						<!-------->
+			 		 </div>		
+			        </div>
+			     </div>
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right'>*狀態</div>
+			 <div class="td2" style='padding:5px'>
+			 	<select th:field="*{enabled}"  style='width:70px;height:30px;border-radius:3px'>
+						<option value=""></option>
+						<option value="1">啟用</option>
+						<option value="0">停用</option>
+				</select>				 
+			 </div>
+		</div>				
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>建立</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{creater}" style='width:200px;border:0px' readonly/></div>
+		</div>	
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right'>更新</div>		
+			<div class="td2" style='padding:5px'><input type="text" class="form-control" th:field="*{update_time}" style='width:200px;border:0px' readonly/></div>
+		</div>																
+	</div>
+   </div>	
+	<div sec:authorize="hasAnyRole('cou_mgr','approve_mgr')">
+	  <div  align='center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp;
+	  </div>
+	</div>  
+</form>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script th:inline="javascript" type="text/javascript">
+	$(document).ready(function() {
+		$("#zipcode3").twzipcode({
+			countySel: [[${county}]], // 城市預設值, 字串一定要用繁體的 "臺", 否則抓不到資料
+			districtSel: [[${district}]], // 地區預設值			
+			"zipcodeIntoDistrict": true,
+			"css": ["city form-control", "town form-control"],
+			"countyName": "county", // 指定城市 select name
+			"districtName": "district" // 指定地區 select name
+		});
+		
+		showVirtual_teacher();
+	})
+	
+	$("#btnSave").click(function() {
+		if(fieldCheck()){
+			$("#form1").submit();
+		}	
+	});
+	
+	
+	function showVirtual_teacher(){
+		if($("#virtual_teacher").val()==1){
+			$('.virtual_teacherDiv').css('display','');
+		}else{
+			$('.virtual_teacherDiv').css('display','none');
+		}
+		
+	}
+	
+	function AddTeacher() {
+		var teacher_seqSel = $("#teacher_seqSel").val();
+		var teacher_text = $("#teacher_seqSel").find("option:selected").text();
+		var tmp = 
+		"<div>"+
+			"<input type='hidden' name='teacher_seqSel' value='"+teacher_seqSel+"'>"+
+			"<A href='javascript:void(0)' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete.png' height='8px'/></A>&nbsp;&nbsp;"+
+		    "<span style='color:darkblue;font-size:small;font-weight:bold'>"+teacher_text+"</span>"+
+		"</div>";
+		$("#virtual_teacherStr").append(tmp);
+	}
+	
+	function fieldCheck(){
+		if($("#code").val()==''){
+			alert("***請輸入代碼***");
+			return;
+		}else if($("#name").val()==''){
+			alert("***請輸入藝名***");
+			return;
+		}else if($("#realName").val()==''){
+			alert("***請輸入中文名***");
+			return;
+		}else if($("#virtual_teacher").val()==''){
+			alert("***請輸入虛擬老師***");
+			return;
+		}else if($("#enabled").val()==''){
+			alert("***請輸入狀態***");
+			return;
+		}
+		return true;
+	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+
+<style>
+.city, .town{width: 100%;}
+.f1{float:left;margin-left:5px;margin-right:5px;width:calc(5% - 10px)}
+.f2{float:left;margin-left:5px;margin-right:5px;width:calc(10% - 10px)}
+.f3{float:left;margin-left:5px;margin-right:5px;width:calc(15% - 10px)}
+.f4{float:left;margin-left:5px;margin-right:5px;width:calc(20% - 10px)}
+.f5{float:left;margin-left:5px;margin-right:5px;width:calc(25% - 10px)}
+.f6{float:left;margin-left:5px;margin-right:5px;width:calc(30% - 10px)}
+.f7{float:left;margin-left:5px;margin-right:5px;width:calc(35% - 10px)}
+.f8{float:left;margin-left:5px;margin-right:5px;width:calc(40% - 10px)}
+.f9{float:left;margin-left:5px;margin-right:5px;width:calc(45% - 10px)}
+.f10{float:left;margin-left:5px;margin-right:5px;width:calc(50% - 10px)}
+.f11{float:left;margin-left:5px;margin-right:5px;width:calc(55% - 10px)}
+.f12{float:left;margin-left:5px;margin-right:5px;width:calc(60% - 10px)}
+.f13{float:left;margin-left:5px;margin-right:5px;width:calc(65% - 10px)}
+.f14{float:left;margin-left:5px;margin-right:5px;width:calc(70% - 10px)}
+.f15{float:left;margin-left:5px;margin-right:5px;width:calc(75% - 10px)}
+.f16{float:left;margin-left:5px;margin-right:5px;width:calc(80% - 10px)}
+.f17{float:left;margin-left:5px;margin-right:5px;width:calc(85% - 10px)}
+.f18{float:left;margin-left:5px;margin-right:5px;width:calc(90% - 10px)}
+.f19{float:left;margin-left:5px;margin-right:5px;width:calc(95% - 10px)}
+.f20{float:left;margin-left:5px;margin-right:5px;width:calc(100% - 10px)}
+</style>
+</html>

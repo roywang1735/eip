@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Marketing/LectureSetting">建置講座</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting2?page=mkt">老師課表</a></li>
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style=""><A href="/Marketing/LectureSetting">建置講座 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href="/Marketing/LectureCalendar">講座行事曆 </A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href="/Marketing/2/ActiveApply"> 活動報名表 </A></div><div class="td" style="width:20px"></div>		    
+		</div>
+	</div>
+<div>&nbsp;</div>
+
+
+  <div style='border:1px #eeeeee solid;width:550px;padding:5px;border-radius:5px;margin-left:400px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					分校<br> 
+					<select id="school" class="form-control" style='width:120px'>
+						<option value=''>~All~</option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}" />						
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:180px'>
+					類別<br> 
+					<select id="category" class="form-control" onchange="subjectData()">
+						<option value=''>~All~</option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${category_id == item.category_seq}" />						
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:220px'>
+					科目<br> 
+					<select id="subject" class="form-control">
+						<option value=''></option>
+					</select>			
+			</div>
+			<div class="td2" style='padding:5px'>
+					老師<br> 
+					<select id="teacher" class="form-control" style='width:130px'>
+							<option value=''></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+					</select>
+			</div>			
+		</div>
+	</div>
+   </div>
+   <div align='center' style='width:550px;margin-left:400px'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary" onclick="CalendarYear()">查詢</button>&nbsp;&nbsp;&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+   </div>
+   	  
+  <div class="css-table" style='background-color:#ffffff;margin-left:100px;margin-top:15px;margin-bottom:5px'>
+	<div class="tr">
+		<div class="td"><button onclick="CalendarButton('left')" type="button" class="btn btn-secondary" style='font-size:large;padding:2px;background-color:#ffeeff;border:1px #dddddd solid;color:steelblue'>&nbsp;&#10094;&nbsp;</button></div>
+        <div class="td" style='width:200px;text-align:center;font-weight:bold;vertical-align:middle;color:steelblue;font-size:small'>
+        	<span id='beginYear' th:text='${beginYear}'></span>年<span id='beginMonth' th:text="${beginMonth}"></span>月&nbsp;&nbsp;&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;&nbsp;
+        	<span id='endYear' th:text='${endYear}'></span>年<span id='endMonth' th:text="${endMonth}"></span>月      	
+        </div>
+        <div class="td"><button onclick="CalendarButton('right')" type="button" class="btn btn-secondary" style='font-size:large;padding:2px;background-color:#ffeeff;border:1px #dddddd solid;color:steelblue'>&nbsp;&#10095;&nbsp;</button></div>
+		<div class="td" style='width:50px'></div>
+		<div class="td" id='message' align='center' style=''></div>			
+	</div>
+  </div>
+<div id='myDataTalbe' style='width:1360px'>
+  <div style='padding-right:30px; overflow-x:scroll;width:1330px;border-left:2px pink dotted;border-right:2px pink dotted;'>
+	 <div class="css-table" style=''>
+	  <div class="tr" style='text-align:center;font-size:small;font-weight:bold;letter-spacing:10px'> 
+		<div class="td" style='width:455px;background-color:#FFFFCC;border:1px #cccccc solid;border-radius:0px'>星期一</div>
+		<div class="td" style='width:455px;background-color:#ffeeff;border:1px #cccccc solid;border-radius:0px'>星期二</div>
+		<div class="td" style='width:455px;background-color:#eeeeee;border:1px #cccccc solid;border-radius:0px'>星期三</div>
+		<div class="td" style='width:455px;background-color:#FFFFCC;border:1px #cccccc solid;border-radius:0px'>星期四</div>
+		<div class="td" style='width:455px;background-color:#ffeeff;border:1px #cccccc solid;border-radius:0px'>星期五</div>
+		<div class="td" style='width:455px;background-color:#eeeeee;border:1px #cccccc solid;border-radius:0px'>星期六</div>
+		<div class="td" style='width:455px;background-color:#FFFFCC;border:1px #cccccc solid;border-radius:0px'>星期日</div>
+	  </div>
+	  <div class="tr"  style='text-align:center;font-size:small'>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#FFFFCC'>
+			   <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#ffeeff'>
+		       <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#eeeeee'>
+		       <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#FFFFCC'>
+		       <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#ffeeff'>
+		       <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#eeeeee'>
+		       <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>
+		<div class="td" style=''>
+		   <div class="css-table" style='width:455px;background-color:#FFFFCC'>
+		       <div class="tr">
+					<div class="td" style='width:35px;border:1px #cccccc solid'>日期</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>早</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>午</div>
+					<div class="td" style='width:140px;border:1px #cccccc solid'>晚</div>
+			   </div>
+		   </div>	
+		</div>					
+	  </div>  			
+	  
+	 </div> 
+	 <div id='CalendarYear' style='background-color:white;padding:0px'></div>
+  </div>
+</div>  
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+ 
+<script>
+function cellXY(x,y){
+	NoClass(x,y);
+}
+
+//課表限制(希望排課/不排課)
+function NoClass(date,slot){
+/**
+	var feature = "width=550,height=400";
+	var teacher_id = $("#teacher").val();
+ 	window.open("/Course/noClass?teacher_id="+teacher_id+"&dateSel="+date+"&slot="+slot,"",feature);
+**/ 	
+}	
+
+$(document).ready(function() {
+	CalendarYear();
+	subjectData();
+})
+
+function CalendarButton(direction){
+	if(direction=='left'){
+		if(Number($("#beginMonth").text())-1==0){$("#beginYear").text(Number($("#beginYear").text())-1);}
+		if(Number($("#endMonth").text())-1==0){$("#endYear").text(Number($("#endYear").text())-1);}
+		$("#beginMonth").text(Number($("#beginMonth").text())-1==0?12:(Number($("#beginMonth").text())-1));
+		$("#endMonth").text(Number($("#endMonth").text())-1==0?12:(Number($("#endMonth").text())-1));
+
+	}else if(direction=='right'){
+		if(Number($("#beginMonth").text())+1==13){$("#beginYear").text(Number($("#beginYear").text())+1);}
+		if(Number($("#endMonth").text())+1==13){$("#endYear").text(Number($("#endYear").text())+1);}
+		$("#beginMonth").text(Number($("#beginMonth").text())+1==13?1:(Number($("#beginMonth").text())+1));
+		$("#endMonth").text(Number($("#endMonth").text())+1==13?1:(Number($("#endMonth").text())+1));
+	}
+	CalendarYear();
+}
+
+function CalendarYear(){
+	$(document).ajaxStart(function(){
+		$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+	});	
+	$(document).ajaxStop(function(){
+		$('#message').text("");
+	});	
+
+	$.ajax({
+		url : "/Course/Calendar_Grade",
+		data : {
+			        beginYear   : $("#beginYear").text(),
+					beginMonth  : $("#beginMonth").text(),
+					teacher_id  : $("#teacher").val(),
+					school_code : $("#school").val(),
+					category_id : $("#category").val(),
+					subject_id  : $("#subject").val(),
+					classth_1   : 1
+			   },
+		dataType : "text",
+		success : function(data) {
+			$("#CalendarYear").html(data);
+		}
+	});
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+}
+
+function subjectData() {
+	var category_id = $("#category").val();
+		$.ajax({
+			url : "/Course/SubjectSearch",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#subject").html(data);
+			}
+		});
+}
+</script>

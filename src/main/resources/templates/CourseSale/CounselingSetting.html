@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+	  <ul class="nav nav-tabs" id="myTabs">
+	    <li><a href="/CourseSale/ComboSaleSetting">單科 / 套裝設置</a></li>
+	    <li><a href="/Course/MockSetting">模考設置</a></li>
+	    <li class="active"><a href="/CourseSale/CounselingCost">充電站設置</a></li>	    	    	    
+	  </ul>
+	</div>
+&nbsp;<p>
+<form name="myForm" action="" method="post">
+<div class="css-table">
+<div class="tr">
+ <div class="td" style='vertical-align:middle'>
+  <div style='border:1px #eeeeee solid;width:500px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>	
+			<div class="td2" style='padding:5px'>
+					類別<br> 
+					<select id="category" class="form-control" onchange="subjectData(this.value)">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+			</div>
+			<div class="td2" style='padding:5px'>
+					組合<br> 
+					<select id="Iscombo" class="form-control">
+						<option value='1'>套裝</option>
+                        <option value='0'>單科</option>
+					</select>
+			</div>							
+		</div>
+	</div>
+   </div>
+  </div>
+ 
+  </div>
+  </div> 			
+</form>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<!--DataTables的表格-->
+<div  style='width:900px' text-align:left>
+
+</div>
+&nbsp;<p>
+&nbsp;<p>
+<script>
+	
+</script>

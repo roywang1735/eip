@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/CourseSetting">課程設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Course/LectureSetting">講座設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Course/Teacher">老師</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/Course/MockSetting">模考</a></li>
+  </ul>
+</div>
+&nbsp;<p>
+<div class="css-table">
+<div class="tr">
+ <div class="td">
+  <div style='border:1px #eeeeee solid;width:600px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					狀態<br> 
+					<select id="FlowStatus" class="form-control" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${flowStatusGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+			</div>
+			<div class="td2" style='padding:5px'>
+					分校<br> 
+					<select id="school" class="form-control" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:120px'>
+					類別<br> 
+					<select id="category" class="form-control" onchange="subjectData(this.value)">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;width:220px'>
+					科目<br> 
+					<select id="subject" class="form-control">
+						<option></option>
+					</select>			
+			</div>
+		</div>
+	</div>		
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>				
+			<div class="td2" style='padding:5px'>
+					期別<br>
+					<input type="text" class="form-control" name="issue" style='width:100px'/>
+			</div>
+			<div class="td2" style='padding:5px'>
+					老師<br> 
+					<select id="teacher" class="form-control" style='width:130px'>
+							<option></option>
+							<option th:each="item : ${teacherGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+			</div>
+			<div class="td2" style='padding:5px'>
+					開課期間<br>
+					<input type="text" style='width:100px' class="form-control" id="datepickerFrom" placeholder="from" />
+			</div>		
+			<div class="td2" style='padding:5px'>		
+					&nbsp;<br>
+					~
+			</div>
+			<div class="td2" style='padding:5px'>		
+					&nbsp;<br>
+					<input type="text" style='width:100px' class="form-control" id="datepickerTo" placeholder="to" />
+			</div>														
+		</div>			
+	</div>
+  </div>
+ </div>
+ <div class="td" style='width:20px'>&nbsp;</div>
+ <div class="td" style='vertical-align:bottom'> 
+      <div style='border:1px #eeeeee dotted;padding:5px;font-size:x-small'>   
+ 	    <img src='/images/approval_flow.png'/><br>
+ 	    1. 紅色區塊為課務主管簽核<br>
+ 	    2. 綠色區塊為課務人員編輯及上下架<br>
+ 	    3. 當課程狀態為「上架」時, 學員方可訂此面授班
+ 	    
+ 	   </div>   	     
+ </div>   
+</div>
+</div> 									
+								
+		<div  align='center' style='width:600px;'>
+			<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;
+			<span sec:authorize="hasAnyRole('ROLE_cou_mgr','ROLE_cou')"><button type="button" class="btn btn-sm btn-success" onclick="location.href='/Course/newCourse?action=edit'">新增課程</button></span>
+		</div>			
+&nbsp;<p>
+<!--DataTables的表格-->
+<div style='width:1200px'>
+<table id="myDataTalbe" class="display">
+	<thead>
+		<tr>
+			<th>No.</th>
+			<th>狀態</th>
+			<th>分校</th>
+			<th>類別</th>
+			<th>科目</th>
+			<th>時段</th>
+			<th>上課時間</th>
+			<th>期別</th>
+			<th>老師</th>
+			<th>班別</th>
+			<th>建立者</th>
+			<th>更新時間</th>
+			<th>細項</th>
+			<th>新增<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 以此期別內容為範本進行複製, 新增新的期別, 並再次進入審核流程 ! </span>"><img src='/images/message.png' height='12px'/></A></th>
+		</tr>
+	</thead>
+</table>
+</div>
+
+&nbsp;<p>
+&nbsp;<p>
+
+
+<script>
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+</script>
+<script>
+	$(function() {
+		$("#datepickerFrom").datepicker();
+		$("#datepickerTo").datepicker();
+	});
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		alert($("#FlowStatus").val());
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 0, "desc" ],
+			//serverSide : true,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getGradeList",
+				data : function(d) {
+					d.status_code    = $("#FlowStatus").val();
+					d.school_code    = $("#school").val();
+				},						
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "grade_seq", 
+					"render" : function(data, type, row, meta) {
+						if(row.status_code=='3'){
+							return row.grade_seq+"&nbsp;&nbsp;<img src='/images/wait.gif' height='15px'/>";
+						}else{
+							return row.grade_seq;
+						}	
+					}						
+				},
+				{"data" : "status_name","className" : "text-center"},
+				{"data" : "school_name"}, 
+				{"data" : "category_name"}, 
+				{"data" : "subject_name"},
+				{"data" : "slot_name"},
+				{"data" : "timeFrom",
+						"render" : function(data, type, row, meta) {
+							return data+"~"+row.timeTo;
+						}					
+				},
+				{"data" : "class_start_date"},
+				{"data" : "teacher_name"},
+			    {"data" : "gradeName","className" : "text-center"},	
+			    {"data" : "creater"},
+			    {"data" : "update_time"},
+			    {"data" : "grade_seq",
+			       "className" : "text-center",
+				   "render" : function(data, type, row, meta) {
+				       if(row.status_code==4 || row.status_code==5){	
+			 				return "<A href='/Course/newCourse?action=edit&grade_seq="+data+"' style='font-size:large'>&hellip;</A>"; 
+					   }else{
+				           /*[# sec:authorize="hasAnyRole('ROLE_cou','ROLE_cou_mgr')"]*/ 
+			                return "<A href='/Course/newCourse?action=edit&grade_seq="+data+"' style='font-size:large'>&hellip;</A>"; 
+			               /*[/]*/ 
+			                return"--";
+					   }
+				    }
+			    },
+			    {"data" : "grade_seq",
+			        "className" : "text-center",
+					"render" : function(data, type, row, meta) {
+						if(row.status_code==3 || row.status_code==4 || row.status_code==5){
+					       /*[# sec:authorize="hasAnyRole('ROLE_cou','ROLE_cou_mgr')"]*/ 
+			                return "<A href='/Course/newCourse?action=copy&grade_seq="+data+"'><img src='/images/copy.png' height='11px'/></A>";
+			               /*[/]*/ 
+			                return"--";
+						}else{
+							return "--";
+						}	
+					}			    	
+			    }
+			]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+ 	function openGrade(data) {
+ 		var feature = "width=700,height=500";
+ 	    window.open("/CourseSale/ComboSaleContentDetail?comboSale_seq="+data, "", feature);
+ 	}	
+</script>

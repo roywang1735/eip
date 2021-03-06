@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+&nbsp;<p>
+  <input type='hidden' id='register_outPublisher_seq' th:value="${register_outPublisher_seq}">
+  
+  <div align='center'>
+	    <div style=''>
+	    	<span style='color:black;font-weight:bold;font-size:large' th:text="${ch_name}"></span>
+	    </div> 
+	    
+	<div class="css-table">	
+		<div class="tr" style=''>
+			<div class="td2" style='padding:5px'>
+				<div style='text-align:left;border-color:#dddddd;border-width:1px;padding:10px;width:450px;background-color:#e6f9ff'>
+				    <div>
+				    	<span style='font-weight:bold'>允發情況 : </span>
+				    	<span th:text="${payOffRelease}" style='padding:5px'></span>
+				    </div>
+				    <div>	
+				    	<span style='font-weight:bold'>應繳 / 已繳 : </span>
+				    	<span  th:text="${fee}" style='padding:5px'></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				    </div>	
+				</div>    				
+			</div>
+		</div>				
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>	 	     		
+				<div style='border-color:#dddddd;border-width:1px;padding:5px;width:450px;background-color:#FCFECD'>
+				    <div>&nbsp;</div>	
+				    <div>
+				    	<span style='font-weight:bold'>發放人員 : </span>
+				    	<span id='takePerson' th:text="${creater}" style='padding:5px;border-radius:5px'></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    	<span style='font-weight:bold'>發放時間 : </span>
+				    	<span id='takePerson' th:text="${createTime}" style='padding:5px;border-radius:5px'></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				    </div>		
+				    <div style='margin-top:10px'>
+						是否發放?
+						<select id='isIssue' style='width:100px;height:25px;border-radius:5px'>
+							<option value=""></option>
+							<option value="1">發 放</option>
+						</select>
+					</div>
+				    <div style='margin-top:10px' th:utext="${reason}">
+					</div>
+					<div>&nbsp;</div>						 
+				</div>
+			</div>
+		</div>
+	</div>			
+  
+		<div style='white-space:nowrap;width:400px;text-align:center'>
+				<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+				&nbsp;&nbsp;
+				<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>
+		</div>
+  </div>
+
+&nbsp;<p>
+
+ 
+<script th:inline="javascript">  
+    $("#btnSave").click(function() {
+    	var reason = $("#reason").val();
+    	if(reason!=null){
+    		if(reason==''){
+        		alert("目前尚未結清, 請填寫發放原因!");
+        		return;
+    		}	
+        }	
+		if($("#isIssue").val()!=''){		
+          if(confirm("確定發放此物品品?")){
+			$.ajax({
+				url : "/Sales/setIssue2",
+				data : {
+					register_outPublisher_seq : $("#register_outPublisher_seq").val(),
+			        isIssue : $("#isIssue").val(),
+			        student_seq : [[${student_seq}]],
+					reason : $("#reason").val()
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+          }
+		}
+	})
+	
+
+</script>

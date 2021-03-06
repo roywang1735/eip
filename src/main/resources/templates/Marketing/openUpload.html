@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<!DOCTYPE html>
+
+<body style="background-color:aliceblue">
+  <div align='center'>
+&nbsp;<p>
+	<div style="padding:3px;width:98%;font-size:small;color:red;font-weight:bold;text-align:left">
+ 	* 上傳檔案最大為 : 1MB 
+	</div>
+&nbsp;<p>
+&nbsp;<p>
+  
+    <form id='form1' action="#" th:action="@{/Marketing/upload}" method="post" enctype="multipart/form-data">
+    <input type="hidden" id='classPromotion_id' name='classPromotion_id' th:value='${classPromotion_id}'/>
+       <div align="center" style="padding:20px;border:1px solid #DDDDDD;width:90%;background-color:lemonchiffon">
+          <input type="file" name="file" />
+       </div>   
+       <input type="submit" value="上傳" />
+    </form>
+  </div>
+
+  &nbsp;<p>
+  &nbsp;<p>
+
+</body>
+
+
+<div th:if="${message}">
+    <h5 th:text="${message}"/>
+</div>

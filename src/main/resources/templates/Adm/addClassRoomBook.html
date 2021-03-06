@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+	<form id='form1' th:action="@{/Adm/ClassRoomBookUpdate}" method="post">
+	    <input type='hidden' name='school_code' id='school_code'>
+	    <input type='hidden' name='slot' id='slot'>
+		<div class="css-table" style='background-color:#ffffff;margin-top:25px;margin-bottom:5px'>
+		   <div class="tr">
+		        <div class="td2" style='width:100px;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>分校</div>
+			    <div class="td2" style='width:100px;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>日期</div>
+			    <div class="td2" style='width:50px;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>時段</div>
+			    <div class="td2" style='width:50px;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>教室</div>
+			    <div class="td2" style='width:250px;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>預訂內容</div>
+		   </div>
+		   <div class="tr">
+		        <div class="td2" style='border-bottom:1px #eeeeee solid'><input type='text'  style='border:0px;width:90px;text-align:center' th:value='${school_name}' readonly></div>
+			    <div class="td2" style='border-bottom:1px #eeeeee solid'><input type='text' name='bookDate' style='border:0px;width:90px;text-align:center' th:value='${bookDate}' readonly></div>
+			    <div class="td2" style='border-bottom:1px #eeeeee solid'><input type='text' name='slot_name' style='border:0px;width:40px;text-align:center' th:value='${slot_name}' readonly></div>
+			    <div class="td2" style='border-bottom:1px #eeeeee solid'><input type='text' name='bookClassRoom' style='border:0px;width:40px;text-align:center' th:value='${bookClassRoom}' readonly></div>
+			    <div class="td2" style='border-bottom:1px #eeeeee solid;padding:5px'><input type='text' name='bookContent' style='border:1px #dddddd solid;width:240px;height:30px' th:value='${bookContent}'></div>
+		   </div>		   
+		</div> 
+		  	    
+		<div style='margin-left:30px;width:320px' align='center'>	
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp; 
+		</div>	
+	</form>	
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript">
+	$("#btnSave").click(function() {
+		$("#school_code").val([[${school_code}]]);
+		$("#slot").val([[${slot}]]);
+		$("#form1").submit();
+	});		
+</script>	

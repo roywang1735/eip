@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<body> 
+&nbsp;<p>
+       
+<div class="css-table" style="border-spacing:1px;margin:20px">	
+<div class="tr">  		 
+ <div class="td" style=''> 
+  <div><span style='color:#555555;font-weight:bold;letter-spacing:1px'>&#8227;繳 費 明 細</span></div>
+	<div class="css-table">
+	    <div class="tr" style='background-color:#eeeeee;font-size:small;'>
+	        <div class="th" style='color:#555555;text-align:center;width:180px;padding:2px'>收據編號</div>
+	        <div class="th" style='color:#555555;text-align:center;width:100px'>繳費金額</div>
+	        <div class="th" style='color:#555555;text-align:center;width:190px'>繳費時間</div>
+	        <div class="th" style='color:#555555;text-align:center;width:100px'>承辦人員</div>
+	        <div class="th" style='color:#555555;text-align:center;width:100px'>繳費方式</div>
+	        <div class="th" style='color:#555555;text-align:center;width: 70px'>列印</div>
+	    </div>
+	</div>       
+    <div th:utext="${returnStr}" style='overflow:auto;height:80px;border:1px #dddddd solid;border-radius:5px;background-color:#ffffff'>  
+<!------------->
+<!------------->
+	</div> 
+  </div>			
+</div> 	
+</div>
+
+
+

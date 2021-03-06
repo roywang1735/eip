@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/VideoBase">Video設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockBase">模考設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/CounselingBase">充電站設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/programSetting2">教室&座位</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/onlineSetting">線上課程設置</a></li>						
+		</ul>
+	</div>
+	<div class="css-table" style="border-spacing:3px">
+		<div class="tr">
+		    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Adm/classroomSetting'>教室設置</A></div><div class="td" style="width:20px"></div>
+		    &#10074;<div class="td" style=""><A href='/Adm/programSetting2'>教室預定</A></div><div class="td" style="width:20px"></div>		    	    		    	    
+		</div>
+	</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<form id='form1' th:action="@{/Adm/classroomUpdate}" method="post">
+    <input type='hidden' name='update'>
+	<select id="school_code" name='school_code' class="form-control" style='margin-left:120px;width:120px;background-color:#FFFFCC'  onchange="classRoomSel()">
+		<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}" />
+	</select>
+	
+	<div class="css-table" id='myDataTalbe' style='width:800px;margin-left:120px;margin-top:5px;background-color:#ffefff'>
+		<div class="tr">
+		    <div class='th' style='width:70px; padding:2px;text-align:center;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>刪 除</div>
+			<div class='th' style='width:130px; padding:2px;text-align:center;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>名 稱</div>
+			<div class='th' style='width:180px; padding:2px;text-align:center;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>錄 影 / Video</div>
+			<div class='th' style='width:120px; padding:2px;text-align:center;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>可容人數</div>
+			<div class='th' style='width:200px; padding:2px;text-align:center;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>座位編號</div>
+			<div class='th' style='width:100px; padding:2px;text-align:center;background-color:#7ba6b6;color:white;border:1px #ffffff solid'>使用狀況</div>
+		</div>	        		
+	</div>
+	<div class="css-table" id='classRoomArea' style='width:800px;margin-left:120px;background-color:#ffefff'>
+	<!------>
+	<!------>
+	</div>
+	<div style='margin-left:120px;width:800px;border-top:1px #7ba6b6 solid' align='center'>	
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存修改</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-success" onclick="addClassRoom()">&#8883;新增教室</button>
+	</div>	
+</form>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript">
+    $(document).ready(
+		function(){
+			if([[${saveMessage}]]){
+				alert("儲存成功!");
+			}
+			classRoomSel();
+		}	
+	)	
+	
+	$("#btnSave").click(function() {
+		$("#form1").submit();
+	});
+	
+	function classRoomSel(){
+		$.ajax({
+			url : "/Adm/classRoomSel",
+			data : {
+						school_code  : $("#school_code").val()
+				   },
+			dataType : "text",
+			success : function(data) {
+				$("#classRoomArea").html(data);
+			}
+		});			
+	}
+	
+	function addClassRoom(){
+ 		var feature = "top=0,left=350,width=520,height=350";
+ 		var school_code = $("#school_code").val();
+ 	    window.open("/Adm/addClassRoom?school_code="+school_code,"",feature);
+ 	}
+	
+	function editClassroomStyle(school_code,classRoomName,seatFrom,seatTo){
+ 		var feature = "top=0,left=350,width=800,height=700";
+ 	    window.open("/Adm/editClassroomStyle?school_code="+school_code+"&classRoomName="+classRoomName+"&seatFrom="+seatFrom+"&seatTo="+seatTo,"",feature);		
+	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>	

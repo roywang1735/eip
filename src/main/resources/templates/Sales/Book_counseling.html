@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee dashed;
+	text-align: center;
+}
+</style>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+		&#10074;<div class="td"><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}"> 模考 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/Book_counseling(student_seq=${student_seq})}"> 充電站 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+
+	<div>&nbsp;</div>
+	<div style='font-size:small'>
+		<img src='/images/GreenSquare.png' height='12px'/>到課&nbsp;&nbsp; 
+		<img src='/images/RedSquare.png' height='12px'/>缺課&nbsp;&nbsp;
+		<img src='/images/book.jpg' height='14px'/>預約/取消	
+	</div>
+	
+	<div class="css-table" style="border-spacing:1px;margin-top:0px" id='myDataTalbe'>
+		<div class="tr" style='background-color:#004d99;color:white;font-size:small;letter-spacing:3px'>
+			<div class="td" style='padding:2px;border-radius:2px;width:80px;text-align:center'>報 名</div>
+			<div class="td" style='border-radius:2px;width:350px;text-align:center'>充 電 站</div>
+			<div class="td" style='border-radius:2px;width:80px;text-align:center'>預約/取消</div>
+			<div class="td" style='border-radius:2px;width:100px;text-align:center'>紀 錄</div>
+		</div>
+	</div>			
+	<div class="css-table" style='width:610px;border-spacing:1px' th:utext='${counselingStr}'>
+		<!---------------->	
+		<!---------------->		
+	</div>	
+	
+
+<script>
+	function openCounselingBaseTitle(student_seq,SchoolCode,Register_seq,register_counseling_seq,category_id) {
+		var feature = "width=1000,height=600";
+		window.open("/Adm/openCounselingBaseTitle?category_id="+category_id+"&register_counseling_seq="+register_counseling_seq+"&Register_seq="+Register_seq+"&student_seq="+student_seq+"&school_code="+SchoolCode,"",feature);
+	}
+
+	function cancelCounselingBook(student_id,counselingBaseBook_seq){
+		if(confirm("確定取消此充電站預約??")){
+			 $.ajax({
+					url : "/Sales/cancelCounselingBook",
+					data : {
+						student_id : student_id,
+						counselingBaseBook_seq : counselingBaseBook_seq
+					},
+					dataType : "text",
+					success : function(data) {
+						alert("取消成功!");
+						self.location.reload();
+					},
+					error: function(data) {
+						alert("取消失敗!");
+					}
+				 });			
+			
+		}		
+	}
+	
+ 	function getCounselingBaseBook(student_id,counselingBase_id){
+		var feature = "width=600,height=400";
+	    window.open("/Sales/getCounselingBaseBook?student_id="+student_id+"&counselingBase_id="+counselingBase_id,"",feature); 			
+	}	
+	 
+	 $("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	 	

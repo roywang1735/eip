@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>					
+<body style='background-color:#ffffff'>
+<div>&nbsp;</div>
+
+
+<div class="container-fluid" th:if="${student_seq!='' and student_seq!=null}">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'  class="active"><A th:href="@{/Sales/ClassBook(student_seq=${student_seq},Register_seq=${Register_seq},mockDetail_seq=${mockDetail_seq},school_code=${school_code})}">預約時段</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentCalendar(mock=1,student_seq=${student_seq},Register_seq=${Register_seq},mockDetail_seq=${mockDetail_seq},school_code=${school_code})}">學員行事曆</A><li>	
+	</ul>		
+</div> 
+	<div style='width:600px;padding:5px;display:inline-block;border-radius:10px'>
+		<div style='padding-left:20px;font-size:small;letter-spacing:1px'>
+			 1. 若預約該期別Video課程, 須俟待該實體課成完畢後間隔一天, 才可進行預定
+		</div>
+		<div style='padding-left:20px;font-size:small;letter-spacing:1px'>
+			 2. 預約或取消Video或實體課程, 須在前一日PM 12:00 以前才可進行預約或取消
+		</div>		
+	</div>	
+<div>&nbsp;</div>
+
+	
+	<form id='form1' th:action="@{/Sales/MockVideoUpdate}" method="post">
+	    <input type='hidden' name='makeUpNo' th:value="${makeUpNo}">
+	    <input type='hidden' name='remark' th:value="${remark}">
+		<input type='hidden' id='attend_date' name='attend_date'>
+		<input type='hidden' name='mockVideoHistory_seq' th:value="${mockVideoHistory_seq}">
+		<input type='hidden' name='slot' id='slot'>
+		<input type='hidden' name='comment' id='comment'>
+		<input type='hidden' id='curDate' th:value="${curDate}">
+		<div  style='font-weight:bold' align='center'>
+		  <div class="css-table">
+			<div class="tr">			
+				<div class="td">上課分校 : &nbsp;</div>
+				<div class="td">
+					<select name='school_code' id='school_code' class='form-control' style='width:130px;background-color:lavender;' onchange="getVideoBase()">
+						<option value=""></option>
+						<option th:selected="${school_code eq item.code}" th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+				</div>
+			</div>
+		  </div>							 	
+		</div> 
+	</form>	 	
+<!----------------------Calendar--------------------->				
+<div align='left' style='margin-top:0px;margin-left:50px'><div id="calendar" style="padding:1px;color:gray;width:900px;border-radius:10px;border-color:#eeeeee;background-color:white"></div></div>
+<!--------------------------------------------------->
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+&nbsp;<p>
+	
+&nbsp;<p>
+
+
+
+<script th:inline="javascript" type="text/javascript">
+
+	$(document).ready(
+		function(){
+			getVideoBase(); 
+		}	
+	)
+	
+	function getVideoBase(){
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+		
+
+			 $.ajax({
+				url : "/Adm/getVideoBase",
+				data : {
+					school_code : $("#school_code").val(),
+					student_seq : [[${student_seq}]]
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#calendar").html(data.split("@")[0]);
+				}
+			 });
+	}
+ 
+ function BookClass(date,slot){
+	 $("#slot").val(slot);
+	 var slotName="";
+	 if(slot==1){
+		 slotName="(早)";
+	 }else if(slot==2){
+		 slotName="(午)";
+	 }else if(slot==3){
+		 slotName="(晚)";
+	 } 
+
+	 if(date<$("#curDate").val()){
+			alert("請預約今日以後日期!");
+			return;
+	 }
+	 if(existVideo(date)!='1' && $("#class_style").val()=="2"){
+			alert("此日期尚未產生Video課程!");
+			return;
+	 }				
+
+	 if(confirm('課程預約時間 :  '+ date+slotName)){
+		   var comment = prompt("請輸入學員備註","");				  
+		   $("#attend_date").val(date);
+		   $("#comment").val(comment+'<br>');	
+	 }else{
+		   return;
+	 }	  
+
+	 
+     var url = $("#form1").attr('action');
+
+     $.ajax({
+	       type: "POST",
+	       url: url,
+	       data: $("#form1").serialize(),
+			success : function(data) {
+				if(confirm("預定成功! 關閉並重新整理視窗!")){
+					window.close();
+					self.opener.location.reload();
+				}
+			},
+	        error:function(){
+	        	alert("預定失敗!");
+	        }
+     });
+	 e.preventDefault();
+ }
+ 
+	function gradeSel(grade_id) {
+		if (grade_id) {
+			$.ajax({
+				url : "/Course/getClassesOption",
+				data : {
+					grade_id : grade_id		
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#grade_classesSel").html(data);
+				}
+			});
+		} else {
+			$("#grade_classesSel").html("<option></option>");
+		}
+	}
+	
+	function existVideo(date){
+		//Video課程才需判斷
+		var result
+		if($("#class_style").val()==2){
+		 	$.ajax({
+		 		async: false,
+				url : "/Course/existVideo",
+				data : {
+					grade_id : $("#grade_id").val(),
+					class_th_ex : $("#class_th_ex").val(),
+					assginDate : date
+				},
+				dataType : "text",
+				success : function(existVideo) {
+					result = existVideo;
+				}
+			});	 
+		}
+		return result;
+	}
+
+ </script>

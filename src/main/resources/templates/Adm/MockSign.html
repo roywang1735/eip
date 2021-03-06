@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/Adm/BookDiagram?slot=1">總表&座位</a></li>
+    <li><a href="/Adm/TodayBook">櫃台預約</a></li>
+    <li><a href="/Adm/todaySign">正班紀錄</a></li>
+    <li><a href="/Adm/StudentVideoSign">Video紀錄</a></li>
+    <li class="active"><a href="/Adm/MockSign">模考紀錄</a></li>   
+    <li><a href='javascript:void(0)'  onclick='openTodaySign()' style='color:darkorange;text-decoration:underline'>QRcode點名</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	</div>
+</div>
+<div>&nbsp;</div>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">	
+function openTodaySign() {
+	var feature = "width=4000,height=4000";
+    window.open("/Adm/openTodaySign", "", feature);
+}
+</script>

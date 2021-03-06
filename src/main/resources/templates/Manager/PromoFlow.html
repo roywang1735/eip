@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/CourseApproveFlow">課程通知<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${CourseApproveFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/ComboSaleFlow">課務通知<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${ComboSaleFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/PromoFlow">優惠簽核<span style='font-weight:normal;font-style:italic;color:red' th:text="${PromoFlow_No}"></span></a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/SpecialCase">特殊提報<span style='font-weight:normal;font-style:italic;color:#cccccc' th:text="${SpecialCase_No}"></span></a></li>       
+  </ul>
+</div> 
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	<!--DataTables的表格-->
+	<div style='width:1020px'>			
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>				  
+				  <th style='width:50px;letter-spacing:2px'>審核</th>
+				  <th style='width:30px'>Seq.</th>
+				  <th style='width:50px;letter-spacing:2px'>類型</th>
+				  <th style='width:500px;letter-spacing:2px'>內容</th>
+				  <th style='width:120px;letter-spacing:2px'>適用分校</th>					  
+				  <th style='width:70px;letter-spacing:2px'>起日</th>
+				  <th style='width:70px;letter-spacing:2px'>迄日</th>	
+				  <th style='width:70px;letter-spacing:2px'>展延至</th>				  			  
+				  <th style='width:70px;letter-spacing:2px'>啟用<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 審核通過的啟用或停用,才能運作 ! </span>"><img src='/images/message.png' height='7px'/></A></th>
+				</tr>
+			</thead>
+		</table>
+	 </div>	
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">   	
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 1, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Marketing/getClassPromotion",
+				data : function(d) {
+					d.school_code = "";
+					d.enabled     = "";
+					d.promoType   = "";
+					d.active = 1; //0:刪除
+					d.approve = 0; //0:待審
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "approve","className":"text-center",
+				     "render" : function(data,type,row,meta) {
+						   if(data==0){
+		    	        	    return "<A href='javascript:void(0)' onclick=PromoEdit('"+row.classPromotion_seq+"','"+row.promoType+"')  style='color:blue;text-decoration:underline'>送審&nbsp;&nbsp;<img src='/images/edit2.png' height='11px'/></A>";
+		    	           }else{
+		    	        	   return "?";
+		    	           }		
+		     		 }			    	
+			    },
+				{"data" : "classPromotion_seq","className":"text-center"},				    
+				{"data" : "promoType","className":"text-center",
+				     "render" : function(data, type, full, meta) {
+		    	           if(data=='regular'){
+			               		return "常態";
+		    	           }else if(data=='lecture'){
+			               		return "講座";
+		    	           }else if(data=='monthly'){
+			               		return "月活動";
+		    	           }else if(data=='combine'){
+			               		return "合報";
+		    	           }else if(data=='old'){
+			               		return "高中部";
+		    	           }else if(data=='other'){
+			               		return "其他";
+		    	           }
+				     }      
+			    },			    
+				{"data" : "promoName"}, 	
+				{"data" : "chool_code_Str","className":"text-center"},				
+			    {"data" : "startDate"},
+			    {"data" : "endDate"},
+			    {"data" : "extendDate"},
+				{"data" : "enabled","className":"text-center",
+				     "render" : function(data, type, full, meta) {
+		    	           if(data==1){
+			               		return "<img src='/images/enable.png' height='17px'/>";
+		    	           }else{
+		    	        	    return "<img src='/images/disable.png' height='17px'/>";
+		    	           }		
+		     		 }			    	
+			    }			    
+			]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	function PromoEdit(classPromotion_id,promoType){
+ 		var feature = "top=100,left=300,width=900,height=600";
+ 	    window.open("/Marketing/PromoEdit?classPromotion_id="+classPromotion_id+"&promoType="+promoType, "", feature);
+ 	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

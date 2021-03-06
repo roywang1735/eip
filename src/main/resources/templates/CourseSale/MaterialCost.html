@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/CourseSale/PromoSetting">促銷方案</a></li>
+    <li><a href="/CourseSale/SingleSaleSetting">售價設定</a></li>
+    <li class="active"><a href="/CourseSale/CourseCost">成本組合</a></li>
+  </ul>
+</div>
+&nbsp;<br>
+			<div id="css-table" class="css-table" style="border-spacing: 3px">
+				<div class="tr">
+					<div class="td"><A href='/CourseSale/CourseCost'>[ 課程/講義成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href='/CourseSale/MockCost'>[ 模考成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td" style="background-color:lightyellow"><A href='/CourseSale/MaterialCost'>[ 教材成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 贈品成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href='/CourseSale/CounselingCost'>[ 輔導成本 ]</A></div><div class="td" style="width:20px"></div>
+					<div class="td"><A href=''>[ 它項成本 ]</A></div><div class="td" style="width:20px"></div>
+				</div>
+			</div>
+&nbsp;<p>
+
+
+	<table id="myDataTalbe" width="80%">
+		<tr style="border:1px solid #DDDDDD;text-align:left;color:#aaaaaa;background-color:#ffefff";>
+			<td width="10%"  style='padding:5px'>考科類別</td>
+			<td width="30%">名稱</td>
+			<td width="10%">原價</td>
+			<td width="10%">售價</td>
+			<td width="10%">更新</td>
+			<td width="20%">備註</td>
+			<td width="10%">編輯</td>
+		</tr>
+        <tr th:each="material : ${materials}">
+            <td style='padding:5px'><span th:text="${material.category_name}"></span></td>
+            <td><span th:text="${material.material_name}"></span></td>
+            <td><span th:text="${material.origin_price}"></span></td>
+            <td><span>-</span></td>
+            <td><span th:text="${material.update_time}"></span></td>
+            <td><span th:text="${material.remark}"></span></td>
+            <td><span><A th:href='${material.material_seq}'>...</A></span></td>
+        </tr>			
+	</table>
+&nbsp;<p>
+
+
+
+
+
+
+<script>
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+</script>
+

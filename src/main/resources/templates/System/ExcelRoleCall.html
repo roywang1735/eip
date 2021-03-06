@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid" id='myDataTalbe'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+
+<div>&nbsp;</div>
+<!--  
+    <form id='form1' action="#" th:action="@{/Adm/upload}" method="post" enctype="multipart/form-data">  
+       <input type='hidden' name='batch' value='1'>
+       <input type="file" name="file" />
+       &#10148;<input type='submit' value='面授點名單檔處理'> /Adm/upload(D:\eip\src\main\resources\static\Excel)
+    </form>
+-->    
+    <form action="#" th:action="@{/Adm/upload2?passArea=0}" method="post">
+       &#10148;<input type='submit' value='面授點名批次Console處理(外層測試)')> @{/Adm/upload2?passArea=0} 
+    </form> 
+    <form action="#" th:action="@{/Adm/upload2?passArea=1}" method="post">
+       &#10148;<input type='submit' value='面授點名批次Console處理(2018)')> @{/Adm/upload2?passArea=1} 
+    </form> 
+    <form action="#" th:action="@{/Adm/upload2?passArea=2}" method="post">
+       &#10148;<input type='submit' value='面授點名批次Console處理(2019)')> @{/Adm/upload2?passArea=2} 
+    </form> 
+    <form action="#" th:action="@{/Adm/upload2?passArea=3}" method="post">
+       &#10148;<input type='submit' value='面授點名批次Console處理(2020)')> @{/Adm/upload2?passArea=3} 
+    </form>     
+    <form action="#" th:action="@{/Adm/upload2?passArea=999}" method="post">
+       &#10148;<input type='submit' value='面授點名批次Console處理(2018+2019+2020)')> @{/Adm/upload2?passArea=999} 
+    </form>             
+    <div>&nbsp;</div>   
+    <form action="#" th:action="@{/Adm/uploadVideo2?test=0}" method="post">
+       &#10148;<input type='submit' value='Video點名批次Console處理2018+2019+2020'> @{/Adm/uploadVideo2?test=0}
+    </form>
+    <form action="#" th:action="@{/Adm/uploadVideo2?test=2}" method="post">
+       &#10148;<input type='submit' value='Video點名批次Console處理2020'> @{/Adm/uploadVideo2?test=2}
+    </form>    
+    <div>&nbsp;</div>   
+    <form action="#" th:action="@{/Adm/uploadVideo2?test=1}" method="post">
+       &#10148;<input type='submit' value='(測試)Video點名批次Console處理'> @{/Adm/uploadVideo2?test=1}
+    </form>         
+<div>&nbsp;</div>
+
+<!--  
+    <form id='form2' action="#" th:action="@{/Adm/uploadVideo}" method="post" enctype="multipart/form-data">  
+       <input type='hidden' name='batch' value='1'>
+       <input type="file" name="file" />
+       &#10148;<input type='submit' value='Video點名批次處理'> /Adm/uploadVideo?batch=1
+    </form>
+-->    
+<script>
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>    
+    

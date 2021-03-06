@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid" id='myDataTalbe'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+&nbsp;<p>
+<hr>  
+<font color='orange'><b>0. EIP資料庫備份</b></font> &#10148; windows->工作排程器-->mySQL_dump PM (11:00)
+<hr>
+<font color='orange'><b>1. Scheduled</b></font> &#10148; 政龍資料下載  > schedule_a > schedule_b > schedule_c > schedule_d > schedule_e > schedule_f > schedule_g<br>
+<font color='green'>com/wordgod/eipScheduledTask.java</font><br>
+政龍資料庫:<br>
+[JLM1].[dbo].[學生資料]<br>
+[JLM1].[dbo].[學生班別資料]<br>
+[JLM1].[dbo].[班別]<br>
+[JLM1].[dbo].[使用者]<br>
+[JLM1].[dbo].[學費優待]<br>
+[JLM1].[dbo].[班級]<br>
+[JLM1].[dbo].[繳費記錄]<br>
+<hr>
+<font color='orange'><b>2. Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/Migration1">儲存政龍資料至EIP (JLM1[基本資料] [報名資料] [繳費] [繳費記錄])</a><br>
+<font color='green'>/System/Migration1</font><br>
+delete from eip.student;<br>
+delete from eip.JLM_gradeRegister;<br>
+delete from eip.JLM_studentPay;<br>
+delete from eip.JLM_studentPayRecord;<br>
+<hr>
+<font color='orange'><b>3. 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/Migration2">下載政龍學生照片(JLImage[學生照片])</a><br>
+<font color='green'>/System/Migration2</font><br>
+<hr>
+<font color='orange'><b>4. Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/Migration3">下載政龍期別(備份用)</a><br>
+<font color='green'>/System/Migration3</font><br>
+delete from eip.JLM_gradeAll;<br>
+
+<hr>
+<font color='orange'><b>5. 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/excel_gradeMap">政龍代碼與EIP代碼對應</a>(D:\importFrom\gradeMap\Excel file)(包含:手動上下架,影片下架)<br>
+<font color='green'>/System/excel_gradeMap</font>
+<br>
+delete from eip.videoOpen;<br>
+delete from eip.classes;<br>
+delete from eip.grade;<br>
+delete from eip.JL_EIP_grade;<br>
+<hr>
+<font color='orange'><b>6. 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/ComboBuild">EIP 由科目建立單科</a> (每個科目預設就是一個單科)<br>
+<font color='green'>/System/ComboBuild</font><br>
+delete from eip.comboSale;<br>
+delete from eip.comboSale_subject;<br>
+<hr>
+
+<font color='orange'><b>8. Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/eip_register2">建立 EIP 報名+訂期別+點名單 </a>
+<br>
+<font color='green'>/System/eip_register2</font><br>
+delete from eip.Register;<br>
+delete from eip.Register_comboSale;<br>
+delete from eip.Register_comboSale_grade;<br>
+delete from eip.signRecordHistory;<br>
+
+<hr>
+<font color='orange'><b>8.a Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/subject_price"> 給定同學已報名之科目當時原價更新</a><br>
+<font color='green'>/System/subject_price</font><br>
+<hr>
+<font color='orange'><b>9. 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/preSetting1">老師新增/老師設定</a>&nbsp;各科目各老師預設 --> 應選/同選/預選 期別 : 1/1/N<br>
+<font color='green'>/System/preSetting1</font><br>
+<hr>
+
+<font color='orange'><b>9.a 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/insertTotalClassNo">塞入該科目總堂數</a><br>
+<font color='green'>/System/insertTotalClassNo</font><br>
+<hr>
+
+<font color='orange'><b>10. 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/w_report">建立 主管/費用/月報表</a>
+<font color='green'>/System/w_report</font><br>
+<hr>
+
+<font color='orange'><b>12. Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/insertSubjectName">報名: 顯示單科-類別名稱</a><br>
+<font color='green'>/System/insertSubjectName</font><br>
+<hr>
+
+<font color='orange'><b>13. Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/updateSlot">更新原政龍由時間改為時段</a><br>
+<font color='green'>/System/updateSlot</font><br>
+<hr>
+
+<font color='orange'><b>14. Scheduled</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/schedule_1">課程下架</a><br>
+<font color='green'>/System/schedule_1</font><br>
+<hr>
+
+<font color='orange'><b>15. 手動</b></font> &#10148; <a style='text-decoration:underline;color:blue' href="/System/GenQRcode">產生學生QRcode</a><br>
+<font color='green'>/System/GenQRcode</font><br>
+<hr>
+
+<font color='orange'><b>16. 資料表</b></font> &#10148; <a href='/images/excel/table.xlsx' target='_self' style='text-decoration:underline;font-weight:bold;color:blue'>table.xlsx</a><br>
+<hr>
+<font color='orange'><b>17. 環境與設置</b></font> &#10148; <a href='/images/excel/eipSetting.xlsx' target='_self' style='text-decoration:underline;font-weight:bold;color:blue'>eipSetting.xlsx</a><br>
+<hr>
+
+<script>
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>

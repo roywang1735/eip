@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/CourseApproveFlow">課程簽核</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/ComboSaleFlow">課務簽核</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Manager/studentFee">報名繳費</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class=""><a href="/Manager/costShare">成本分攤</a></li>
+  </ul>
+</div> 
+&nbsp;<p>
+<form>
+
+   <div style='border:1px #eeeeee solid;width:600px;padding:10px;border-radius:5px'>  
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					分校<br> 
+					<select id="school" class="form-control" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px'>
+					繳費時間<br>
+					<input type="text" style='width:150px' class="form-control" id="datepickerFrom" placeholder="from" />
+			</div>		
+			<div class="td2" style='padding:5px'>		
+					&nbsp;<br>
+					~
+			</div>
+			<div class="td2" style='padding:5px'>		
+					&nbsp;<br>
+					<input type="text" style='width:150px' class="form-control" id="datepickerTo" placeholder="to" />
+			</div>	
+		</div>
+	</div>		
+   </div>
+
+   <div  align='center' style='width:600px;'>
+	  <button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+	  <button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;
+   </div>
+</form>    
+&nbsp;<p>	
+&nbsp;<p>
+	
+<div align='left' style='width:1200px'>  
+  <table id="myDataTalbe" class="display">
+	<thead>
+		<tr>
+			<th>No.</th>
+			<th>分校</th>
+			<th>學生</th>
+			<th>收據編號</th>
+			<th>本次繳費</th>
+			<th>應繳金額</th>
+			<th>更新</th>
+			<th>繳費方式</th>
+			<th>承辦人員</th>		
+		</tr>
+	</thead>
+  </table>
+</div>  	
+
+
+
+<script type="text/javascript">
+function subjectData(category_id) {
+	if (category_id) {
+		$.ajax({
+			url : "/Course/SubjectSearch",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#subject").html(data);
+			}
+		});
+	} else {
+		$("#subject").html("<option></option>");
+	}
+}
+</script>
+
+<script>
+$(function() {
+	$("#datepickerFrom").datepicker();
+	$("#datepickerTo").datepicker();
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	let table = $('#myDataTalbe').DataTable({
+		//serverSide : true,
+		"order": [ 0  , "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Sales/getOrderChange",
+			data : function(d) {
+				//d.status_code  = $("#FlowStatus").val();
+			},		
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+		//deferLoading : 0, //初始化DataTable時，不發出ajax
+		orderMulti : false,
+
+		"columns" : [ 
+			{"data" : "studentPayRecord_seq"},
+			{"data" : "school_name"},
+			{"data" : "studentName"}, 
+			{"data" : "receiptNo"},			
+			{"data" : "payMoney"},
+			{"data" : "actualPrice"},
+			{"data" : "payDate"},
+			{"data" : "payStyle"},
+			{"data" : "takePerson"}
+		    
+		]
+	});
+	$("#btnQuery").click(function() {
+		//按下表單的查詢按鈕後才發出Ajax載入資料 
+		table.ajax.reload();
+	});
+});
+
+	function openGrade(data) {
+ 		var feature = "width=1000,height=800";
+ 	    window.open("/Course/newCourse?action=popView&grade_seq="+data, "", feature);
+ 	}
+		
+</script>
+
+

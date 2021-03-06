@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Marketing/LectureSetting">講座設置</a></li>
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Marketing/TeacherSchedule">老師課表</a></li>
+		</ul>
+	</div>
+
+
+&nbsp;<p>
+
+  <script src="/js/jquery-1.9.1.min.js" type="text/javascript"></script> 
+  <script src="/js/moment.min.js" type="text/javascript"></script>
+  <script src="/js/fullcalendar.min.js" type="text/javascript"></script> 
+  <link rel="stylesheet" href="/css/fullcalendar.min.css">
+  <link rel="stylesheet" media="print" href="/css/fullcalendar.print.css">
+  
+&nbsp;<p>
+<div align='center'>
+		<div>
+			<select id='teacher_seq' class="form-control" style='width:200px;background-color:cornsilk' onchange="getTecherSchedule()">
+				<option value='-1'></option>
+				<option th:each="item : ${LTeacher}" th:value="${item.teacher_seq}" th:utext="${item.name}" />
+			</select>
+		</div>
+</div>	
+<!---------------------------------------------------------->
+<div id="calendar" style="color:gray;width:1000px"></div>
+<!---------------------------------------------------------->
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<style type="text/css">
+.fc-day-grid-event > .fc-content {
+   white-space: normal;
+   text-overflow: ellipsis;
+   max-height:100px;
+   font-size:small;
+   font-weight:normal;
+   color:#000000;
+   margin-bottom:2px;
+
+   
+}
+.fc-day-grid-event > .fc-content:hover {
+   max-height:none!important; 
+}
+.fc-today {
+    background: gainsboro !important;
+}
+.fc-time{
+   display : none;
+}
+
+.fc-title{
+    font-size:small;
+    //background:white;
+}
+
+
+.fc-event {
+    border-width: 0px;  
+}
+</style>
+
+<script th:inline="javascript">
+function getTecherSchedule(){
+	window.location.href = "/Marketing/TeacherSchedule?teacher_seq="+$('#teacher_seq').val();
+}
+
+$(document).ready(function() {
+	$('#teacher_seq').val([[${teacher_id}]]);
+    $('#calendar').fullCalendar({
+      events: {
+    	  url : "/sales/getEventTeacher"
+      },
+
+      eventRender: function(event, element) { 
+                var title = element.find( '.fc-title' );
+            	title.html( title.text() );
+            	element.find('.fc-title').append(event.description);
+      }     
+    });
+});
+
+</script>

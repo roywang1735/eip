@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+ <br>					
+ <div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Sales/StudentCalendar">期別歷史紀錄</a></li>		
+	</ul>
+</div>
+
+<div>&nbsp;</div>
+<div align='left'>  
+  <table id="myDataTalbe" class="display" style='width:980px'>
+	<thead>
+		<tr style='letter-spacing:2px'>
+			<th style='width:30px'>Seq.</th>
+			<th style='width:80px'>更改時間</th>
+			<th style='width:80px'>分校</th>		
+			<th style='width:200px'>期別</th>
+			<th style='width:50px'>狀態</th>
+			<th style='width:80px'>更改者</th>
+			<th style='width:300px'>選項</th>
+			<th style='width:100px'>備註</th>													
+		</tr>
+	</thead>
+  </table>
+</div> 
+ 	
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+
+<script th:inline="javascript" type="text/javascript">
+$(document).ready(function() {
+	var sign = "";
+	var message = "";
+	let table = $('#myDataTalbe').DataTable({
+		"order": [ 0  , "desc" ],
+		"searching" : false,
+		"info" : false,
+		"lengthChange" : false,
+		ajax : {
+			url : "/Sales/getGradeBookHistory",
+			data : function(d) {
+				d.student_seq = [[${student_seq}]]
+			},		
+			dataSrc : function(data) {
+				return data;
+			}
+		},
+
+		"columns" : [ 
+			{"data" : "register_log_seq","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					return data;
+				}
+			},
+			{"data" : "update_time","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='font-size:xx-small;text-decoration:line-through'>"+data+"</span>";
+					}else{
+						return "<span style='font-size:xx-small'>"+data+"</span>";
+					}					
+				}
+			},			
+			{"data" : "school_name","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='text-decoration:line-through'>"+data+"</span>";
+					}else{
+						return "<span style=''>"+data+"</span>";
+					}
+				}
+			},
+			{"data" : "class_start_date","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='text-decoration:line-through'>"+data+row.subject_name+"</span>";
+					}else{
+						return "<span style=''>"+data+row.subject_name+"</span>";
+					}					
+				}
+			},
+			{"data" : "register_status","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='text-decoration:line-through'>"+data+"</span>";
+					}else{
+						return "<span style=''>"+data+"</span>";
+					}
+				}
+			},
+			{"data" : "updater","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='text-decoration:line-through'>"+data+"</span>";
+					}else{
+						return "<span style=''>"+data+"</span>";
+					}
+				}
+			},
+			{"data" : "reason_option","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='text-decoration:line-through'>"+data+"</span>";
+					}else{
+						return "<span style=''>"+data+"</span>";
+					}					
+				}
+			},
+			{"data" : "reason","className":"text-center",
+				"render" : function(data, type, row, meta) {
+					if(row.isUpdate=='1'){
+						return "<span style='test-align:left;text-decoration:line-through'>"+data+"</span>";
+					}else{
+						return "<span style='test-align:left'>"+data+"</span>";
+					}					
+				}
+			}			
+		]
+	});
+	$("#btnQuery").click(function() {
+		table.ajax.reload();
+	});
+});
+		function gradeChange2(register_log_seq,Register_comboSale_grade_seq,student_seq) {
+			var feature = "width=980,height=700,locationbar=false,scrollbar=yes,resizable=yes";
+		    window.open("/Sales/gradeChange2?student_seq="+student_seq+"&register_log_seq="+register_log_seq+"&Register_comboSale_grade_seq="+Register_comboSale_grade_seq, "", feature);
+		}	
+</script>

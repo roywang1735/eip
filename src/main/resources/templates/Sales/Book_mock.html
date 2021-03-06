@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+		&#10074;<div class="td" style="background-color:#eeeeee"><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}"> 模考 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A th:href="@{/Sales/Book_counseling(student_seq=${student_seq})}"> 充電站 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+
+	<div>&nbsp;</div>
+	<div style='font-size:small'>
+		<img src='/images/GreenSquare.png' height='12px'/>到課&nbsp;&nbsp; 
+		<img src='/images/RedSquare.png' height='12px'/>缺課&nbsp;&nbsp;
+		<img src='/images/book.jpg' height='14px'/>預約/取消	
+	</div>
+	<div class="css-table" style="border-spacing:1px;margin-top:0px" id='myDataTalbe'>
+		<div class="tr" style='background-color:#3e7e99;color:white;font-size:small;letter-spacing:3px'>
+			<div class="td" style='padding:2px;border-radius:2px;width:80px;text-align:center'>報 名</div>
+			<div class="td" style='border-radius:2px;width:350px;text-align:center'>模 考</div>
+			<div class="td" style='border-radius:2px;width:60px;text-align:center'>訂期別</div>
+			<div class="td" style='border-radius:2px;width:250px;text-align:center'>已 訂 期 別</div>
+			<div class="td" style='border-radius:2px;width:80px;text-align:center'>預約/取消</div>
+			<div class="td" style='border-radius:2px;width:100px;text-align:center'>紀 錄</div>
+		</div>
+	</div>			
+	<div class="css-table" style='border-spacing:1px' th:utext='${mockStr}'>
+		<!---------------->	
+		<!---------------->		
+	</div>	
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script>
+	function openMockBook(student_seq,mockDetail_seq,SchoolCode,Register_seq,register_mock_seq) {
+ 		var feature = "width=1000,height=600";
+ 		window.open("/Adm/openTitleLink?register_mock_seq="+register_mock_seq+"&Register_seq="+Register_seq+"&student_seq="+student_seq+"&mockDetail_seq="+mockDetail_seq+"&school_code="+SchoolCode,"",feature);
+ 	}
+	
+	function cancelMockBook(student_id,mockBaseBook_seq) {
+		if(confirm("確定取消此模考預約??")){
+			$.ajax({
+					url : "/Sales/cancelMockBook",
+					data : {
+						student_id : student_id,
+						mockBaseBook_seq : mockBaseBook_seq
+					},
+					dataType : "text",
+					success : function(data) {
+						alert("取消成功!");
+						self.location.reload();
+					},
+					error: function(data) {
+						alert("取消失敗!");
+					}
+			});					
+		}
+ 	}	
+
+ 	function openMockVideoToSelect(register_mock_seq,Register_seq,subject_id,mockVideo_id) { 
+ 		var feature = "width=750,height=500";
+ 		var student_seq = [[${student_seq}]];
+ 	    window.open("/Sales/openMockVideoToSelect?mockVideo_id="+mockVideo_id+"&register_mock_seq="+register_mock_seq+"&Register_seq="+Register_seq+"&subject_id="+subject_id+"&student_seq="+student_seq,"",feature);
+ 	}
+ 	
+
+ 	function ClassBook2(mockVideoHistory_seq,student_seq,school_code,makeUpNo,allowFreeAttend,attendDateCancel) {
+ 		var feature = "width=1050,height=700";
+ 		if(attendDateCancel=='1'){ //可取消課程
+ 			if(confirm("確定取消此課程??")){
+ 				$.ajax({
+					url : "/Sales/cancelMockVideo",
+					data : {
+						student_id : student_seq,
+						mockVideoHistory_seq : mockVideoHistory_seq
+					},
+					dataType : "text",
+					success : function(data) {
+						alert("取消成功!");
+						self.location.reload();
+					},
+					error: function(data) {
+						alert("取消失敗!");
+					}
+				});	
+ 			}
+ 		}else{
+ 			
+	 		if(allowFreeAttend<=0){ 			
+	 			if(confirm("課程已超過免費次數!\n再預約需要使用Video點數!")){
+	            	if($("#makeUpTotal").val()<=0 && $("#makeUpTotal").val()>-3){
+	            		alert("您目前並無Video點數!\n但可先預約, 至多可至 -3 點數, 且在上課前須繳納!");
+	            	}else if($("#makeUpTotal").val()<=-3){
+	            		alert("很抱歉, 您目前Video點數無法預約!");
+	            		resurn;
+	            	}
+			 	    window.open("/Sales/ClassBook2?mockVideoHistory_seq="+mockVideoHistory_seq+"&student_seq="+student_seq+"&mockVideoHistory_seq="+mockVideoHistory_seq+"&school_code="+school_code+"&makeUpNo="+makeUpNo,"",feature);		            
+	            }	
+	 		}else{
+	 			window.open("/Sales/ClassBook2?mockVideoHistory_seq="+mockVideoHistory_seq+"&student_seq="+student_seq+"&mockVideoHistory_seq="+mockVideoHistory_seq+"&school_code="+school_code+"&makeUpNo="+makeUpNo,"",feature);	 
+	 		}
+ 	    	
+ 		}
+	} 	
+ 	 	
+ 	function mockBaseBookHistory(student_seq,mockBase_id){
+ 		var feature = "width=600,height=400";
+ 	    window.open("/Sales/mockBaseBookHistory?student_seq="+student_seq+"&mockBase_id="+mockBase_id,"",feature); 			
+ 	}
+ 	
+ 	function mockVideoHistory(student_id,mockVideo_id,register_mock_id){
+		var feature = "width=600,height=400";
+	    window.open("/Sales/mockVideoHistory?student_id="+student_id+"&mockVideo_id="+mockVideo_id+"&register_mock_id="+register_mock_id,"",feature); 			
+	}
+ 	
+ 	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>	 	

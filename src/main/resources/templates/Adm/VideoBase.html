@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+		    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Adm/VideoBase">Video設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/MockBase">模考設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/CounselingBase">充電站設置</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/classroomSetting">教室&座位</a></li>
+		    <li style='letter-spacing:2px;font-weight:bold'><a href="/Adm/onlineSetting">線上課程設置</a></li>						
+		</ul>
+	</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Adm/VideoBaseSave}" method="post">
+<div class="css-table">
+	<div class="tr">
+	    <div class="td" style='width:30px'></div>
+		<div class="td" style='vertical-align:bottom'>
+			<select id="school_code" name='school_code' class="form-control" style='margin-left:5px;width:120px;background-color:#F3F4FF'  onchange="getVideoBase()">
+				<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+			</select>
+		</div>
+		<div class="td" style='width:60px'></div>
+	    <div class="td">
+		  <div class="css-table" style='text-align:left;border:1px #dddddd solid;border-radius:5px;padding:3px;background-color:#FFF7FD'>
+			<div class="tr">
+				<div class="td" style='text-align:center;width:50px;letter-spacing:5px'>
+					平日:
+				</div>			
+				<div class="td" style='text-align:center;width:120px'>
+					早 <span id='slot_1'></span>
+				</div>
+				<div class="td" style='text-align:center;width:120px'>
+					午  <span id='slot_2'></span>
+				</div>
+				<div class="td" style='text-align:center;width:120px'>
+					晚  <span id='slot_3'></span>
+				</div>
+				<div class="td" style='text-align:center;width:30px'>
+					
+				</div>											
+			</div>
+			<div class="tr">
+				<div class="td" style='text-align:center;width:50px;letter-spacing:5px'>
+					假日:
+				</div>			
+				<div class="td" style='text-align:center;width:120px'>
+					早  <span id='slot_12'></span>
+				</div>
+				<div class="td" style='text-align:center;width:120px'>
+					午  <span id='slot_22'></span>
+				</div>
+				<div class="td" style='text-align:center;width:120px'>
+					晚  <span id='slot_32'></span>
+				</div>
+				<div class="td" style='font-weight:bold;text-align:right;width:30px'>
+					<A href='javascript:void(0)' onclick='editSlot()'><img src='/images/edit.png' style='width:15px'/></A>
+				</div>											
+			</div>			
+		   </div>				    
+	    </div>
+	</div> 
+</div>		
+<div>&nbsp;</div>
+<div>
+  <div>	  
+	  <div>
+	    <span style='font-weight:bold;letter-spacing:3px;font-size:xx-small'>設定月份</span>
+	  	<input type='text' name='year' th:value='${year}' style='width:80px;border:1px #aaaaaa solid;border-radius:5px;font-weight:bold'>年
+	  	<input type='text' name='month' th:value='${month}' style='width:50px;border:1px #aaaaaa solid;border-radius:5px;font-weight:bold'>月
+	  </div>
+		<div class="css-table" style='border-radius:0px;border:1px #dddddd solid'>
+			<div class="tr" style='background-color:#FE87E1;font-weight:bold;color:white'>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:40px;letter-spacing:15px'>&nbsp;&nbsp;</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px'>周一</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px'>周二</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px'>周三</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px'>周四</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px'>周五</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px;background-color:#FF3FD0'>周六</div>
+			    <div class="td2" style='text-align:center;padding:1px;border:1px #ffffff solid;width:90px;letter-spacing:15px;background-color:#FF3FD0'>周日</div>		    		    
+			</div>
+			<div class="tr" style='background-color:#ffffff'>
+			    <div class="td2" style='text-align:center;padding:10px;border-bottom:1px #eeeeee solid;font-weight:bold;background-color:#F9F9F9'>早</div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='11'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='21'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='31'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='41'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='51'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='61'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='71'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='1'>V</option></select></div>			    			    			    			    			    	    		    
+			</div>	
+			<div class="tr" style='background-color:#ffffff'>
+			    <div class="td2" style='text-align:center;padding:10px;border-bottom:1px #eeeeee solid;font-weight:bold;background-color:#F9F9F9'>午</div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='12'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='22'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='32'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='42'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='52'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='62'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='72'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='2'>V</option></select></div>		    		    
+			</div>
+			<div class="tr" style='background-color:#ffffff'>
+			    <div class="td2" style='text-align:center;padding:10px;border-bottom:1px #eeeeee solid;font-weight:bold;background-color:#F9F9F9'>晚</div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='13'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='23'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='33'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='43'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='53'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='63'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>
+			    <div class="td2" style='text-align:center;border-bottom:1px #eeeeee solid'><input type='hidden' name='flag' value='73'><select name='slot' style='width:60px;border:1px #dddddd solid'><option value='0'></option><option value='3'>V</option></select></div>		    		    
+			</div>					
+		</div>
+		<div style='text-align:center;width:680px'><button type="button" id='saveButton' class="btn btn-sm btn-primary" style='padding:2px'>&nbsp;產生該月時段&nbsp;</button></div>	   
+  </div>
+  <div>&nbsp;</div>
+  <div style='vertical-align:middle' ><hr style='border: 1px dashed #bbbbbb'></div>
+  <div style='margin-top:0px' id='mockBaseList'></div>		
+</div>
+</form>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	
+<script>
+	$(document).ready(
+		function(){
+			getVideoBase();
+		}	
+	)
+	
+	function getVideoBase(){
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+		
+		 $.ajax({
+			url : "/Adm/getVideoBase",
+			data : {
+				school_code : $("#school_code").val()
+			},
+			dataType : "text",
+			success : function(data) {
+				dataArray = data.split("@");
+				$("#mockBaseList").html(dataArray[0]);
+				$("#slot_1").html(dataArray[1]);
+				$("#slot_2").html(dataArray[2]);
+				$("#slot_3").html(dataArray[3]);
+				$("#slot_12").html(dataArray[4]);
+				$("#slot_22").html(dataArray[5]);
+				$("#slot_32").html(dataArray[6]);				
+			}
+		 });
+	}	
+
+	$("#saveButton").click(function() {
+		$("#form1").submit();
+	});
+
+	function openDate(setDate){
+		var feature = "width=350,height=250,left=200";
+ 	   	window.open("/Adm/openDate?setDate="+setDate,"",feature);		
+	}
+	
+	function editSlot(){
+		var feature = "width=450,height=450,left=400";
+ 	   	window.open("/Adm/editSlot?school_code="+$("#school_code").val(),"",feature);			
+	}
+
+$("#titleWidth").width(200+$("#mockBaseList").width()<1400?1400:200+$("#mockBaseList").width());
+</script>	

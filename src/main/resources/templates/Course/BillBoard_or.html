@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+<div class="container-fluid" style='letter-spacing:2px;font-weight:bold'>
+	<ul class="nav nav-tabs" id="myTabs">
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/CourseSetting">課程設置</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/SubjectSetting">科目</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/Teacher">老師</a></li>
+    	<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/TeacherSetting3">課程時間</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/MockSetting">模考</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><a href="/CourseSale/CounselingCost">充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/BillBoard">國定假日</a></li>    	
+	</ul>
+</div>
+<div>&nbsp;</div>
+<form id='form1' action="#" th:action="@{/Course/SuspensionSave}"  method="post">
+  <div style='padding:5px;width:550px'>
+	<div style='display: inline-block'>
+		* 行事曆<br>
+		<input type="text" class="form-control" id="datepickerTake" style='width:120px' name='suspension_date'/>
+	</div>
+<!--  
+	<div style='display: inline-block;padding-left:20px'>
+		* 分校<br> 
+		<select id="school" class="form-control" style='width:110px'>
+			<option></option>
+			<option th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}" />
+		</select>
+	</div>
+-->					
+	<div style='display:inline-block;padding-left:20px'>
+		* 國定假日名稱<br>
+		<input type="text" class="form-control" style='width:350px' name='reason'>
+	</div>
+  </div>
+  <div>
+  <div style='width:550px;text-align:center'>
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>
+		&nbsp;&nbsp;
+ 		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+ </div>
+</form>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div style='width:900px' align='left'>
+	<table id="myDataTalbe" class="display" style='width:1000px' align='left'>
+		<thead>
+			<tr>
+			  <th>日期</th>
+			  <th>公布內容</th>						
+			  <th>建立者</th>
+			  <th>建立時間</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+
+
+<script type="text/javascript">
+
+$(function() {
+	$("#datepickerTake").datepicker();
+});
+
+
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 0, "desc" ],			
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getSuspension",
+				data : function(d) {
+
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+			"columns" : [ 
+				{"data" : "suspension_date"}, 
+				{"data" : "reason"},
+				{"data" : "updater"},
+				{"data" : "update_time"}			
+			]
+		});
+		
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	$("#btnSave").click(function() {
+		$("#form1").submit();
+	});	
+</script>

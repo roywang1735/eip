@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:if="${pop=='0'}" th:include="/common/top_header"></head>
+<head th:if="${pop=='1'}" th:include="/common/top_header_noMenu"></head>
+
+	<div class="container-fluid">
+		<ul class="nav nav-tabs" id="myTabs">
+			<li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/Course/OnsiteProgram">現場課表</a></li>		
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/programSetting">排課表</a></li>
+			<li style='letter-spacing:2px;font-weight:bold'><a href="/Course/gradePeople">班級人數</a></li>
+		</ul>
+	</div>
+<div>&nbsp;</div>
+<div id='message' align='center' style='margin-left:10px'></div>
+	<div style='margin-left:20px'>
+		<div style='display: inline-block'>
+			<select  id='school_code' class="form-control" style='width:120px;background-color:lightyellow' onchange="GetCurrentCourse()">
+				<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}"/>
+			</select>
+		</div>
+		<div style='display: inline-block;margin-left:5px'>
+			<select  id='category_id' class="form-control" style='width:110px;background-color:lightyellow' onchange="GetCurrentCourse()">
+				<option value='0'>~ 類 別 ~</option>
+				<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${category_id == item.category_seq}"/>
+			</select>
+		</div>
+	</div>
+	
+	<div id='GradeDetail' style='padding:10px;width:1310px'></div>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+	
+<script>
+	$(document).ready(
+		function(){
+			GetCurrentCourse();
+		}	
+	)
+
+	function GetCurrentCourse() {
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});
+		
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+		
+		 if($("#category_id").val()!=0){
+			 $.ajax({
+				url : "/Sales/getCurrentCourse",
+				data : {
+					school_code : $("#school_code").val(),
+					category_id : $("#category_id").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#GradeDetail").html(data);
+					
+				}
+			 });
+		 }
+	}
+</script>

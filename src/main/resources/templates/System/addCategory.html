@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+	<form id='form1' th:action="@{/System/saveCategory}" method="post">
+		<table style='background-color:#ffefff'>
+			<tr>
+				<th width="160px" style='padding:5px;text-align:center'>&starf;類 別 名 稱</th>
+				<th width="160px" style='padding:5px;text-align:center'>背 景 色 系</th>
+			</tr>
+	        <tr>
+	            <td align='center'><input type='text' name='categoryName' class="form-control" style='width:120px'></td>
+	            <td align='center'><input type='text' name='bgColor' class="form-control" style='width:120px'></td>             
+	        </tr>			
+		</table>
+		<div style='margin-left:30px;width:320px' align='center'>	
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>&nbsp;&nbsp; 
+		</div>	
+	</form>	
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script>
+	$("#btnSave").click(function() {
+		$("#form1").submit();
+	});		
+</script>	

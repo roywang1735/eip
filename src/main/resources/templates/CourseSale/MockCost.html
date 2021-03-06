@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+	<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+	  <ul class="nav nav-tabs" id="myTabs">
+	    <li><a href="/CourseSale/ComboSaleSetting">銷售設定</a></li> 
+	    <li class="active"><a href="/CourseSale/CounselingCost">成本組合</a></li>
+	  </ul>    
+	</div>
+
+&nbsp;<br>
+	<div id="css-table" class="css-table" style="border-spacing: 3px">
+		<div class="tr">
+			&#10074;<div class="td"><A href='/CourseSale/CounselingCost'>充電站 </A></div><div class="td" style="width:15px"></div>
+			&#10074;<div class="td" style="background-color:#eeeeee"><A href='/CourseSale/MockCost'>模考</A></div><div class="td" style="width:15px"></div>
+		</div>
+	</div>
+&nbsp;<p>
+
+
+	<table id="myDataTalbe" width="700px">
+		<tr style="border-bottom:1px solid #DDDDDD;text-align:left;font-weight:bold";>
+			<td width="20%"  style='padding:5px'>類別</td>
+			<td width="50%">名稱</td>
+			<td width="15%">原價</td>
+			<td width="15%">編輯</td>
+		</tr>
+        <tr th:each="mock : ${mocks}">
+            <td style='padding:5px'><span th:text="${mock.category_name}"></span></td>
+            <td><span th:text="${mock.mock_name}"></span></td>
+            <td><span th:text="${mock.origin_price}"></span></td>
+            <td><span><A th:href='${mock.mock_seq}'>...</A></span></td>
+        </tr>			
+	</table>	
+&nbsp;<p>
+
+
+
+
+
+
+<script>
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+</script>
+

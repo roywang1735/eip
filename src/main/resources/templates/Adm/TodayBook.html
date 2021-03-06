@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/Adm/BookDiagram?slot=1">總表&座位</a></li>
+    <li class="active"><a href="/Adm/TodayBook">櫃台預約</a></li>
+    <li><a href="/Adm/todaySign">正班紀錄</a></li>
+    <li><a href="/Adm/StudentVideoSign">Video紀錄</a></li>
+    <li><a href="/Adm/MockSign">模考紀錄</a></li>
+    <li><a href='javascript:void(0)'  onclick='openTodaySign()' style='color:darkorange;text-decoration:underline'>QRcode點名</a></li>
+  </ul>
+</div>
+
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Adm/TodayBook'> 課程 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A href=''> 模考 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A href=''> 充電站 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+<div>&nbsp;</div>
+       <div class="css-table" id='myDataTalbe' style='width:1100px'>
+        <div class="tr">
+           <div class="td" style='width:20px'></div>
+           <div class="td" style='vertical-align:middle'>	
+				<div class="css-table">			
+					<div class="tr" style='font-size:small'>
+						<div class="td2" style='padding:5px'>
+								學號<br> 
+								<input type='text' id='student_no' class="form-control" style='width:150px'>				
+						</div>
+						<div class="td2" style='padding:5px'>
+								姓名<br> 
+								<input type='text' id='ch_name' class="form-control"  style='width:150px'>				
+						</div>
+						<div class="td2" style='padding:5px;vertical-align:bottom'>
+								 <button type="submit" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>	
+						</div>												
+					</div>
+				</div>
+		   </div>
+		   <div class="td" style='width:20px'></div>
+		   <div class="td" style='border:1px #eeeeee solid;width:20px;vertical-align:middle'><img src='/images/bookIcon.png' width='350px'/></div>	
+           <div class="td" style='width:5px'></div>
+           <div class="td">			   
+				 <div style='background-color:#ffffff;border:1px #eeeeee solid;width:270px;padding:5px;display: inline-block'>
+					<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+						 &#8227; <img src='/images/WhiteSquare.png' height='14px'/> 實體課程&nbsp;&nbsp;&nbsp;
+						<img src='/images/GreenSquare.png' height='14px'/> 到課&nbsp;&nbsp;&nbsp;
+						<img src='/images/RedSquare.png' height='14px'/> 缺課&nbsp;&nbsp;&nbsp;
+					</div>
+					<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+						 &#8227; <img src='/images/White_repeat.png' height='13px'/> Video課程&nbsp;&nbsp;&nbsp;
+						<img src='/images/Green_repeat.png' height='13px'/> 到課&nbsp;&nbsp;&nbsp;
+						<img src='/images/Red_repeat.png' height='13px'/> 缺課&nbsp;&nbsp;&nbsp;
+					</div>
+					<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+						 &#8227; <img src='/images/WhiteCloud.png' height='13px'/> 線上課程&nbsp;&nbsp;&nbsp;
+						<img src='/images/GreenCloud.png' height='13px'/> 到課&nbsp;&nbsp;&nbsp;
+						<img src='/images/RedCloud.png' height='13px'/> 缺課&nbsp;&nbsp;&nbsp;
+					</div>
+					<div style='padding-left:10px;font-size:small;letter-spacing:1px'>
+						&#8227; <span style='background-color:#F7FE8D;font-size:xx-small;border:1px #eeeeee solid'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 代表可進班上課
+					</div>
+					<div style='padding-left:10px;font-size:small;letter-spacing:1px'>	
+						&#8227; <img src='/images/book.jpg' height='13px'/> 預約或取消課程
+					</div>		
+				 </div>	   
+           </div>		   
+		</div> 
+	   </div> 		
+						
+
+
+<div>&nbsp;</div>
+<div id='message' style='text-align:center'></div>	 
+<div id='bookAttendArea'></div>
+		
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<div>&nbsp;</div>
+
+
+<script th:inline="javascript">
+
+$("#btnQuery").click(function() {
+		$(document).ajaxStart(function(){
+			$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+		});	
+		$(document).ajaxStop(function(){
+			$('#message').text("");
+		});	
+	
+		$.ajax({
+			url : "/Sales/getBook_attend",
+			data : {
+				        student_no  : $("#student_no").val(),
+				        ch_name     : $("#ch_name").val(),
+						grade_id    : ""
+				   },
+			dataType : "text",
+			success : function(data) {
+				$("#bookAttendArea").html(data);
+			}
+		});	
+});
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>
+
+
+
+<style>
+.ui-widget-content { 
+	background:lemonchiffon;
+	border-color:lightgreen; 
+}
+.ui-dialog-titlebar {
+	  font-weight: normal;	
+      background:#aaaaaa;
+      color:white;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .no1
+{
+    margin-left:20px;
+    color: #FFFFFF;
+    width: 60px;
+    background: #90C93E;
+    
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .no2
+{   
+    color: #FFFFFF;
+    width: 60px;
+    background: steelblue;
+    
+}
+</style>
+
+<script type="text/javascript">	
+	function View(thisId){
+		    if($(thisId).text()=='+'){
+		    	$(thisId).html("&minus;");
+		    	$(thisId).parent().parent().parent().parent().parent().parent().find('#child').show();
+		    }else if($(thisId).text()=='−'){
+		    	$(thisId).html("&plus;");
+		    	$(thisId).parent().parent().parent().parent().parent().parent().find('#child').hide();
+		    } 		
+	}
+
+/**	
+	function ClassBook(Register_comboSale_grade_id,school_code,subject_id,class_start_date,class_th,class_style,signRecordHistory_seq,futureClass,makeUpNo,grade_seq,allowFreeAttend,attendDateCancel) {
+		var feature = "width=1100,height=700";
+		if(attendDateCancel=='1'){ //可取消課程
+			if(confirm("取消此課程?")){
+				window.open("/Sales/ClassBook?cancelFlag=1&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq,"",feature);
+			}
+		}else{
+	 		if(allowFreeAttend==0){ 			
+	            if(confirm("原課程已上實體課或已免費重聽一次, 再預約需要使用Video點數!")){
+	            	if($("#makeUpTotal").val()==0 && futureClass=='false'){
+	            		alert("很抱歉, 您目前並無Video點數!");
+	            		return; 
+	            	}
+			 	    window.open("/Sales/ClassBook?Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq,"",feature);		            
+	            }	
+	 		}else{
+	 			window.open("/Sales/ClassBook?Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq,"",feature);  
+	 		}
+		}	
+	}
+**/ 
+
+	function ClassBook(Register_comboSale_grade_id,school_code,subject_id,class_start_date,class_th,class_style,signRecordHistory_seq,futureClass,makeUpNo,grade_seq,allowFreeAttend,attendDateCancel,remark,teacher_id) {
+		var student_seq = $("#student_seq").val();
+		var feature = "width=1050,height=700";
+		if(attendDateCancel=='1'){ //可取消課程
+			if(confirm("確定取消此課程?")){
+				window.open("/Sales/ClassBook?student_seq="+student_seq+"&cancelFlag=1&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq,"",feature);
+			}
+		}else{
+	 		if(allowFreeAttend<=0){ 			
+	 			if(confirm("課程已超過免費次數!\n再預約需要使用Video點數!")){
+	            	//if($("#makeUpTotal").val()==0 && futureClass=='false'){
+	            	if($("#makeUpTotal").val()<=0 && $("#makeUpTotal").val()>-3){
+	            		alert("您目前並無Video點數!\n但可先預約, 至多可至 -3 點數, 且在上課前須繳納!");
+	            	}else if($("#makeUpTotal").val()<=-3){
+	            		alert("很抱歉, 您目前Video點數無法預約!");
+	            		resurn;
+	            	}
+			 	    window.open("/Sales/ClassBook?teacher_id="+teacher_id+"&student_seq="+student_seq+"&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq+"&remark="+remark,"",feature);		            
+	            }	
+	 		}else{
+	 			window.open("/Sales/ClassBook?teacher_id="+teacher_id+"&student_seq="+student_seq+"&Register_comboSale_grade_id="+Register_comboSale_grade_id+"&school_code="+school_code+"&subject_id="+subject_id+"&class_start_date="+class_start_date+"&class_th="+class_th+"&class_style="+class_style+"&signRecordHistory_seq="+signRecordHistory_seq+"&makeUpNo="+makeUpNo+"&grade_seq="+grade_seq+"&remark="+remark,"",feature);  
+	 		}
+		}
+}
+	
+ 	function ClassBookHistory() { 
+ 		var feature = "width=980,height=400";
+ 	    window.open("/Sales/ClassBookHistory", "", feature);
+ 	}
+ 	
+    function openClassMakeUp(student_seq){
+ 		var feature = "left=200,top=200,width=900,height=400";
+ 	    window.open("/Sales/openClassMakeUp?student_seq="+student_seq, "", feature);    	
+    }
+
+    function openSignRecord(signRecordHistory_seq,attend){ 
+ 		var feature = "width=500,height=400";
+ 	    window.open("/Adm/editSignRecord?signRecordHistory_seq="+signRecordHistory_seq+"&attend="+attend, "", feature);
+ 	}
+    
+	function openTodaySign() {
+		var feature = "width=4000,height=4000";
+	    window.open("/Adm/openTodaySign", "", feature);
+	}	
+</script>

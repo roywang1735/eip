@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<form id='form1' action="#" th:action="@{/Adm/mockBaseSave}" method="post">
+  <input type="hidden" name='mockBaseTitle_seq' th:value = "${mockBaseTitle_seq}">
+  <input type="hidden" name='setDate' th:value = "${setDate}">
+  <div align='center' style=''>
+	<div class="css-table" style='border:1px #eeeeee solid;font-weight:bold'>
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>早</div>
+		    <div class="td" style='width:130px;border-bottom:1px #eeeeee solid;vertical-align:middle'>
+		    	<input type='checkbox' name='slot_1'  style='width:23px;height:23px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>午</div>
+		    <div class="td" style='width:130px;border-bottom:1px #eeeeee solid;vertical-align:middle'>
+		    	<input type='checkbox' name='slot_1'  style='width:23px;height:23px'>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td" style='padding:12px;width:60px;border-bottom:1px #eeeeee solid;background-color:#FFF7FD'>晚</div>
+		    <div class="td" style='width:130px;border-bottom:1px #eeeeee solid;vertical-align:middle'>
+		    	<input type='checkbox' name='slot_1'  style='width:23px;height:23px'>
+		    </div>
+		</div>			    
+	</div>
+	<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+</form>  
+
+<script>
+$("#btnSave").click(function() {
+	if($("#slot").val()==''){
+		alert("***請選取時段***");	
+	}else{
+		$("#form1").submit();
+	}	
+});
+</script>
+
+
+

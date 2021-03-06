@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+&nbsp;<p>
+<form id='form1' action="#" th:action="@{/CourseSale/CounselingCostSave}" th:object="${counseling}" method="post">
+  <input type='hidden' name='counseling_seq' th:field='*{counseling_seq}'/>
+  <div id='myDataTalbe' style='border:1px #eeeeee solid;width:600px;border-radius:5px;background-color:#ffeeff;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*類別</div>
+			 <div class="td2" style='padding:5px'>
+			 	<span>
+					<select  th:field="*{category_id}" style='padding:3px;border-radius:5px;width:150px'>
+						<option value=''></option>
+						<option th:each="item : ${LCategory}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+				</span>			 
+			</div>
+		</div>				
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*名稱</div>
+			 <div class="td2" style='padding:5px'>
+				<input type="text"  th:field="*{counseling_name}" style='height:30px;border-radius:5px;border:1px #cccccc solid;width:300px'/>
+			</div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*原價</div>
+			 <div class="td2" style='padding:5px'>
+				<input type="text"  th:field="*{origin_price}" style='height:30px;border-radius:5px;border:1px #cccccc solid;width:100px'/>
+			</div>
+		</div>
+		<div class="tr">
+		    <div class="td2" style='padding:5px;text-align:right;font-weight:bold'>*狀態</div>
+			<div class="td2">
+					<select th:field="*{active}" class="form-control" style='width:120px'>
+						<option value='1'>啟用</option>
+						<option value='0'>停用</option>
+					</select>				
+			</div>
+		</div>										
+	</div>
+  </div>
+  <div style='width:600px;text-align:center'>
+		<button type="button" id="btnSave"class="btn btn-sm btn-primary">儲 存</button>
+  </div>
+</form>  		
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>											
+<script>
+$("#btnSave").click(function() {
+	if($("#category_id").val()==''){
+		alert("***請選取類別***");
+	}else if($("#counseling_name").val()==''){
+		alert("***請填寫名稱***");		
+	}else if($("#origin_price").val()==''){
+		alert("***請填寫原價***");		
+	}else{		
+		$("#form1").submit();
+	}	
+});
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+	
+</script>
+

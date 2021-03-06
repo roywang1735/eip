@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<div>&nbsp;</div>
+<div style='font-weight:bold;letter-spacing:3px;margin-left:10px;color:#777777'> &#10074;字神帝國 - 課程異動處理辦法</div>
+
+
+<div align='center' style='font-size:medium'>
+      <div style='font-weight:bold' th:utext=${'期&nbsp;別&nbsp;&nbsp;:&nbsp;&nbsp;'+order_grade}></div>
+ 	  <div class="css-table" style='border:1px #eeeeee solid;width:900px;background-color:#ffeeff'>
+ 		 <div class="tr">
+ 		    <div class='th' style='text-align:left;background-color:#3e7e99;color:white'>&nbsp;學員異動:正班</div>
+ 		 </div>	    
+	     <div class="tr">
+	    	<div class='td'>
+	    		<div class="css-table">
+				     <div class="tr">
+				    	<div class='td' style='width:50px;font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='1'> 1</div>
+				    	<div class='td' style='width:850px;text-align:left'>於開課日『第一日之前』提出申請，不需作業費用。更換之課程若需外版教材，費用另計。</div>
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='2'> 2</div>
+				    	<div class='td' style='text-align:left'>現行課表『第一堂到課後，7日內』提出申請，收取單堂課程費用700元，可進行更換。<br>現行課表『第一堂缺課，但於開課日後7日內』提出申請，因未領取教材，故收取500元作業異動費，即可進行更換。</div> 
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='3'> 3</div>
+				    	<div class='td' style='text-align:left'>現行課表『第二堂課進行後』提出申請，無法更換上課期別/師資。</div> 
+				     </div>					     				     
+				</div>      	  		
+	    	</div>
+	     </div>	     
+      </div>
+      
+      
+      
+ 	  <div class="css-table" style='border:1px #eeeeee solid;width:900px;background-color:#ffeeff'>
+ 		 <div class="tr">
+ 		    <div class='th' style='text-align:left;background-color:#3e7e99;color:white'>&nbsp;學員異動:Video班</div>
+ 		 </div>	    
+	     <div class="tr">
+	    	<div class='td'>
+	    		<div class="css-table">
+				     <div class="tr">
+				    	<div class='td' style='width:50px;font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='4'> 4</div>
+				    	<div class='td' style='width:850px;text-align:left'>於『訂班當月份(月底前) 』提出申請，且課程完全未進行，不需作業費用。</div> 		    	 
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='5'> 5</div>
+				    	<div class='td' style='text-align:left'>於『訂班當月份(月底前) 提出申請，且於第一堂課進行後7天內』提出申請，收取單堂課程費用700元，可進行更換。</div> 
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='6'> 6</div>
+				    	<div class='td' style='text-align:left'>非『訂班當月份提出申請』、『第一堂課進行後，超過7天以上或已進行第二堂課後』提出申請，無法更換。</div> 
+				     </div>					     				     
+				</div>      	  		
+	    	</div>
+	     </div>	     
+      </div> 
+      
+ 	  <div class="css-table" style='border:1px #eeeeee solid;width:900px;background-color:#ffeeff'> 
+	     <div class="tr">
+	    	<div class='td'>
+	    		<div class="css-table">
+				     <div class="tr">
+				    	<div class='td' style='vertical-align:top;width:300px;font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'>
+				    		<div style='padding:2px'>收取:課程費用<input type='text' id='classCharge' maxlength="5" style='width:100px;border-radius:5px;border:1px #aaaaaa solid'>元</div>
+				    		<div style='padding:2px'>收取:作業費用<input type='text' id='operationCharge' maxlength="5" style='width:100px;border-radius:5px;border:1px #aaaaaa solid'>元</div>
+				    	</div>
+				     </div>				     				     
+				</div>      	  		
+	    	</div>
+	     </div>	     
+ 
+			<div id="css-table" class="css-table" style="width:500px;border-spacing:1px">			
+				<div class="tr" style='background-color:#7ba6b6;color:white;font-size:small' >
+					<div class="td2" style='width:106px;text-align:center;letter-spacing:8px'>現 金</div>									
+					<div class="td2" style='width:183px;text-align:center;letter-spacing:8px'>刷 卡</div>	
+					<div class="td2" style='width:183px;text-align:center;letter-spacing:8px'>匯 款</div>									
+				</div>
+				<div class="tr payCols" style='background-color:#ffffff;font-size:small'>
+					<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+						  <br><input type='text' id='payStyle_2_money' name='payStyle_2_money' maxlength="6"  style='border-radius:5px;height:22px;width:80px;border:1px #dddddd solid' placeholder='$'>
+					</div>							
+					<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+						<select id='payStyle_5_periods' name='payStyle_5_periods' style='color:darkblue;border-radius:5px;width:70px;padding:1px;margin-bottom:4px'>
+							<option value='0'>0期</option>
+							<option value='3'>3 期</option>
+							<option value='6'>6 期</option>
+							<option value='9'>9 期</option>
+							<option value='12'>12 期</option>
+						</select><br>					
+						<input type='text' id='payStyle_5_code' name='payStyle_5_code' maxlength="4" style='border-radius:5px;height:22px;width:80px;border:1px #dddddd solid' placeholder='卡片後4碼'>-<input type='text' id='payStyle_5_money' name='payStyle_5_money'  maxlength="6" style='border-radius:5px;height:22px;width:60px;border:1px #dddddd solid' placeholder='$'>&nbsp;
+					</div>
+					<div class="td2" style='vertical-align:middle;text-align:center;border-right:1px #ffffff solid'>
+						<input type='text' id='payStyle_7_code' name='payStyle_7_code' maxlength="6"  style='border-radius:5px;height:22px;width:90px;border:1px #dddddd solid' placeholder='後4碼 or 姓名'>-<input type='text' id='payStyle_7_money' name='payStyle_7_money'  maxlength="6" style='border-radius:5px;height:22px;width:60px;border:1px #dddddd solid' placeholder='$'>&nbsp;
+					</div>																																																				
+				</div>
+				<div>&nbsp;</div>
+			</div>	 
+	  </div> 
+	  <div>&nbsp;</div>				   
+ 	  <div class="css-table" style='border:1px #eeeeee solid;width:900px;background-color:#FEFFEE'>
+ 		 <div class="tr">
+ 		    <div class='th' style='text-align:left;background-color:#FCB24D;color:white'>&nbsp;課務異動</div>
+ 		 </div>	    
+	     <div class="tr">
+	    	<div class='td'>
+	    		<div class="css-table">
+				     <div class="tr">
+				    	<div class='td' style='width:50px;font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='7'> 7</div>
+				    	<div class='td' style='width:850px;text-align:left'>因老師個人因素，停止招生/訂班。</div> 
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='8'> 8</div>
+				    	<div class='td' style='text-align:left'>因課程時間調整，停止招生/訂班。</div> 
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='9'> 9</div>
+				    	<div class='td' style='text-align:left'>因招生人數不足，停止招生/訂班。</div> 
+				     </div>
+				     <div class="tr">
+				    	<div class='td' style='font-weight:bold;letter-spacing:2px;padding:5px;font-size:small'><input type='radio' name='reason_option' value='10'>10</div>
+				    	<div class='td' style='text-align:left'>其他</div> 
+				     </div>					     					     				     
+				</div>      	  		
+	    	</div>
+	     </div>	     
+      </div> 
+ 	  <div class="css-table" style='margin-top:5px;width:900px;background-color:#ffffff'> 
+	     <div class="tr">
+	    	<div class='td'>
+	    		<div class="css-table">
+				     <div class="tr">
+				    	<div class='td' style='width:410px;text-align:left'>
+				    		<textarea id='CancelComment'  placeholder='備註' style='width:400px;height:60px;font-size:small;border:1px #dddddd solid;border-radius:5px;margin-top:2px'></textarea>						  				  
+				    	</div> 
+				     </div>				     				     
+				</div>      	  		
+	    	</div>
+	     </div>	     
+      </div>                         
+</div>
+<div sec:authorize="hasAnyRole('sal','sal_mgr','approve_mgr')" align='center'>
+	<span th:if="${register_log_seq!='-1'}"><button type="button" id="btnSave2" class="btn btn-sm btn-primary" style='background-color:red'>修 改 儲 存</button></span>
+	<span th:if="${register_log_seq=='-1'}"><button type="button" id="btnSave2" class="btn btn-sm btn-primary">儲 存</button></span>
+</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script th:inline="javascript" type="text/javascript">
+	$(document).ready(function() { 
+			$('#classCharge').val([[${register_log.classCharge}]]);
+			$('#operationCharge').val([[${register_log.operationCharge}]]);
+			$('#CancelComment').val([[${register_log.reason}]]);
+			$('#payStyle_2_money').val([[${register_log.payStyle_2_money}]]);
+			$('#payStyle_5_periods').val([[${register_log.payStyle_5_periods}]]);
+			$('#payStyle_5_code').val([[${register_log.payStyle_5_code}]]);
+			$('#payStyle_5_money').val([[${register_log.payStyle_5_money}]]);
+			$('#payStyle_7_code').val([[${register_log.payStyle_7_code}]]);
+			$('#payStyle_7_money').val([[${register_log.payStyle_7_money}]]);
+			var reason_option = [[${register_log.reason_option}]];
+			$("input[name='reason_option'][value='"+reason_option+"']").attr("checked", true);
+			
+			
+	})
+	
+	$("#btnSave2").click(function() {
+		var selectedOption = $("input:radio[name=reason_option]:checked").val();
+		if(!selectedOption){
+			alert("無選取任何選項!");
+			return;
+		}
+        if(selectedOption==2 || selectedOption==5){
+        	if($("#classCharge").val()=='' && $("#operationCharge").val()==''){
+    			alert("需填寫課程費用或作業費用!");
+    			return;        		
+        	}else{
+    			if($("#classCharge").val()!='' && isNaN($("#classCharge").val())){		
+    				alert("課程費用或作業費用格式有誤!");
+    				return;
+    			}
+    			if($("#operationCharge").val()!='' && isNaN($("#operationCharge").val())){		
+    				alert("課程費用或作業費用格式有誤!");
+    				return;
+    			}    			
+        	}
+        }
+        if(confirm("確定取消此訂班?")){
+        	$('#btnSave2').attr('disabled',true);
+			$.ajax({
+				url : "/Adm/RegisterStatusUpdate",
+				data : {					
+					Register_comboSale_grade_seq  : [[${Register_comboSale_grade_seq}]],
+					student_seq : [[${student_seq}]],
+					order_grade : [[${order_grade}]],
+					register_id : [[${register_id}]],
+					register_log_seq : [[${register_log_seq}]],
+					register_status : 2, //1:訂班,2:取消,3:保留
+					CancelComment : $("#CancelComment").val(),
+					reason_option : selectedOption,					
+					classCharge : $("#classCharge").val(),
+					operationCharge : $("#operationCharge").val(),										
+					payStyle_2_money : $("#payStyle_2_money").val(),
+					payStyle_5_periods : $("#payStyle_5_periods").val(),
+					payStyle_5_code : $("#payStyle_5_code").val(),
+					payStyle_5_money : $("#payStyle_5_money").val(),
+					payStyle_7_code : $("#payStyle_7_code").val(),
+					payStyle_7_money : $("#payStyle_7_money").val()					
+				},
+				dataType : "text",
+				success : function(data) {
+					alert("取消成功!")
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+        } 		
+	});
+	
+</script>

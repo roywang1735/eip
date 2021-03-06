@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li><a href="/Adm/BookDiagram?slot=1">總表&座位</a></li>
+    <li><a href="/Adm/TodayBook">櫃台預約</a></li>
+    <li><a href="/Adm/todaySign">正班紀錄</a></li>
+    <li class="active"><a href="/Adm/StudentVideoSign">Video紀錄</a></li>
+    <li><a href="/Adm/MockSign">模考紀錄</a></li>
+    <li><a href='javascript:void(0)'  onclick='openTodaySign()' style='color:darkorange;text-decoration:underline'>QRcode點名</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/Adm/StudentVideoSign'> 今日點名紀錄 </A></div><div class="td" style="width:20px"></div>
+		&#10074;<div class="td"><A href='/Adm/StudentVideoSignRecord'> 歷程紀錄 </A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>
+<div>&nbsp;</div>
+	<div style='width:700px' align='center'>
+		<div class="css-table">			
+			<div class="tr" style=''>
+				<div class="td2" style='padding:5px;text-align:left'>
+						分校<br>
+						<select id="school_code"  style='font-weight:bold;border-radius:5px;padding:7px;width:150px' onchange="getTodayVideoStudentList()">
+							<option th:each="item : ${LSchool}" th:value="${item.code}" th:utext="${item.name}"  th:selected="${item.code==SchoolCode}"/>
+						</select>
+				</div>
+				<div class="td2" style='padding:5px;text-align:left'>
+						中文名<br>
+						<input type="text" class="form-control" id='ch_name' name="ch_name" style='width:120px'/>
+				</div>
+				<div class="td2" style='padding:5px;text-align:left'>
+						學號<br>
+						<input type="text" class="form-control" id='student_no' name="student_no" value='' style='width:120px'/>															
+				</div>						
+			</div>		
+		</div>
+	</div>	
+	<div style='width:700px' align='center'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary" onclick="getTodayVideoStudentList()">查 詢</button>&nbsp;&nbsp;&nbsp;
+		<!--
+			<button type="button" class="btn btn-sm btn-success" onclick="todayVideoBook()">當 日 預 約 </button>
+		-->
+ 	</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div style='width:800px'>
+<table id="myDataTalbe" class="display" style=''>
+	<thead>
+		<tr>
+			<th>教室</th>
+			<th>學員</th>
+			<th>科目</th>
+			<th>時段</th>		
+			<th>課堂</th>
+			<th>細項</th>
+		</tr>
+	</thead>
+</table>
+</div>
+
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">	
+	function todayVideoBook() {
+		var student_no = $("#student_no").val();
+		var ch_name = $("#ch_name").val();
+		var feature = "width=1200,height=500";
+	    window.open("/Sales/Book_attend?TodayBook=1&student_no="+student_no+"&ch_name="+ch_name, "", feature);
+	}
+	
+	function openTodaySign() {
+		var feature = "width=4000,height=4000";
+	    window.open("/Adm/openTodaySign", "", feature);
+	}
+
+	$(document).ready(
+		function(){
+			getTodayVideoStudentList();
+		}	
+	)	
+	
+	function getTodayVideoStudentList() {
+		
+		let table = $('#myDataTalbe').DataTable({
+			"bDestroy": true,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Adm/getTodayVideoStudentList",
+				data : {
+					school_code : $("#school_code").val(),
+					isToday : 1,
+					student_no : $("#student_no").val(),
+					ch_name : $("#ch_name").val()
+				},				
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			"language": {loadingRecords: "<img src='/images/wait2.gif' style='width:25px'/> <span style='font-size:small'>讀 取 中</span>"},			
+
+			"columns" : [ 
+				{"data" : "signRecordHistory_seq","className" : "text-center",
+					"render" : function(data, type, row, meta) {
+						return "<span style='font-weight:bold'>-</span>";
+					}						
+				}, 
+				{"data" : "student_no",
+				     "render" : function(data, type, row, meta) {
+			               return data+" "+row.ch_name;
+		     		 }					
+				},
+				{"data" : "subject_name"},
+				{"data" : "slot","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+			             if(data==1){
+			            	 return '早';
+			             }else if(data==2){
+			            	 return '午';
+			             }else if(data==3){
+			            	 return '晚';
+			             }   
+		     		 }						
+				},		
+			    {"data" : "class_th","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+			               return "第 "+data+" 堂";
+		     		 }						
+				},
+			    {"data" : "register_comboSale_grade_id","className" : "text-center",
+				     "render" : function(data, type, row, meta) {
+				    	 return "<A href='javascript:void(0)'  onclick='signRecord3("+data+","+row.class_th+")'  style='font-size:large'>&hellip;</A>";
+				     }
+			    }			    
+			]
+		});
+	  };
+	  
+/*  	function openBookAttend(student_id) {
+ 		var feature = "width=1000,height=500";
+ 	    window.open("/Sales/Book_attend?pop=1&student_id="+student_id, "", feature);	
+	}; */	
+	
+ 	function signRecord3(Register_comboSale_grade_id,class_th) {
+ 		var feature = "width=950,height=500,locationbar=false,scrollbar=yes,resizable=yes";
+ 	    window.open("/Adm/signRecord3?class_th="+class_th+"&register_comboSale_grade_id="+Register_comboSale_grade_id,"", feature);
+ 	}
+	
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+</script>

@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<input type='hidden' id='account0' th:value='${account0}'>
+ <div style='letter-spacing:5px;font-weight:bold'>&nbsp;&#10074;交接待辦事項</div>
+ <div align='center'>
+   <form>
+      <div style='margin-top:10px'>
+		  <textarea id='commentAppend' cols="50" rows="5" style='border:1px #eeeeee solid;margin-top:2px;border-radius:5px'></textarea>
+	 </div>	 
+	<div style='white-space:nowrap;width:300px;text-align:center'>
+			<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+			&nbsp;&nbsp;
+			<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+	</div>
+   </form>	
+ </div>
+<div>&nbsp;</div>
+
+
+
+
+<script type="text/javascript">
+ $("#btnSave").click(function(){
+	var commentAppend = $('#commentAppend').val().replace(/\r\n|\r|\n/g,"<br />"); //本次新開視窗附註
+	var commentThis = $('#commentThis',window.opener.document).val(); //本次原開視窗附註
+	var commentOrigin = $('#handover',window.opener.document).html(); //原先附註
+	var nowTime = new Date().toLocaleString();
+	//前端顯示附註
+	$('#handover',window.opener.document).html("<div style=width:100%;text-align:center;background-color:#eeeeee>"+$("#account0").val()+" "+nowTime+"</div>"+commentAppend+commentOrigin);
+	//前端本次附註
+	$('#commentThis',window.opener.document).val("<div style=width:100%;text-align:center;background-color:#eeeeee>"+$("#account0").val()+" "+nowTime+"</div>"+commentAppend+commentThis);
+	window.close();
+	
+ })
+</script>

@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+&nbsp;<p>
+<input type='hidden' id='Register_comboSale_grade_seq' th:value="${Register_comboSale_grade_seq}">
+<input type='hidden' id='Register_comboSale_id' th:value="${Register_comboSale_id}">
+
+  <div align='center'>
+		<div style='border-width:1px;padding:40px;width:350px;background-color:#95b8c5'>
+		    <div style='padding:3px'>
+		    	<span style='color:white'>建立人員 : </span>
+		    	<span id='takePerson' th:utext="${'&nbsp;'+creater+'&nbsp;'}" style='background-color:white;padding:3px;border-radius:3px'></span>
+		    </div>
+		    <div style='padding:3px'>
+		    	<span style='color:white'>建立時間 : </span>
+		    	<span id='takePerson' th:text="${'&nbsp;'+createTime+'&nbsp;'}" style='background-color:white;padding:3px;border-radius:3px'></span>
+		    </div>		
+		    <div style='margin-top:10px'>
+				<select id='allow_attend' class="form-control" style='width:130px;border-radius:5px'>
+					<option value=""></option>
+					<option value="0">不 先 上</option>
+					<option value="1">先 上</option>
+				</select>
+			</div>	 
+		</div>
+  
+		<div style='white-space:nowrap;width:400px;text-align:center'>
+				<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+				&nbsp;&nbsp;
+				<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>
+		</div>
+  </div>
+
+&nbsp;<p>
+
+ 
+<script type="text/javascript"> 
+    $("#btnSave").click(function() {
+		if($("#allow_attend").val()!=''){		
+          if(confirm("確定選擇此選項?")){
+			$.ajax({
+				url : "/Sales/pay_statusSave",
+				data : {
+					Register_comboSale_id : $("#Register_comboSale_id").val(),
+					Register_comboSale_grade_seq : $("#Register_comboSale_grade_seq").val(),
+					allow_attend : $("#allow_attend").val()
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+          }
+		}
+	})
+</script>

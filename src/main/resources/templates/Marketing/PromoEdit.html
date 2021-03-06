@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+<META HTTP-EQUIV="EXPIRES" CONTENT="0">
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+
+<div>&nbsp;</div>
+<div align='center'>
+<form id='form1' action="#" th:action="@{/Marketing/PromoSave}" th:object="${classPromotion}" method="post" enctype="multipart/form-data">
+	<input type="hidden" id='promoType' name='promoType' th:value='${promoType}'/>
+	<input type="hidden" id='classPromotion_id' name='classPromotion_id' th:value='${classPromotion_id}'/>
+	<input type="hidden" id='approve' name='approve'/>
+	<input type="hidden" id='DeleteUploadFile' name='DeleteUploadFile'/>
+
+  <div style='border:1px #eeeeee solid;width:700px;border-radius:5px;background-color:#ffefff;padding:5px'> 
+    <div th:text=${'&#10096;&nbsp;'+promoCategory+'&nbsp;&#10097;'} style='text-align:left;font-weight:bold;letter-spacing:3px'></div>    
+	<div class="css-table" style='padding:5px'>			
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;width:120px;font-weight:bold;letter-spacing:2px'>*內容</div>
+			<div class="td2" style='padding:5px;text-align:left'  th:if="${promoType=='lecture'}" th:utext='${LectureStr}'></div>		
+			<div class="td2" style='padding:5px;text-align:left' th:unless="${promoType=='lecture'}"><input type="text" class="form-control" th:field="*{promoName}" style='width:500px'/></div>
+		</div>
+		<div class="tr">
+			<div class="td2" style='padding:5px;text-align:right;font-weight:bold;letter-spacing:2px'>
+				<A href="#" class="tooltip-test" data-toggle="tooltip" title="<span style='padding:2px;letter-spacing:2px;background-color:#ff66b2;color:white'>&#10149; 設定 起日 / 迄日 / 展延 日期, 可決定在報名時, 是否顯示出來之優惠折扣"><img src='/images/message.png' height='7px'/></A>
+				起日
+			</div>			
+			<div class="td2" style='padding:5px;text-align:left'><input type="text"  placeholder='&#128197;' autocomplete="off" class="form-control" th:field="*{startDate}" style='border:0px;width:130px' readonly/></div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;letter-spacing:2px'>迄日</div>
+			 <div class="td2" style='padding:5px;text-align:left'><input type="text"  placeholder='&#128197;' autocomplete="off" class="form-control" th:field="*{endDate}" style='border:0px;width:130px' readonly/></div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;letter-spacing:2px'>展延至</div>
+			 <div class="td2" style='padding:5px;text-align:left'><input type="text" placeholder='&#128197;' autocomplete="off" class="form-control" th:field="*{extendDate}" style='border:0px;width:130px' readonly/></div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;letter-spacing:2px'>*啟用</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+					<select th:field="*{enabled}" style='padding:5px;border-radius:5px'>
+						<option value='1'>啟用</option>
+						<option value='0'>停用</option>						 
+				    </select>
+			 </div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;letter-spacing:2px'>*適用分校</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+				<span th:each="item: ${listSchool}" style='padding:3px'><span th:utext="${item}"></span></span>			 
+			</div>
+		</div>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;vertical-align:middle;letter-spacing:2px'>備註</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			    <textarea cols='70' rows='6'  style='font-size:x-small;border-radius:3px'  th:field="*{comment}"></textarea>   						 
+			</div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;font-weight:bold;vertical-align:middle;letter-spacing:2px'>劃位單範本</div>
+			 <div class="td2" style='padding:5px;text-align:left'>
+			 	<div class="css-table">
+			 		<div class="tr">	
+			 			<div id='uploadFile' class="td2" style='width:200px' th:utext="${fileStr}"></div>
+			 			<div class="td2" th:if="${student_seq==''}"><input type="file" id="progressbarTWInput2" name="file"></div>
+			 		</div>	
+			 	</div>					 
+			</div>
+		</div>							
+	</div>
+  </div>
+  <div style='width:700px' align='center' th:if="${student_seq==''}">
+        <div th:if="${classPromotion.approve!='0'}">
+			<button type="button" id="btnSave"class="btn btn-sm btn-primary">送審</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+		</div>
+		<div th:if="${classPromotion.approve=='0'}" sec:authorize="hasAnyRole('approve_mgr')" style='text-align:center'> 				    													    										
+			<button type="button" id='approveButton' class="btn btn-sm btn-primary">儲存修改+審核通過</button>&nbsp;&nbsp;
+			<button type="button" id='returnButton' class="btn btn-sm btn-danger">退件</button>&nbsp;&nbsp;
+		</div>		
+		
+		<!--  
+		&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="btnDelete" class="btn btn-sm btn-danger">刪除</button>
+		-->
+  </div>
+</form>
+</div>
+<div>&nbsp;</div>
+<!---------------------------業務上傳劃位單------------------------------------>
+<form id='form3' action="#" th:action="@{/Marketing/PromoFileSave}" method="post" enctype="multipart/form-data">
+	<input type="hidden" id='promoType' name='promoType' th:value='${promoType}'/>
+	<input type="hidden" id='classPromotion_id' name='classPromotion_id' th:value='${classPromotion_id}'/>
+	<input type="hidden" id='student_seq' name='student_seq' th:value='${student_seq}'/> 
+
+ 
+  <div th:if="${student_seq!=''}" align='center'>        
+		<div class="css-table"  style='width:700px;border:1px #eeeeee solid;padding:10px;background-color:papayawhip'>	
+			<div class="tr">		
+			    <div class="td2" style='width:200px;padding:5px;font-weight:bold;text-align:center'>學員劃位單上傳 <img src='/images/upload.png' height='14px'/><br><span style='font-weight:normal;font-size:x-small'>( 副檔名:jpg,gif,png,bmp... )</span>
+			    </div>	
+	            <div class="td2" style='width:200px;text-align:center'>
+	                <input type="file" accept="image/*" id="progressbarTWInput" name="file">	
+	            	<img id="preview_progressbarTW_img" style='width:50px' />
+	            </div>
+	            <div class="td2" style='width:200px;text-align:left'>
+	            	<button type="button" id="btnSave2"class="btn btn-sm btn-primary">&nbsp;儲存&nbsp;</button>	
+	            </div>		       
+	        </div>  
+	    </div>
+	    <div align='center'><div th:utext="${uploadFile}" style='margin-top:20px;width:800px'></div></div>    	 
+  </div>
+</form>  	  
+
+<form id='form2'  th:action="@{/Marketing/DeletePromo}"  th:object="${classPromotion}" method="post">
+	<input type="hidden"  name='classPromotion_id' th:value='${classPromotion_id}'/>
+	<input type="hidden"  name='promoType' th:value='${promoType}'/>
+</form>  
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script type="text/javascript">
+	$("#progressbarTWInput").change(function(){
+	  readURL(this);
+	});
+	
+	$("#progressbarTWInput2").change(function(){
+		  readURL(this);
+		});	
+
+	function readURL(input){
+	  if(input.files && input.files[0]){
+	    var reader = new FileReader();
+	    reader.onload = function (e) {
+	       $("#preview_progressbarTW_img").attr('src', e.target.result);
+	    }
+	    reader.readAsDataURL(input.files[0]);
+	  }
+	}
+
+	
+	$("#btnSave").click(function() {
+		var checkflag = 0;
+		$('input[name="school_code"]:checked').each(function() {
+			checkflag = 1;
+			}
+		); 
+		if(checkflag==0){
+			alert("***請至少選取一個分校***");
+		}else if($("#promoName").val()==''){
+			alert("***請選取內容***");
+		}else if($("#enabled").val()==''){
+			alert("***請選取狀態***");		
+		}else{
+			$("#approve").val("0");
+			$("#form1").submit();
+		}	
+	});
+	
+	$("#btnSave2").click(function() {
+			$("#form3").submit();	
+	});
+	
+	$("#approveButton").click(function() {
+		$("#approve").val("1");
+		$("#form1").submit();	
+    });
+	
+	$("#returnButton").click(function() {
+		$("#approve").val("-1");
+		$("#form1").submit();	
+    });	
+
+	$(function() {
+		$("#startDate").datepicker();
+		$("#endDate").datepicker();
+		$("#extendDate").datepicker();
+	});
+	
+ 	function openUpload() {
+ 		var feature = "width=450,height=300,left=200";
+ 	    window.open("/Marketing/openUpload?classPromotion_id="+$("#classPromotion_id").val(), "", feature);
+ 	}
+ 	
+ 	function openPromoFile(){
+ 		var feature = "width=600,height=400,left=500";
+ 	    window.open("/Marketing/openPromoFile?promoType="+$("#promoType").val()+"&classPromotion_id="+$("#classPromotion_id").val(),"",feature); 		
+ 	}
+ 	
+ 	$("#btnDelete").click(function() {
+ 		if(confirm("確定刪除此資料?")){
+ 			$("#form2").submit();
+ 		}	
+ 	}); 
+ 	
+ 	function Removefile(thisObj){
+ 		$('#uploadFile').remove();
+ 		$('#DeleteUploadFile').val("1");
+ 	}
+ 	
+</script>
+

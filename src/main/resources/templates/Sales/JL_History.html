@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+	<ul class="nav nav-tabs" id="myTabs">
+        <li style='letter-spacing:2px;font-weight:bold'><a href="/Sales/Student">&#8673;回學生列表</a></li>
+		<li style='letter-spacing:2px;font-weight:bold' class="active"><A th:href="@{/Sales/StudentProfile(student_seq=${student_seq})}"><span th:utext='${ch_name}' style='color:yellowgreen;letter-spacing:2px;font-weight:bold'></span></A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/ConsultRecord(student_seq=${student_seq})}">建置初訪</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/RegisterCombo(student_seq=${student_seq})}">報名/費用</A><li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_grade(student_seq=${student_seq})}">課程資訊</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/Book_mock(student_seq=${student_seq})}">模考/充電站</a></li>
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/SpecialCase(student_seq=${student_seq})}">特殊提報</a></li>				
+		<li style='letter-spacing:2px;font-weight:bold'><A th:href="@{/Sales/studentHistory(student_seq=${student_seq})}">學生歷程</a></li>			
+	</ul>		
+</div>
+<div class="css-table" style="border-spacing:3px">
+
+	<div class="tr">
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/StudentProfile?student_seq='+${student_seq}+'>基本資料</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/Rotation?student_seq='+${student_seq}+'>輪值</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="" th:utext="'<A href=/Sales/studentContract?student_seq='+${student_seq}+'>合約書</A>'"></div><div class="td" style="width:15px"></div>
+	    &#10074;<div class="td"  style="background-color:#eeeeee" th:utext="'<A href=/Sales/JL_History?student_seq='+${student_seq}+'>政龍資料</A>'"></div>	    
+	</div>
+</div>
+<div>&nbsp;</div>
+		  		<div><span style='font-weight:bold;letter-spacing:10px'>&#8226;報名/訂期別</span></div>
+				<div class="css-table" style='border-spacing:1px' id='myDataTalbe'>
+				    <div class="tr" style='background-color:#7ba6b6;'>
+				        <div class="td2" style='color:#ffffff;text-align:center;width:100px'>政龍代碼</div>
+				        <div class="td2" style='color:#ffffff;text-align:center;width:400px'>班別</div>
+				        <div class="td2" style='color:#ffffff;text-align:center;width:100px'>座號</div>
+				        <div class="td2" style='color:#ffffff;text-align:center;width:100px'>業務</div>
+				        <div class="td2" style='color:#ffffff;text-align:center;width:100px'>報名時間</div>
+				        <div class="td2" style='color:#ffffff;text-align:center;width:100px'>EIP對應</div>
+				    </div>
+				</div>       
+	
+				<div class="css-table"  style='background-color:white;border:1px solid #eeeeee'>
+					<div class="tr" th:each="gradeRegister:${LgradeRegister}">
+					    <div class="td2" style='padding:5px;width:100px' th:text="${gradeRegister.gradeId}"></div>
+						<div class="td2" style='padding:5px;width:400px' th:text="${gradeRegister.gradeName}"></div>
+						<div class="td2" style='padding:5px;width:100px' th:utext="${gradeRegister.sitNo}"></div>
+						<div class="td2" style='padding:5px;width:100px;text-align:center' th:text="${gradeRegister.salePerson}"></div>
+						<div class="td2" style='padding:5px;width:100px;text-align:center;font-size:x-small' th:text="${gradeRegister.registerDate}"></div>
+						<div class="td2" style='padding:5px;width:100px;text-align:center;font-weight:bold' th:utext="'<A href=\'javascript:void(0)\'  onclick=\'openGrade('+${gradeRegister.eip_grade_seq}+','+${gradeRegister.gradeId}+')\'>'+${gradeRegister.eip_grade_seq}+'</A>'"></div>
+					</div> 
+				</div> 
+						 			
+		<div>&nbsp;</div> 
+	     <!----------------------------------------->
+		    <div><span style='font-weight:bold;letter-spacing:10px'>&#8226;備註一</span></div>  
+		    <div style='overflow: auto;height:250px;border:1px #eeeeee solid;width:800px;padding:10px;border-radius:5px;background-color:white'>     
+				<div class="css-table">
+				    <div class="tr" style=''>
+				        <div class="td2" style='text-align:left' th:utext="${student.remark}">
+				        </div>
+				    </div>
+				</div>
+			</div>	
+	     <!----------------------------------------->	
+	
+		<div>&nbsp;</div>  
+				 
+		 <!----------------------------------------->
+		     <div><span style='font-weight:bold;letter-spacing:10px'>&#8226;備註二</span></div>  
+		     <div style='overflow: auto;height:250px;border:1px #eeeeee solid;width:800px;padding:10px;border-radius:5px;background-color:white'>     
+				<div class="css-table">
+				    <div class="tr" style=''>
+				        <div class="td2" style='text-align:left' th:utext="${student.remark2}">
+				        </div>
+				    </div>
+				</div>
+			 </div>
+		 <!----------------------------------------->
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>	
+<script>
+    function openGrade(grade_seq,JL_gradeId) {
+		var feature = "width=900,height=700";
+		if(grade_seq==null || grade_seq==''){grade_seq='-1';}
+	    window.open("/Course/newCourse?action=popView&grade_seq="+grade_seq+"&JL_gradeId="+JL_gradeId,"",feature);
+	}
+    
+    $("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	    
+</script>
+
+
+
+

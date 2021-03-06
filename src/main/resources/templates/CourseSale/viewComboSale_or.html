@@ -1,0 +1,224 @@
+ 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+<style type="text/css">
+.dashedline {
+	border: 1px #eeeeee solid;
+}
+</style>
+
+
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default" align='center' style='padding:2px'>
+			<div class="panel-heading" align='left'>
+				<h3 class="panel-title">檢 視 <A href="#" class="tooltip-test" data-toggle="tooltip" title="操作流程介紹, 操作流程介紹, 操作流程介紹,操作流程介紹,操作流程介紹"><img src='/images/message.png' height='13px'/></A></h3>
+			</div>
+
+			<div id="css-table" class="css-table" style="border-spacing: 3px;">
+				<div class="tr" th:switch="${comboSale.isCombo}">
+                    <th th:case="1">
+					  <div class="td dashedline" align='left' style="background-color:#ffefff;padding:15px;width:50%;text-align:center">
+						<div style='display:inline-block;font-size:x-small'>
+								<select th:field="${comboSale.category_id}" name='category_id' id='category_id'  class="form-control" style="width:110px;font-weight:bold;font-size:x-small">
+									<option value="-1" selected>~ 套裝類別 ~</option>
+									<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+								</select>																
+						</div>	
+						<div style='display:inline-block;font-size:x-small'>
+								<input type='text' th:value='${comboSale.name}' name='comboSaleName' style='width:170px' class='form-control' placeholder='套裝名稱'>					
+						</div>						        													
+					  </div>	
+				    </th>																
+				</div>
+			</div>
+			
+			<div id="css-table" class="css-table" style="border-spacing:1px;width:95%;background-color:#dddddd">			
+				<div class="tr" style='background-color:#999999;color:white;font-size:x-small' >
+					<div class="td2" style='padding:2px;width:21%'><br>科目</div>
+					<div class="td2" style='padding:2px;width:8%'>單科<br>原價</div>
+					<div class="td2" style='padding:2px;width:6%'>各科<br>實收</div>
+					<div class="td2" style='padding:2px;width:6%'>人事<br>管銷</div>
+					<div class="td2" style='padding:2px;width:14%'>
+						<br>充電站
+					</div>					
+					<div class="td2" style='padding:2px;width:14%'>
+					          其他<br>贈品 
+					</div>
+					<div class="td2" style='padding:2px;width:6%'>講義<br>印製</div>
+					<div class="td2" style='padding:2px;width:6%'>作業<br>批改</div>
+					<div class="td2" style='padding:2px;width:13%'>
+						<br>模考 
+					</div>					
+					<div class="td2" style='padding:2px;width:6%'>課程<br>收入</div>					
+				</div>
+			</div>	
+			<div id="ListComboSale"  class="css-table" style="border-spacing:1px;width:95%">		
+<!------------------------------------------------------------------------------------------->							
+ 				<div class='tr' th:each="LComboSale_subject:${LComboSale_subject}" style='font-size:x-small;height:20px;background-color:lemonchiffon' >
+		           <div class='td2' style='padding:2px;width:21%'>
+		               <span th:text='${LComboSale_subject.subject_name}'></span>		
+		               <input type='hidden' id='subject_seq' name='subject_seq' th:value='${LComboSale_subject.subject_id+"@@@@@"+LComboSale_subject.hrPrice_R+"@"+LComboSale_subject.counselingPrice_R+"@"+LComboSale_subject.lagnappePrice_R+"@"+LComboSale_subject.handoutPrice_R+"@"+LComboSale_subject.homeworkPrice_R+"@"+LComboSale_subject.mockPrice_R}'>
+		           </div>
+		           <div class='td2' style='padding:2px;width:8%'><input type='text' class='originPrice' style='width:100%;border:1px dotted #eeeeee' readonly th:value='${LComboSale_subject.subject_price}'></div>
+				   <div class='td2' style='padding:2px;width:6%'><input type='text' class='salePrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly /></div>
+		           <div class='td2' style='padding:2px;width:6%'><input type='text' class='hrPrice'   style='width:100%;border:0px;background-color:lemonchiffon' readonly /></div>		           
+		           <div class='td2' style='padding:2px;width:14%'><input type='text' class='counselingPrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly /><div class='counselingName' th:utext='${LComboSale_subject.CounselingStr}'></div></div>	
+		           <div class='td2' style='padding:2px;width:14%'><input type='text' class='lagnappePrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly /><div class='lagnappeName' th:utext='${LComboSale_subject.LagnappeStr}'></div></div>		           
+		           <div class='td2' style='padding:2px;width:6%'><input type='text' class='handoutPrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly /></div>
+		           <div class='td2' style='padding:2px;width:6%'><input type='text' class='homeworkPrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly></div>
+		           <div class='td2' style='padding:2px;width:13%'><input type='text' class='mockPrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly /><div class='mockName' th:utext='${LComboSale_subject.MockStr}'></div></div>		           
+		           <div class='td2' style='padding:2px;width:6%'><input type='text' class='coursePrice' style='width:100%;border:0px;background-color:lemonchiffon' readonly /></div>
+		        </div>           
+<!------------------------------------------------------------------------------------------->					
+			</div>	
+			<div id="" class="css-table" style="border-spacing:1px;width:95%">							
+				<div class="tr" style='background-color:white;color:darkblue;font-size:x-small' >
+					<div class="td2" style='padding:2px;width:21%'></div>
+					<div class="td2" style='padding:2px;width:8%'></div>
+					<div class="td2" style='padding:2px;width:6%'></div>
+					<div class="td2" style='padding:2px;width:6%'></div>
+					<div class="td2 counselingArea" style='padding:2px;width:14%;text-align:left;background-color:lemonchiffon;text-align:left'>
+					    <div th:each="LComboSale_counseling:${LComboSale_counseling}">
+							<input type='hidden' name='counseling_seq' th:value='${LComboSale_counseling.counseling_id}'>
+					        &bull;<span th:text='${LComboSale_counseling.counseling_name}'></span>
+					    </div>
+					</div>
+					<div class="td2 lagnappeArea" style='padding:2px;width:14%;background-color:lemonchiffon;text-align:left'>
+						<div th:each="LComboSale_lagnappe:${LComboSale_lagnappe}">	
+							<input type='hidden' name='lagnappe_seq' th:value='${LComboSale_lagnappe.lagnappe_id}'>
+					        &bull;<span th:text='${LComboSale_lagnappe.lagnappe_name}'></span>
+					    </div>    					
+					</div>
+					<div class="td2" style='padding:2px;width:6%'></div>
+					<div class="td2" style='padding:2px;width:6%'></div>
+					<div class="td2 mockArea" style='padding:2px;width:13%;background-color:lemonchiffon;text-align:left'>
+						<div th:each="LComboSale_mock:${LComboSale_mock}">	
+							<input type='hidden' name='mock_seq' th:value='${LComboSale_mock.mock_id}'>
+					        &bull;<span th:text='${LComboSale_mock.mock_name}'></span>
+					    </div>    					
+					</div>
+					<div class="td2" style='padding:2px;width:6%'></div>										
+				</div>				
+			</div>
+			<div>&nbsp;</div>
+			<div id="" class="css-table" style="border-spacing:1px;width:95%">							
+				<div class="tr" style='background-color:white;font-size:x-small;font-weight:bold' >
+					<div class="td2" style='padding:2px;width:13%'>
+					 	原價 <input type='text' th:value='${comboSale.origin_price}' name='originPriceTotal' id='originPriceTotal' style='width:60px;border:1px dotted #eeeeee;color:darkblue' readonly>&nbsp;					  
+					</div> 
+					<div class="td2" style='padding:2px;width:13%'>
+					 	折數 <input type='text'  id='discount' style='width:60px;border:1px dotted #eeeeee;color:darkblue' readonly>&nbsp;					  
+					</div> 						
+					<div class="td2" style='padding:2px;width:20%'>					 
+					 	售價 <input type='text' th:value='${comboSale.sale_price}' name='salePriceTotal' id='salePriceTotal' style='width:60px;color:darkblue'>
+					</div>				
+					<div class="td2" style='padding:2px;width:50%'></div> 									
+				</div>				
+			</div>						
+		</div>
+
+	</div>
+</div>
+
+&nbsp;<p>
+&nbsp;<p>
+
+
+
+<script>
+	
+	$("#draftSave").click(function() {
+		$("#form1").submit();
+	});
+	
+//設定原價
+function SetOriginPrice(thisObj,optionStr){
+
+	var paramArray = new Array();
+		paramArray=optionStr.split("@");
+		$(thisObj).parent().parent().find('.originPrice').val(paramArray[1]);
+		$(thisObj).parent().parent().find('.counselingName').html(paramArray[2]);
+		$(thisObj).parent().parent().find('.lagnappeName').html(paramArray[3]);
+		$(thisObj).parent().parent().find('.mockName').html(paramArray[4]);
+		
+		//總原價
+		var sum1 = 0;
+		$('.originPrice').each(			
+		   function(){ sum1 = sum1 + Number($(this).val()); }
+		)
+		$('#originPriceTotal').val(sum1);		
+}
+
+
+	
+
+//編輯初始計算
+$(document).ready(function() {
+	Comp0();
+})
+//計算
+function Comp(){
+	Comp0(); 
+	alert(" 計算完成 ");	
+}
+
+function Comp0(){
+		//總原價
+		var sum1 = 0;		
+		$('.originPrice').each(				
+		   function(){ 
+			   sum1 = sum1 + Number($(this).val()); 
+		   }
+		)
+        //折數				
+		$('#discount').val(Number(($('#salePriceTotal').val()/sum1)).toFixed(2)); 		
+		//與售價價差
+		var downPrice = sum1-$('#salePriceTotal').val();
+		var downRate = downPrice / sum1;
+		//各科實收下降
+	    var paramArray = new Array();
+		$('.salePrice').each(				
+		   function(){
+			  paramArray = $(this).parent().parent().find('#subject_seq').val().split("@");
+			  //扣除費用 
+			  var fee=0;
+			  //各科原價
+			  var curr_originPrice = $(this).parent().parent().find('.originPrice').val();
+			  //各科實收
+			  var curr_salePrice = Number(Number(curr_originPrice)*(1-downRate)).toFixed();
+			  $(this).val(curr_salePrice);
+			  //人事管銷
+			  var hrPrice_R = paramArray[5];	  
+			  $(this).parent().parent().find('.hrPrice').val(Number(curr_salePrice*hrPrice_R/100).toFixed());
+			  fee += Number(Number(curr_salePrice*hrPrice_R/100).toFixed());
+			  //充電站
+			  var counselingPrice_R = paramArray[6];
+			  $(this).parent().parent().find('.counselingPrice').val(Number(curr_salePrice*counselingPrice_R/100).toFixed());
+			  fee += Number(Number(curr_salePrice*counselingPrice_R/100).toFixed());
+			  //其他贈品
+			  var lagnappePrice_R = paramArray[7];
+			  $(this).parent().parent().find('.lagnappePrice').val(Number(curr_salePrice*lagnappePrice_R/100).toFixed());
+			  fee += Number(Number(curr_salePrice*lagnappePrice_R/100).toFixed());
+			  //講義印製
+			  var handoutPrice_R = paramArray[8];
+			  $(this).parent().parent().find('.handoutPrice').val(Number(curr_salePrice*handoutPrice_R/100).toFixed());
+			  fee += Number(Number(curr_salePrice*handoutPrice_R/100).toFixed());
+			  //作業批改
+			  var homeworkPrice_R = paramArray[9];
+			  $(this).parent().parent().find('.homeworkPrice').val(Number(curr_salePrice*homeworkPrice_R/100).toFixed());
+			  fee += Number(Number(curr_salePrice*homeworkPrice_R/100).toFixed());
+			  //模考
+			  var mockPrice_R = paramArray[10];
+			  $(this).parent().parent().find('.mockPrice').val(Number(curr_salePrice*mockPrice_R/100).toFixed());
+			  fee += Number(Number(curr_salePrice*mockPrice_R/100).toFixed());
+			  //課程收入
+			  $(this).parent().parent().find('.coursePrice').val(Number(curr_salePrice-fee));			  			 
+		   }
+		)
+}    
+	
+</script>

@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/scheduleLog">排程</a></li> 
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/loginLog">登入</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/serverLog">系統</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog'>正班上下架</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/schedule_videoOff'>Video下架</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/schedule_rollCall'>缺席行程</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog2'>科目</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog2a'>套裝</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/scheduleLog3'>費用分攤</A></div><div class="td" style="width:20px"></div>
+	</div>
+</div>  
+
+<div>&nbsp;</div>   
+  <div style='width:570px;padding:10px;border-radius:5px;margin-top:20px'>  
+	<div class="css-table" style="font-weight:bold;border:1px #dddddd solid;background-color:aliceblue">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px;width:170px'>
+				&bull; 課堂結束未到填入缺席
+			</div>
+			<div class="td2" style='padding:5px;width:240px;color:darkorange'>
+			    <img src='/images/clock.png'/ style='width:16px'> 第 55分 / 0900~2300每小時
+			</div>
+			<div class="td2" style='padding:5px;width:100px'>
+				<select id='active' class='form-control' style='width:80px;background-color:#CBFDD7' onchange='scheduleActive()'>
+					<option th:selected="${active == '0'}"  value='0'>停 用</option>
+					<option th:selected="${active == '1'}" value='1'>啟 用</option>
+				</select>
+			</div>													
+		</div>	
+	</div>	
+  </div>
+
+
+<div>&nbsp;</div>	
+				<table id="myDataTalbe" class="display" style='width:1000px'>
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>事件</th>
+							<th>分校</th>
+							<th>類別</th>
+							<th>科目</th>
+							<th>期別</th>
+							<th>更新者</th>
+							<th>更新時間</th>
+						</tr>
+					</thead>
+				</table>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"iDisplayLength": 20,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Manager/getApplicationLog?fun1=7",
+				data : function(d) {
+/* 					d.ch_name    = $("input[name=ch_name]").val();
+					d.en_name    = $("input[name=en_name]").val(); */
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{ "data" : "applicationLog_seq"}, 
+				{ "data" : "col1"}, 
+				{ "data" : "col2"}, 
+                { "data" : "col3"},
+                { "data" : "col4"},
+                { "data" : "col5"},
+                { "data" : "updater"},
+                { "data" : "update_time"}
+            ]
+
+		});
+
+		
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	
+	function scheduleActive(){
+		if(confirm("確定修改?")){
+			$.ajax({
+				url : "/System/scheduleActive",
+				data : {
+					active : $("#active").val(),
+					schedule_id : 1
+				},
+				dataType : "text",
+				success : function(data) {	
+					alert("設定完成!");
+					window.location.reload();
+				}
+			});			
+		}
+	}
+
+	$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

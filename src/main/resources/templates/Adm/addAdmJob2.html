@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<body style='background-color:#FFFAF8'>  
+  <div align='center'>
+		<div style='border-color:#dddddd;border-width:1px;width:750px;background-color:white'>
+	        <div th:text="${category}" style='background-color:#FFFAF8;font-weight:bold;font-size:medium;letter-spacing:5px'></div>
+		    <div th:utext="${jobContent}" style='background-color:#FFFAF8'></div>	 
+		</div>  
+		<div style='width:750px;text-align:center'>
+				<button type="button" id="btnSave" class="btn btn-sm btn-primary">加 入</button>
+		</div>
+  </div>
+
+
+
+ 
+<script th:inline="javascript">
+$("#btnSave").click(function(){
+	var strAry = $("#jobContent2").val().split('\n');
+	var tmp ='';
+	for(var i=0;i<strAry.length;i++){		
+		tmp += "<div style='padding:2px'><A href='javascript:void(0)' style='vertical-align:middle;padding:1px' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete2.png' height='11px'/></A><select name='worker2' style='padding:0px;display:inline-block;height:22px;width:80px;vertical-align:bottom;border:1px #dddddd solid'>"+[[${AdmEmployee}]]+"</select><input type='checkbox' disabled  style='width:18px;height:18px;display:inline-block;vertical-align:bottom;margin-left:5px;margin-right:5px'><div style='display:inline-block;vertical-align:bottom'><input type='text' name='jobContent2' value='"+strAry[i]+"' style='width:790px;border:0px'></div></div>";
+	}
+	$('#area2',window.opener.document).append(tmp);
+	window.close();
+})	
+</script>

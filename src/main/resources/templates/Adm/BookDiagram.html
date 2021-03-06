@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid"  style='letter-spacing:2px;font-weight:bold'>
+  <ul class="nav nav-tabs" id="myTabs">
+    <li class="active"><a href="/Adm/BookDiagram?slot=1">總表&座位</a></li>
+    <li><a href="/Adm/TodayBook">櫃台預約</a></li>
+    <li><a href="/Adm/todaySign">正班紀錄</a></li>
+    <li><a href="/Adm/StudentVideoSign">Video紀錄</a></li>
+    <li><a href="/Adm/MockSign">模考紀錄</a></li>    
+    <li><a href='javascript:void(0)'  onclick='openTodaySign()' style='color:darkorange;text-decoration:underline'>QRcode點名</a></li>
+  </ul>
+</div>
+<input type='hidden' id='slotSel'>
+<input type='hidden' id='functionSel'>
+<div align='center' id='myDataTalbe' style='width:1100px'>
+	  <div class="css-table" style='border:1px #eeeeee solid;margin-top:25px;padding:8px'>
+		<div class="tr">
+		    <div class="td" style='width:30px'>&nbsp;</div>	
+			<div class="td" th:if="${school_code==null}">
+				<select  id='school_code' class="form-control" style='width:120px;background-color:#C2FFB8' onchange="schoolChg()">
+					<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code_self == item.code}"/>
+				</select>
+			</div>
+			<div class="td" th:if="${school_code!=null}">
+				<select  id='school_code' class="form-control" style='width:120px;background-color:#C2FFB8' onchange="schoolChg()">
+					<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" th:selected="${school_code == item.code}"/>
+				</select>
+			</div>			
+			<div class="td" style='width:20px'>&nbsp;</div>		
+			<div class="td"><button onclick="CalendarButton('left')" type="button" class="btn btn-secondary" style='font-size:large;padding:2px;background-color:#ffeeff;border:1px #dddddd solid;color:steelblue'>&nbsp;&#10094;&nbsp;</button></div>
+	        <div class="td" style='width:300px;text-align:center;font-weight:bold;vertical-align:middle;font-size:large;letter-spacing:3px'>
+	        	<span><input type='text' id='beginYear' th:value="${beginYear}" style='width:50px;border:0px'></span>年
+	        	<span><input type='text' id='beginMonth' th:value="${beginMonth}" style='width:27px;border:0px;'></span>月
+	        	<span><input type='text' id='beginDay' th:value="${beginDay}" style='width:27px;border:0px'></span>日&nbsp;&nbsp;
+	        	<span><input type='text' id='weekName' th:value="${weekName}"  style='width:60px;border:0px'></span>
+	        </div>
+	        <div class="td"><button onclick="CalendarButton('right')" type="button" class="btn btn-secondary" style='font-size:large;padding:2px;background-color:#ffeeff;border:1px #dddddd solid;color:steelblue'>&nbsp;&#10095;&nbsp;</button></div>
+			<div class="td" style='width:30px'>&nbsp;</div>	
+			<div class="td">
+				  <div>
+				  	[&nbsp;<span id='slot1' style='border-radius:5px'><A href='javascript:void(0)' onclick='getSlot(1)' style='color:blue'>早&nbsp;班</A></span>&nbsp;]&nbsp;&nbsp;
+				  	[&nbsp;<span id='slot2' style='border-radius:5px'><A href='javascript:void(0)' onclick='getSlot(2)' style='color:blue'>中&nbsp;班</A></span>&nbsp;]&nbsp;&nbsp;
+				  	[&nbsp;<span id='slot3' style='border-radius:5px'><A href='javascript:void(0)' onclick='getSlot(3)' style='color:blue'>晚&nbsp;班</A></span>&nbsp;]
+				  </div>			
+			</div>
+			<div class="td" style='width:30px'>&nbsp;</div>			
+		</div>
+	  </div>
+	  <div>&nbsp;</div>
+	  <div id='message' align='center'></div>
+	  <div align='left'>
+		  <div class="css-table" style="border-spacing:3px">
+			<div class="tr">
+			    &#10074;<div class="td" id='div_1' style='font-weight:bold'><A href='javascript:void(0)' onclick='GetAdmCalendarJob()' style='color:steelblue'> 總 表 </A></div><div class="td" style="width:20px"></div>
+				&#10074;<div class="td" id='div_2' style='font-weight:bold'><A href='javascript:void(0)' onclick='GetSeat()' style='color:steelblue'> 座 位 </A></div><div class="td" style="width:20px"></div>
+			</div>
+		  </div>
+	  </div>
+</div>
+
+<!------------------------------總表---------------------------------->
+<div align='center' id='head_1'>
+      <div style='text-align:right;width:1140px;font-size:small;font-weight:bold;color:#888888;'>Video 預 約</div>	  
+	  <div  class="css-table" style='background-color:#D4DBD3;letter-spacing:5px;font-weight:bold;border:1px #aaaaaa solid'>
+		<div class="tr">
+		    <div class="td2" style='width:50px;border-right:1px #aaaaaa solid;padding:3px;letter-spacing:5px'>序號</div>
+		    <div class="td2" style='width:100px;border-right:1px #aaaaaa solid;letter-spacing:5px'>建立者</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>可進班</div>
+		    <div class="td2" style='width:120px;border-right:1px #aaaaaa solid;letter-spacing:5px'>座號</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>姓名</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>學號</div>		    
+		    <div class="td2" style='width:100px;border-right:1px #aaaaaa solid;letter-spacing:5px'>期別</div>
+		    <div class="td2" style='width:200px;border-right:1px #aaaaaa solid;letter-spacing:10px'>課程名稱</div>
+		    <div class="td2" style='width:50px;border-right:1px #aaaaaa solid;letter-spacing:5px'>堂數</div>
+		    <div class="td2" style='width:250px;letter-spacing:10px'>學員備註</div>
+		    <div class="td2" style='width:20px;border-right:1px #aaaaaa solid'></div>	    
+		</div>
+	  </div>
+	  <div class="css-table" id='bookDiagram1'>
+<!---------------->
+<!---------------->
+	  </div>	  
+	  <div>&nbsp;</div>
+	  <div>&nbsp;</div>
+	  <div style='text-align:right;width:1140px;font-size:small;font-weight:bold;color:#888888'>模 考 預 約</div>
+	  <div class="css-table" style='background-color:#D7F2D4;letter-spacing:5px;font-weight:bold;border:1px #aaaaaa solid'>
+		<div class="tr">
+		    <div class="td2" style='width:50px;border-right:1px #aaaaaa solid;padding:3px;letter-spacing:5px'>序號</div>
+		    <div class="td2" style='width:100px;border-right:1px #aaaaaa solid;letter-spacing:5px'>建立者</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>可進班</div>
+		    <div class="td2" style='width:120px;border-right:1px #aaaaaa solid;letter-spacing:5px'>座號</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>姓名</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>學號</div>		    
+		    <div class="td2" style='width:100px;border-right:1px #aaaaaa solid;letter-spacing:5px'>期別</div>
+		    <div class="td2" style='width:200px;border-right:1px #aaaaaa solid;letter-spacing:10px'>課程名稱</div>
+		    <div class="td2" style='width:50px;border-right:1px #aaaaaa solid;letter-spacing:5px'>堂數</div>
+		    <div class="td2" style='width:250px;letter-spacing:10px'>學員備註</div>
+		    <div class="td2" style='width:20px;border-right:1px #aaaaaa solid'></div>	    
+		</div>
+	  </div>
+	  <div class="css-table" id='bookDiagram2'>
+<!---------------->
+<!---------------->
+	  </div>	  
+	  <div>&nbsp;</div>
+	  <div>&nbsp;</div>
+	  <div style='text-align:right;width:1140px;font-size:small;font-weight:bold;color:#888888'>充 電 站 預 約</div>
+	  <div class="css-table" style='background-color:#f7ffe6;letter-spacing:5px;font-weight:bold;border:1px #aaaaaa solid'>
+		<div class="tr">
+		    <div class="td2" style='width:50px;border-right:1px #aaaaaa solid;padding:3px;letter-spacing:5px'>序號</div>
+		    <div class="td2" style='width:100px;border-right:1px #aaaaaa solid;letter-spacing:5px'>建立者</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>可進班</div>
+		    <div class="td2" style='width:120px;border-right:1px #aaaaaa solid;letter-spacing:5px'>座號</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>姓名</div>
+		    <div class="td2" style='width:80px;border-right:1px #aaaaaa solid;letter-spacing:5px'>學號</div>		    
+		    <div class="td2" style='width:100px;border-right:1px #aaaaaa solid;letter-spacing:5px'>期別</div>
+		    <div class="td2" style='width:200px;border-right:1px #aaaaaa solid;letter-spacing:10px'>課程名稱</div>
+		    <div class="td2" style='width:50px;border-right:1px #aaaaaa solid;letter-spacing:5px'>堂數</div>
+		    <div class="td2" style='width:250px;letter-spacing:10px'>學員備註</div>
+		    <div class="td2" style='width:20px;border-right:1px #aaaaaa solid'></div>	    
+		</div>
+	  </div>
+	  <div class="css-table" id='bookDiagram3'>
+<!---------------->
+<!---------------->
+	  </div>	  	  	  	    	  
+</div>
+<!---------------------------------座位------------------------------->
+<div align='center' id='head_2'>
+	  <div id='classRoomWithSeat' align='left'>
+<!---------------->
+<!---------------->
+	  </div>
+	  <div id='SeatList' align='left'>
+<!---------------->
+<!---------------->
+	  </div>	  
+</div>	
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<script type="text/javascript">	
+$(document).ready(
+		function(){
+			$("#functionSel").val("1");
+			getSlot(1);
+		}	
+)
+
+function schoolChg(){
+	if($("#functionSel").val()=='2'){
+		GetSeat();
+	}else{
+		GetAdmCalendarJob();
+	}		
+}
+
+//總表
+function GetAdmCalendarJob() {
+	$("#head_1").show();
+	$("#head_2").hide();	
+	 $("#div_1").css('background','#eeeeee');
+	 $("#div_2").css('background','#ffffff');
+	 $("#functionSel").val("1");
+	 
+	 $(document).ajaxStart(function(){
+		$('#message').html("<img src='/images/wait.gif' style='width:25px'/> 讀 取 中 ...");
+	 });
+	
+	 $(document).ajaxStop(function(){
+		$('#message').text("");
+	 });	
+	
+	 $.ajax({
+		url : "/Adm/GetBookDiagram",
+		data : {
+			beginYear   : $("#beginYear").val(),
+			beginMonth  : $("#beginMonth").val(),
+			beginDay    : $("#beginDay").val(),
+			school_code : $("#school_code").val(),
+			slot        : $("#slotSel").val()
+		},
+		dataType : "text",
+		success : function(data) {
+			dataArray = data.split("@");
+			$("#bookDiagram1").html(dataArray[0]);
+			$("#bookDiagram2").html(dataArray[1]);
+			$("#bookDiagram3").html(dataArray[2]);
+		}
+	 });
+}
+
+function CalendarButton(direction){
+	if(direction=='left'){
+		var NowDay = $("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val();
+		getDate(NowDay,'-1');
+	}else if(direction=='right'){
+		var NowDay = $("#beginYear").val()+$("#beginMonth").val()+$("#beginDay").val();
+		getDate(NowDay,'1');			
+	}
+}
+
+function getDate(NowDay,DayAdd) {
+	 $.ajax({
+		url : "/Adm/getDate",
+		data : {
+			NowDay : NowDay,
+			DayAdd : DayAdd				
+		},
+		dataType : "text",
+		success : function(data) {
+			$("#beginYear").val(data.substring(0,4));
+			$("#beginMonth").val(data.substring(4,6));
+			$("#beginDay").val(data.substring(6,8));
+			$("#weekName").val(data.substring(8,11));
+			
+			if($("#functionSel").val()=='2'){
+				GetSeat();
+			}else{
+				GetAdmCalendarJob();
+			}	
+		}
+	 });
+}
+
+function getSlot(slot){
+	if(slot==1){
+		$("#slotSel").val("1");
+		$("#slot1").css('background','#C2FFB8');
+		$("#slot2").css('background','#ffffff');
+		$("#slot3").css('background','#ffffff');
+	}else if(slot==2){
+		$("#slotSel").val("2");
+		$("#slot1").css('background','#ffffff');
+		$("#slot2").css('background','#C2FFB8');
+		$("#slot3").css('background','#ffffff');
+	}else if(slot==3){
+		$("#slotSel").val("3");
+		$("#slot1").css('background','#ffffff');
+		$("#slot2").css('background','#ffffff');
+		$("#slot3").css('background','#C2FFB8');
+	}
+	
+	if($("#functionSel").val()=='2'){
+		GetSeat();
+	}else{
+		GetAdmCalendarJob();
+	}	
+}
+
+function openTodaySign() {
+	var feature = "width=4000,height=4000";
+    window.open("/Adm/openTodaySign", "", feature);
+}
+
+
+//座位
+function GetSeat() {
+	$("#div_1").css('background','#ffffff');
+	$("#div_2").css('background','#eeeeee');
+	$("#functionSel").val("2");
+	$("#head_1").hide();
+	$("#head_2").show();
+	
+	 $.ajax({
+			url : "/Adm/getClassRoomName",
+			data : {
+				beginYear   : $("#beginYear").val(),
+				beginMonth  : $("#beginMonth").val(),
+				beginDay    : $("#beginDay").val(),
+				school_code : $("#school_code").val(),
+				slot        : $("#slotSel").val()
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#classRoomWithSeat").html(data);
+				getSeatNo($("#classRoomName").val());
+			}
+	  });	
+}
+
+function getSeatNo(classRoomName){
+	 $("#classRoomName").val(classRoomName);
+	 $('.classRoomSel').each(
+		function(){
+			$(this).css('background','#ffffff');
+		}	
+	 )			 
+	 $("#"+classRoomName).css('background','#C2FFB8');
+	 
+	 $.ajax({ 
+			url : "/Adm/getSeatNo",
+			data : {
+				beginYear     : $("#beginYear").val(),
+				beginMonth    : $("#beginMonth").val(),
+				beginDay      : $("#beginDay").val(),
+				school_code   : $("#school_code").val(),
+				slot          : $("#slotSel").val(),
+				classRoomName : $("#classRoomName").val()
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#SeatList").html(data);
+			}
+	 });	
+}
+
+function openStudent(student_seq){
+	var feature = "width=1300,height=500";
+    window.open("/Sales/StudentProfile?pop=1&student_seq="+student_seq, "", feature);	
+}
+
+
+function seatEmpty(school_code,setDate,slot,classroom,seat,student_no,student_name){
+	if(confirm("確定[ "+student_name+" ]已離開??")){
+		$.ajax({
+			url : "/Adm/seatOccupy",
+			data : {
+				school_code : school_code,
+				setDate     : setDate,
+				slot        : slot,
+				classroom   : classroom,
+				seat        : seat,
+				student_no  : student_no
+			},
+			dataType : "text",
+			success : function(data) {
+				alert("變更完畢!");
+				getSeatNo($("#classRoomName").val());
+			}
+		});
+	}	
+}
+
+function studentSeat1(signRecordHistory_seq,student_no,setDate,slot,school_code,classroom,seat){
+	    if(classroom=='' || seat==''){
+	    	alert("學員須點完名後, 已設定教室座位, 此處才可進行更改!")
+	    }else{
+			var feature = "width=300,height=200";
+ 	    	window.open("/Adm/studentSeat?signRecordHistory_seq="+signRecordHistory_seq+"&student_no="+student_no+"&setDate="+setDate+"&slot="+slot+"&school_code="+school_code,"",feature);
+	    }
+}
+
+function studentSeat2(mockVideoHistory_seq,student_no,setDate,slot,school_code,classroom,seat){
+	    if(classroom=='' || seat==''){
+	    	alert("學員須點完名後, 已設定教室座位, 此處才可進行更改!")
+	    }else{
+			var feature = "width=300,height=200";
+		    window.open("/Adm/studentSeat?mockVideoHistory_seq="+mockVideoHistory_seq+"&student_no="+student_no+"&setDate="+setDate+"&slot="+slot+"&school_code="+school_code,"",feature);    
+	    }    
+}
+
+function studentSeat3(mockBaseBook_seq,student_no,setDate,slot,school_code,classroom,seat){
+    if(classroom=='' || seat==''){
+    	alert("學員須點完名後, 已設定教室座位, 此處才可進行更改!")
+    }else{	
+		var feature = "width=300,height=200";
+	    window.open("/Adm/studentSeat?mockBaseBook_seq="+mockBaseBook_seq+"&student_no="+student_no+"&setDate="+setDate+"&slot="+slot+"&school_code="+school_code,"",feature);
+    }    
+}
+
+function studentSeat4(counselingBaseBook_seq,student_no,setDate,slot,school_code,classroom,seat){
+    if(classroom=='' || seat==''){
+    	alert("學員須點完名後, 已設定教室座位, 此處才可進行更改!")
+    }else{	
+		var feature = "width=300,height=200";
+	    window.open("/Adm/studentSeat?counselingBaseBook_seq="+counselingBaseBook_seq+"&student_no="+student_no+"&setDate="+setDate+"&slot="+slot+"&school_code="+school_code,"",feature);
+    }    
+}
+
+function studentRemark(signRecordHistory_seq,mockVideoHistory_seq,mockBaseBook_seq,counselingBaseBook_seq){
+	var feature = "width=300,height=200";
+    window.open("/Adm/studentRemark?counselingBaseBook_seq="+counselingBaseBook_seq+"&signRecordHistory_seq="+signRecordHistory_seq+"&mockVideoHistory_seq="+mockVideoHistory_seq+"&mockBaseBook_seq="+mockBaseBook_seq,"",feature);  	
+}
+
+$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());
+</script>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+		
+ 					<input type='hidden' id='category_id' th:value='${category_id}'>
+ 					<input type='hidden' id='returnAreaId' th:value='${returnAreaId}'>
+                                &nbsp;<p>
+								<div id="css-table" class="css-table" style="margin: 0px auto;">
+									<div class="tr">
+										<div class="td" >
+											<select id='material_seq' style="font-size:small" class="form-control" onchange="subjectData(this.value)">
+												<option value="-1" selected> ~ 外版書 ~ </option>
+												<option th:each="item : ${LMaterial}"
+													th:value="${item.material_seq}" th:utext="${item.material_name}+'$'+${item.sale_price}" />
+											</select>
+										</div>
+									</div>
+                                    &nbsp;<p> 
+									<div class="tr">
+										<div class="td" align='center'>
+											<button type="button" class="btn-xs btn-warning" onclick="refreshParent();">加入</button>
+										</div>
+									</div>
+								</div>
+
+
+
+
+<script>
+
+function subjectData(category_id) {
+	if (category_id) {
+//課程			
+		$.ajax({
+			url : "/Course/SubjectSearch",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#subjectSelect").html(data);
+			}
+		});
+	}
+}
+
+function refreshParent() {
+  
+				var returnAreaId = window.opener.document.getElementsByClassName($("#returnAreaId").val());
+				$(returnAreaId).append(
+					"<div class='materialItem'>&bull;"+$('#material_seq :selected').text()+"</div>"
+				);
+				window.opener.Comp_material();			
+				window.close(); 
+}
+</script>
+
+
+

@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:include="/common/top_header"></head>
+<div class="container-fluid" style='letter-spacing:2px;font-weight:bold'>
+	<ul class="nav nav-tabs" id="myTabs">
+		<li class=""><a href="/Adm/Email">E-mail</a></li>
+		<li class="active"><a href="/Adm/SMS">簡訊</a></li>
+	</ul>
+</div>
+&nbsp;<p>
+
+      <div style='background-color:#ffeeff;width:500px;padding:2px;margin-left:20px'>
+	     <div style='padding-left:20px;font-size:small;letter-spacing:2px;color:#004c99'>
+		       ✽ 輸入以下搜尋條件, 搜尋出欲發送簡訊的學生列表, 再點選[發送簡訊], 即可進入發送畫面!<br>  
+	     </div>
+      </div>
+<form>
+  <div style='border:1px #eeeeee solid;padding:10px;border-radius:5px;margin-top:20px;width:800px'>
+    
+	<div class="css-table">			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:3px'>
+					中文名<br>
+					<input type="text" class="form-control" id="ch_name" style='width:100px'/>
+			</div>
+			<div class="td2" style='padding:3px'>
+					英文名<br>
+					<input type="text" class="form-control" id="en_name" style='width:100px' />				
+			</div>		
+			<div class="td2" style='padding:3px'>
+					學號<br>
+					<input type="text" class="form-control" id="student_no" value='' style='width:100px'/>																
+			</div>
+			<div class="td2" style='padding:3px'>
+					手機<br>
+					<input type="text" class="form-control" id="mobile" style='width:100px'/>				
+			</div>
+			<div class="td2" style='padding:3px'>
+					Email<br>
+					<input type="text" class="form-control" id="email" style='width:200px'/>																
+			</div>						
+		</div>
+	</div>
+	<div class="css-table" style='margin-top:3px'>			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+					分校<br> 
+					<select id="school" class="form-control" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>				
+			</div>
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					類別 &nbsp;&nbsp;&raquo;<br> 
+					<select id="category" class="form-control" onchange="subjectData(this.value)">
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>							
+			</div>
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					科目 &nbsp;&nbsp;&raquo;<br> 
+					<select id="subject" class="form-control" style='width:120px' onchange="gradeData(this.value)">
+						<option></option>
+					</select>						
+			</div>							
+			<div class="td2" style='padding:5px;background-color:#ffeeff'>
+					上架期別<br>
+					<select id="grade" class="form-control" style='width:150px'>
+						<option></option>
+					</select>				
+			</div>			
+		</div>
+	</div>	
+	
+ </div>
+
+ <div style='width:700px' align='center'>
+		<button type="button" id="btnQuery" class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp; 
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-success" onclick='openSMSList()'>發送簡訊</button>&nbsp;&nbsp;
+		<A href='' style='text-decoration:underline'>發送紀錄</A>
+ </div>
+</form> 
+
+&nbsp;<p>
+&nbsp;<p>
+		<!--DataTables的表格-->
+	    <div style='text-align:left;width:1000px'>		
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+					<th>學號</th>
+					<th>姓名</th>
+					<th>手機</th>
+					<th>目前單位</th>
+					<th>建立</th>							
+					<th>細節</th>
+				</tr>
+			</thead>
+		</table>
+		</div>	
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>
+<script type="text/javascript">
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			//serverSide : true,
+			"order": [0,"asc"],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Sales/getStudent?remark_limit=200",
+				data : function(d) {
+					d.ch_name        = $("#ch_name").val();
+					d.en_name        = $("#en_name").val();
+					d.student_no 	 = $("#student_no").val();
+					d.mobile         = $("#mobile").val();
+					d.email          = $("#email").val();
+					d.school         = $("#school").val();
+					d.category       = $("#category").val();
+					d.subject        = $("#subject").val();
+					d.grade          = $("#grade").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [ 
+				{"data" : "student_no"}, 
+				{"data" : "ch_name",
+					"render" : function(data, type, row, meta) {
+						return data+"<br>"+row.sex;
+					}	
+				},					
+				{"data" : "mobile_1"}, 
+				{"data" : "category"},
+				{"data" : "create_time"},
+				{data: "student_seq","className" : "text-center",
+					"render" : function(data, type, full, meta) {
+						return "<A href='/Sales/StudentProfile?student_seq="+data+"' style='font-size:large'>&hellip;</A>";
+				    }
+				}
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			//按下表單的查詢按鈕後才發出Ajax載入資料 
+			table.ajax.reload();
+		});
+	});
+	
+	function subjectData(category_id) {
+		if (category_id) {
+			$.ajax({
+				url : "/Course/SubjectSearch",
+				data : {
+					category_id : category_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#subject").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+	function gradeData(subject_id) {
+		if (subject_id) {
+			$.ajax({
+				url : "/Course/GradeSearch",
+				data : {
+					subject_id : subject_id
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#grade").html(data);
+				}
+			});
+		} else {
+			$("#subject").html("<option></option>");
+		}
+	}
+	
+ 	function openSMSList() {
+ 		var feature = "width=700,height=500";
+ 		var param = "ch_name="+$("#ch_name").val()+"&en_name="+$("#en_name").val()+
+ 		"&student_no="+$("#student_no").val()+"&mobile="+$("#mobile").val()+"&email="+$("#email").val()+"&school="+$("#school").val()+"&category="+$("#category").val()+"&subject="+$("#subject").val()+"&grade="+$("#grade").val();
+ 	    window.open("/Adm/openSMSList?"+param,"", feature);
+ 	}	
+</script>
+
+

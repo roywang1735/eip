@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+&nbsp;<p>
+ 
+<form id='form1' action="#" th:action="@{/Other/bookSellEditSave}"  method="post">
+  <input type='hidden' name='cat1' value='1'>
+  <div style='border:1px #eeeeee solid;width:600px;border-radius:5px;background-color:lemonchiffon;padding:10px'>     
+	<div class="css-table" style='padding:5px'>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;width:100px;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			                 學員
+			 </div>
+			 <div class="td2" style='padding:5px;width:700px'>			 	
+			 	     <input type="radio" class='isStudent' name='isStudent' value='y'>是 
+			 	     <span id='studentNoArea'>
+			 	     	<input type='text' id='studentNo' name='studentNo' style='padding:2px;border-radius:3px;width:130px;border:1px #eeeeee solid;' placeholder='請輸入學號'>
+			 	     	<button type="button" id="btnVerify" class="btn-xs btn-danger">驗 證</button>
+			 	     </span>	
+			 	     &nbsp;&nbsp;&nbsp;<input type="radio" class='isStudent' name='isStudent' value='n'>否
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			        *姓名
+			 </div>
+			 <div class="td2" style='padding:5px'>			 	
+			 	     <input type="text" id='studentName' name='studentName' style='height:30px;border-radius:5px;border:1px #eeeeee solid;width:150px'>     
+			 </div>
+		</div>
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			                 類別
+			 </div>
+			 <div class="td2" style='padding:5px'>			 	
+					<select id="category_id" class="form-control" onchange="subjectData(this.value)" style='width:100px'>
+						<option></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>    
+			 </div>
+		</div>	
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;width:100px;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			        *名稱
+			 </div>
+			 <div class="td2" style='padding:5px'>			 	
+			 	    <select id="sell_id" name="sell_id" class="form-control"  style='width:300px'>
+			 	    </select> 
+			 </div>
+		</div>							
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			        *數量      
+			 </div>
+			 <div class="td2" style='padding:5px'>			 	
+			 	  <select name='amount' class="form-control" style='width:70px'>
+			 	  	<option value='1'>1</option>
+			 	  	<option value='2'>2</option>
+			 	  	<option value='3'>3</option>
+			 	  	<option value='4'>4</option>
+			 	  	<option value='5'>5</option>
+			 	  	<option value='6'>6</option>
+			 	  	<option value='7'>7</option>
+			 	  	<option value='8'>8</option>
+			 	  	<option value='9'>9</option>
+			 	  	<option value='10'>10</option>		 	  	
+			 	  </select>   
+			 </div>
+		</div>		
+		<div class="tr">	
+			 <div class="td2" style='padding:5px;text-align:right;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			        *付款
+			 </div>
+			 <div class="td2" style='padding:5px'>			 	
+			 	     <input type="text" id='sellPrice' name='sellPrice' style='height:30px;border-radius:5px;border:1px #eeeeee solid;width:120px'>     
+			 </div>
+		</div>	
+		<div class="tr">	
+			 <div class="td2" style=';vertical-align:middle;padding:5px;text-align:right;background-color:khaki;font-weight:bold;border-bottom:1px white solid'>
+			            備註    
+			 </div>
+			 <div class="td2" style='padding:3px;vertical-align:bottom'>			 	
+			 	     <textarea  name='comment'  cols="60" rows="4" style='font-size:x-small;border-radius:5px'></textarea>						  				  
+			 </div>
+		</div>								
+									           			
+	</div>
+  </div>
+
+  <div style='width:600px' align='center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲 存</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info" onclick="reset()" style='background-color:#bbbbbb'>重設</button>
+  </div>
+    
+</form>  		
+
+&nbsp;<p>
+&nbsp;<p>
+&nbsp;<p>											
+<script>
+$(document).ready(function() {
+	$("#studentNoArea").hide();
+})
+
+
+function subjectData(category_id) {
+	if (category_id) {
+		$.ajax({
+			url : "/Other/getBooksOption",
+			data : {
+				category_id : category_id
+			},
+			dataType : "text",
+			success : function(data) {
+				$("#sell_id").html(data);
+			}
+		});
+	} else {
+		$("#virtualSubject_id").html("<option></option>");
+	}
+}
+
+$(".isStudent").click(function(){
+	var checkVal = $("input[name='isStudent']:checked").val();
+	if(checkVal=='y'){
+		$("#studentNoArea").show();
+		$("#studentName").prop("disabled", true);
+		$("#studentName").val("");
+	}else{
+		$("#studentNoArea").hide();
+		$("#studentName").prop("disabled",false);
+		$("#studentName").val("");
+	}
+
+})
+
+
+$("#btnVerify").click(function(){
+			$.ajax({
+				url : "/Other/getStudentName",
+				data : {
+					student_no : $("#studentNo").val()
+				},
+				dataType : "text",
+				success : function(data) {
+					$("#studentName").val(data);
+				}
+			});
+})
+
+$("#btnSave").click(function() {
+	if($("#studentName").val()=='' || $("#studentName").val()=='無此學員'){
+		alert("***請輸入姓名***");
+	}else if($("#sell_id").val()==''){
+		alert("***請輸入名稱***");
+	}else if($("#sellPrice").val()==''){
+		alert("***請輸入付款***");	
+	}else{
+		$("#studentName").removeAttr('disabled');
+		$("#form1").submit();
+	}	
+});
+</script>
+

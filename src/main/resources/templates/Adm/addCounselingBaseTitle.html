@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<form id='form1' th:action="@{/Adm/counselingBaseTitleSave}" th:object="${counselingBaseTitle}" method="post">
+  <input type="hidden" name='counselingBaseTitle_seq' th:value = "${counselingBaseTitle_seq}">
+  <div align='center' style=''>
+	<div class="css-table" style='border:1px #dddddd solid;font-weight:bold'>
+		<div class="tr">
+		    <div class="td2" style='padding:15px;width:100px;border-bottom:1px #dddddd solid;background-color:#ccffcc'>*分 校</div>
+		    <div class="td2" style='width:575px;border-bottom:1px #eeeeee solid'>
+					<select th:field="*{school_code}"  style='height:30px;border-radius:5px;width:120px;background-color:#F3F4FF'>
+						<option th:each="item : ${schoolGroup}" th:value="${item.code}" th:utext="${item.name}" />
+					</select>
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td2" style='padding:15px;border-bottom:1px #dddddd solid;background-color:#ccffcc'>*類 別</div>
+		    <div class="td2" style='border-bottom:1px #dddddd solid'>
+					<select th:field="*{category_id}"  style='height:30px;border-radius:5px;width:150px;background-color:#F3F4FF' onchange='getPanel()'>
+					    <option value=''></option>
+						<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" />
+					</select>
+		    </div>
+		</div>
+
+		<div class="tr">
+		    <div class="td2" style='padding:10px;border-bottom:1px #dddddd solid;background-color:#ccffcc'>平日</div>
+		    <div class="td2" style='border-bottom:1px #dddddd solid'>
+		    	<div class="css-table">
+		    	    <div class="tr">
+		        		<div class="td2" style='padding:10px;width:190px;text-align:center;border-right:1px #eeeeee solid'>早<input type='text' th:field="*{slot_1_from}" style='width:60px;height:30px;border:1px #aaaaaa solid' placeholder='ex.0900'>~<input type='text' th:field="*{slot_1_to}" style='width:60px;height:30px;border:1px #aaaaaa solid' placeholder='ex.1200'></div>
+		        		<div class="td2" style='width:190px;text-align:center;border-right:1px #eeeeee solid'>午<input type='text' th:field="*{slot_2_from}" style='width:60px;height:30px;border:1px #aaaaaa solid'>~<input type='text' th:field="*{slot_2_to}" style='width:60px;height:30px;border:1px #aaaaaa solid'></div>
+		        		<div class="td2" style='width:190px;text-align:center;border-right:1px #eeeeee solid'>晚<input type='text' th:field="*{slot_3_from}" style='width:60px;height:30px;border:1px #aaaaaa solid'>~<input type='text' th:field="*{slot_3_to}" style='width:60px;height:30px;border:1px #aaaaaa solid'></div>
+		        	</div>			        		
+		        </div>	
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td2" style='padding:10px;border-bottom:1px #dddddd solid;background-color:#ccffcc'>假日</div>
+		    <div class="td2" style='border-bottom:1px #dddddd solid'>
+		    	<div class="css-table">
+		    	    <div class="tr">
+		        		<div class="td2" style='padding:10px;width:190px;text-align:center;border-right:1px #eeeeee solid'>早<input type='text' th:field="*{slot_1_from2}" style='width:60px;height:30px;border:1px #aaaaaa solid'>~<input type='text' th:field="*{slot_1_to2}" style='width:60px;height:30px;border:1px #aaaaaa solid'></div>
+		        		<div class="td2" style='width:190px;text-align:center;border-right:1px #eeeeee solid'>午<input type='text' th:field="*{slot_2_from2}" style='width:60px;height:30px;border:1px #aaaaaa solid'>~<input type='text' th:field="*{slot_2_to2}" style='width:60px;height:30px;border:1px #aaaaaa solid'></div>
+		        		<div class="td2" style='width:190px;text-align:center;border-right:1px #eeeeee solid'>晚<input type='text' th:field="*{slot_3_from2}" style='width:60px;height:30px;border:1px #aaaaaa solid'>~<input type='text' th:field="*{slot_3_to2}" style='width:60px;height:30px;border:1px #aaaaaa solid'></div>
+		        	</div>				        		
+		        </div>	
+		    </div>
+		</div>
+		<div class="tr">
+		    <div class="td2" style='padding:10px;border-bottom:1px #dddddd solid;background-color:#e6ffe6'><div>時段/老師</div><div>&nbsp;</div><div>人數限制</div></div>
+		    <div class="td2" style='border-bottom:1px #dddddd solid'>
+		    	<div class="css-table">
+		    	    <div class="tr">
+		        		<div class="td2" style='width:190px;border-right:1px #dddddd solid;height:50px' align='right'>
+		        		    <div style='text-align:center;font-size:xx-small;padding:5px'>
+		        		        早
+							<select name='teacher_id1' style='width:120px;border:1px #aaaaaa solid;height:20px;background-color:#99ebff'>
+							    <option value=''></option>
+								<option th:each="item : ${LTeacher}" th:value="${item.teacher_seq}" th:utext="${item.name}+'('+${item.code}+')'" th:selected="${item.teacher_seq==teacher_id1}"/>		
+							</select>		        		        
+		        		    </div>		        		
+		        		    <div th:utext=${limitList1} style='text-align:left'></div>		        			
+		        			<div id='limitList1' style='text-align:left'></div>
+		        			<div style='text-align:center;font-weight:normal;font-size:small'><A href='javascript:void(0)' onclick=editLimit(1) style='color:blue;text-decoration:underline'>add</A></div>
+		        		</div>
+		        		<div class="td2" style='width:190px;border-right:1px #dddddd solid;height:50px' align='right'>
+		        		    <div style='text-align:center;font-size:xx-small;padding:5px'>
+		        		        午
+							<select name='teacher_id2' style='width:120px;border:1px #aaaaaa solid;height:20px;background-color:#99ebff'>
+							    <option value=''></option>
+								<option th:each="item : ${LTeacher}" th:value="${item.teacher_seq}" th:utext="${item.name}+'('+${item.code}+')'" th:selected="${item.teacher_seq==teacher_id2}"/>		
+							</select>		        		        
+		        		    </div>		        		
+		        		    <div th:utext=${limitList2} style='text-align:left'></div>		        			
+		        			<div id='limitList2' style='text-align:left'></div>
+		        			<div style='text-align:center;font-weight:normal;font-size:small'><A href='javascript:void(0)' onclick=editLimit(2) style='color:blue;text-decoration:underline'>add</A></div>		        		
+		        		</div>
+		        		<div class="td2" style='width:190px;border-right:1px #dddddd solid;height:50px' align='right'>
+		        		    <div style='text-align:center;font-size:xx-small;padding:5px'>
+		        		        晚
+							<select name='teacher_id3' style='width:120px;border:1px #aaaaaa solid;height:20px;background-color:#99ebff'>
+							    <option value=''></option>
+								<option th:each="item : ${LTeacher}" th:value="${item.teacher_seq}" th:utext="${item.name}+'('+${item.code}+')'" th:selected="${item.teacher_seq==teacher_id3}"/>		
+							</select>		        		        
+		        		    </div>		        		
+		        		    <div th:utext=${limitList3} style='text-align:left'></div>		        			
+		        			<div id='limitList3' style='text-align:left'></div>
+		        			<div style='text-align:center;font-weight:normal;font-size:small'><A href='javascript:void(0)' onclick=editLimit(3) style='color:blue;text-decoration:underline'>add</A></div>		        		
+		        		</div>
+		        	</div>				        		
+		        </div>	
+		    </div>
+		</div>																		    
+	</div>
+	<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+  </div>
+</form>  
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script>
+$("#btnSave").click(function() {
+	if($("#category_id").val()==''){
+		alert("*** 請選取[類別] ***");		
+	}else{
+		$("#form1").submit();
+	}	
+});
+
+
+function editLimit(x){
+	if(x==1){
+		$('#limitList1').append("<div style='font-weight:normal;margin-top:3px;font-size:small;letter-spacing:0px'><A href='javascript:void(0)' style='vertical-align:middle;padding:1px' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete2.png' height='11px'/></A><input type='text' style='height:21px;width:50px' name='from1'>~<input type='text' style='height:21px;width:50px' name='to1'>&nbsp;:&nbsp;<input type='text' style='height:21px;width:30px' name='limit1'>人</div>");
+	}else if(x==2){
+		$('#limitList2').append("<div style='font-weight:normal;margin-top:3px;font-size:small;letter-spacing:0px'><A href='javascript:void(0)' style='vertical-align:middle;padding:1px' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete2.png' height='11px'/></A><input type='text' style='height:21px;width:50px' name='from2'>~<input type='text' style='height:21px;width:50px' name='to2'>&nbsp;:&nbsp;<input type='text' style='height:21px;width:30px' name='limit2'>人</div>");
+	}else if(x==3){
+		$('#limitList3').append("<div style='font-weight:normal;margin-top:3px;font-size:small;letter-spacing:0px'><A href='javascript:void(0)' style='vertical-align:middle;padding:1px' title='刪除此筆'  onclick='$(this).parent().remove();'><img src='/images/delete2.png' height='11px'/></A><input type='text' style='height:21px;width:50px' name='from3'>~<input type='text' style='height:21px;width:50px' name='to3'>&nbsp;:&nbsp;<input type='text' style='height:21px;width:30px' name='limit3'>人</div>");
+	}	
+};
+
+</script>
+
+
+

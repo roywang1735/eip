@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+
+
+<div>&nbsp;</div>
+      <div style='border-spacing:1px' align='center'>
+		  <div class='css-table' style='border-spacing:1pxpx'>
+			<div class='tr' style='background-color:#7ba6b6;color:white;font-size:small;font-weight:bold'>
+				<div class='td2' style='width:75px;text-align:center;border-radius:2px'>日期</div>
+				<div class='td2' style='width:80px;padding:0px;text-align:center;border-radius:2px;vertical-align:bottom'>訂單編號</div>
+				<div class='td2' style='width:80px;text-align:center;border-radius:2px;vertical-align:bottom'>類型</div>
+				<div class='td2' style='width:110px;text-align:center;border-radius:2px'>科目</div>		
+				<div class='td2' style='width:180px;text-align:center;border-radius:2px'>班名</div>	
+				<div class='td2' style='width:100px;text-align:center;border-radius:2px'>繳退費</div>
+				<div class='td2' style='width:100px;text-align:center;border-radius:2px'>應繳</div>
+			</div>
+		  </div>
+		  <div class='css-table'  style='border-spacing:1px' th:utext="${returnStr}"></div>	  
+	</div>	

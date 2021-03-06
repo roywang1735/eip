@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<form id='form1' action="#" th:action="@{/Sales/interestSubjectSave}" method="post">
+	
+<input type='hidden' name='Register_comboSale_id' th:value='${Register_comboSale_seq}'> 
+<div th:if="${viewSide=='left'}">
+  <div style='letter-spacing:10px;font-weight:bold'>&nbsp;&#10149;感興趣</div>
+  <div style='background-color:#FFFFE0;width:500px;padding:2px;margin-left:20px'>
+	 <div style='padding-left:20px;font-size:small;letter-spacing:2px;color:#004c99'>
+		&#10045; 感興趣科目可多選, 此課程即將開課時提醒學員,並可提供未來課程開立之參考
+	 </div>
+  </div>
+</div> 
+<div th:if="${viewSide=='right'}"> 
+  <div style='text-align:left;letter-spacing:10px;font-weight:bold'>&nbsp;&#10074;待選科目</div>
+  <div>&nbsp;</div>
+</div>  
+ 					
+	<div class="css-table" style="border-spacing:1px;background-color:white;margin-left:20px;padding:2px">
+		<div class="tr" style='background-color:#3e7e99;font-size:small;font-weight:bold;color:white'>
+			<div th:if="${viewSide=='left'}" class="td2" style='width:110px;padding:2px;text-align:center;border-radius:2px'><span style='font-size:1px'>&#10084;</span> 感 興 趣</div>
+			<div class="td2" style='width:120px;padding:2px;text-align:center;border-radius:2px'>類 別</div>
+			<div class="td2" style='width:220px;text-align:center;border-radius:2px'>科 目</div>
+			<div class="td2" style='width:100px;text-align:center;border-radius:2px'>原 價</div>
+			<div th:if="${viewSide=='right'}" class="td2" style='width:100px;text-align:center;border-radius:2px'>科 目</div>			
+		</div>		
+	</div>
+	<div class="css-table" th:utext='${radioStr}' style="border-spacing:1px;margin-left:20px"></div>
+    <div th:if="${viewSide=='left'}" style='margin-top:20px' align='center'>
+		  <button type="button" id="btnSave"class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設" />
+    </div>
+</form>
+
+&nbsp;<p>
+&nbsp;<p>
+<script>
+
+	$("#btnSave").click(
+		function() {			
+			$("#form1").submit(); 
+		}	
+	)
+
+ 	function SaveSubjectSelect(Register_comboSale_seq,Register_seq,comboSale_seq,parent_subject_id,subject_id,costShare) {  
+		if(confirm("確定選取此科目?")){
+			$.ajax({
+				url : "/Sales/SaveSubjectSelect",
+				data : {
+					Register_comboSale_seq : Register_comboSale_seq,
+					Register_id  : Register_seq,
+					comboSale_id : comboSale_seq,
+					subject_id   : subject_id,
+					subject_id_virtual : parent_subject_id,
+					costShare : costShare
+				},
+				dataType : "text",
+				success : function(data) {	
+					window.close();
+					window.opener.location.reload();
+				}
+			});        
+          }
+		//window.location.href="/Sales/openGradeToSelect?Register_comboSale_seq="+Register_comboSale_seq+"&Register_seq="+Register_seq+"&comboSale_seq="+comboSale_seq+"&subject_id="+subject_id+"&parent_subject_id="+parent_subject_id;
+ 	}
+       
+</script>
+
+
+

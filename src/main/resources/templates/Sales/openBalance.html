@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div align='center'>
+<form id='form1' action="#" th:action="@{/Sales/BalanceSave}" method="post">
+<input type='hidden' id='student_id' name='student_id' th:value='${student_id}'>
+      <div align='center' style='width:800px'>
+      	<span>[ 建立人員 ] </span>
+      	<span id='takePerson' th:text="${creater}" style='padding:2px;color:darkblue;font-weight:bold'></span>&nbsp;&nbsp;&nbsp;&nbsp;
+      	<span>[ 建立時間 ]</span>
+      	<span id='takePerson' th:text="${createTime}" style='padding:2px;color:darkblue;font-weight:bold'></span>&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+      	
+  <div style='background-color:#ffefff;border-color:#dddddd;padding:5px;width:650px;border-radius:5px'>
+	<div style='display:inline-block;font-weight:bold;font-size:small'>
+		餘 額 來 源<br> 
+		<select id='OverPaytype' name='OverPaytype' class="form-control" style='width:120px'>
+			<option value=""></option>
+			<option value="-1">退款(扣除)</option>
+			<option value="1" disabled style='color:#aaaaaa'>溢繳(增加)</option>
+			<option value="2" disabled style='color:#aaaaaa'>訂單取消(增加)</option>			
+			<option value="-2" disabled style='color:#aaaaaa'>繳費(扣除)</option>
+		</select>
+	</div>
+	<div style='margin-left:20px;display:inline-block;font-weight:bold;font-size:small'>
+		<div style=''>金 額</div>
+		<input type='text' name='amount' id='amount' style='border:1px #cccccc solid;width:100px;height:30px'>
+	</div>
+	<div style='margin-left:20px;display:inline-block;font-weight:bold;font-size:small'>
+		<div style=''>備 註</div>
+		<input type='text' name='remark' id='remark' style='border:1px #cccccc solid;width:350px;height:30px'>
+	</div>	
+  </div>
+  <div>
+	<div style='white-space:nowrap;width:400px;text-align:center'>
+		<button type="button" id="btnSave" class="btn btn-sm btn-primary">儲存</button>
+		&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-info" onclick="reset()">重設</button>
+	</div>
+  </div>
+ </form>
+&nbsp;<p>
+&nbsp;<p>
+	<!--DataTables的表格-->
+	<div style='width:800px'>			
+		<table id="myDataTalbe" class="display">
+			<thead>
+				<tr>
+				  <th style='width:140px'>建立時間</th>
+				  <th style='width:150px'>類型</th>
+				  <th style='width:40px'>金額</th>
+				  <th style='width:390px'>備註</th>
+				  <th style='width:80px'>建立者</th>			  				
+				</tr>
+			</thead>
+		</table>
+	 </div>	
+</div>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<script type="text/javascript">
+  	
+	$(document).ready(function() {
+		let table = $('#myDataTalbe').DataTable({
+			"order": [ 4, "desc" ],
+			//serverSide : true,
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Sales/getBalanceRecord",
+				data : function(d) {
+					d.student_id = $("#student_id").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [
+				{"data" : "createTime",
+					"render" : function(data, type, full, meta) {
+						return "<span style='font-size:x-small'>"+data+"</span>";
+					}					
+				},
+				{"data" : "typeName","className":"text-center"}, 					
+			    {"data" : "amount","className":"text-right"},
+			    {"data" : "remark"},
+			    {"data" : "creater","className":"text-center"}			    
+			]
+		});
+		
+	});
+
+	$("#btnSave").click(function() {
+	    if($("#OverPaytype").val()==''){
+	    	alert("請填寫類型!");
+	    }else if($("#amount").val()==''){
+	    	alert("請填寫金額!");
+		}else{
+			$("#form1").submit();
+		}	
+	});	
+</script>

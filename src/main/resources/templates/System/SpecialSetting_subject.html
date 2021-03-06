@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header"></head>
+
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/SchoolSetting">基本設置</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/Migration">政龍Migration</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/ExcelRoleCall">Excel點名</a></li>
+    <li style='letter-spacing:2px;font-weight:bold'><a href="/System/JL_grade">政龍資料</a></li>
+    <li style='letter-spacing:2px;font-weight:bold' class="active"><a href="/System/SpecialSetting_combo">EIP資料更改</a></li>
+  </ul>
+</div>
+<div class="css-table" style="border-spacing:3px">
+	<div class="tr">
+	    &#10074;<div class="td" style=""><A href='/System/SpecialSetting_combo'>單科/套裝</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style=""><A href='/System/SpecialSetting_grade'>期別</A></div><div class="td" style="width:20px"></div>
+	    &#10074;<div class="td" style="background-color:#eeeeee"><A href='/System/SpecialSetting_subject'>科目</A></div><div class="td" style="width:20px"></div>
+	</div>
+</div> 
+<div>&nbsp;</div>
+	
+	<div class="css-table" style='margin-left:100px'>			
+		<div class="tr" style='font-size:small'>
+			<div class="td2" style='padding:5px'>
+				<div class="css-table" style='width:300px;text-align:center'>			
+					<div class="tr" style='font-size:small'>
+						<div class="td2" style='text-align:left'>
+								類別<br> 
+								<select id="category_id" class="form-control"  style='padding:5px;width:120px'>
+									<option></option>
+									<option th:each="item : ${categoryGroup}" th:value="${item.category_seq}" th:utext="${item.name}" th:selected="${item.category_seq == CourseController_category_id}" />
+								</select>				
+						</div>
+						<div class="td2" style='text-align:left'>
+								狀態<br> 
+								<select id="active" class="form-control"  style='padding:5px;width:120px'>
+									<option value='1'>啟用</option>
+									<option value='0'>停用</option>
+								</select>				
+						</div>			
+					</div>
+				</div>
+				<div>&nbsp;</div>
+				 <div style='width:300px' align='center'>
+						<button type="button" id="btnQuery"class="btn btn-sm btn-primary">查詢</button>&nbsp;&nbsp;
+				 </div>				
+			</div>
+		</div>				
+   </div>
+ 
+<div>&nbsp;</div>
+	<!--DataTables的表格-->
+	<div style='width:1000px'>
+	<table id="myDataTalbe" class="display">
+		<thead>
+		<tr>
+		    <th width="50px" style='vertical-align:bottom'>刪除</th>
+			<th width="100px" style='vertical-align:bottom'>狀態</th>
+			<th width="100px" style='vertical-align:bottom'>類別</th>
+			<th width="360px" style='vertical-align:bottom'>科目</th>			
+			<th width="60px" style='vertical-align:bottom'>原價</th>
+			<th width="90px" style='vertical-align:bottom'>內容<br>等級</th>
+			<th width="300px" style='vertical-align:bottom'>
+			   <div class='css-table' style='width:300px;text-align:center;color:#555555;letter-spacing:1px'>
+			       <div class='tr' style='font-size:small'>
+			          <div class='td' style='width:100px'>老師</div>
+			          <div class='td' style='width:50px'>總共應選期數</div>
+			          <div class='td' style='width:50px'>最低應選期數</div>
+			          <div class='td' style='width:50px'>預選</div>
+			          <div class='td' style='width:50px'>總堂數</div>
+			       </div>
+			   </div>       
+			</th>								
+		</tr>
+		</thead>
+	</table>
+	</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+ <style type="text/css">  
+     table.dataTable tbody td {  
+         vertical-align: middle !important;  
+         padding-top: 2px !important;
+         padding-bottom: 2px !important;  
+     }  
+ </style>  
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		if(![[${sessionState}]]){
+			$('myDataTalbe').DataTable().state.clear();
+			window.location.replace(window.location.href+((window.location.search)?"&":"?")+"sessionState=keep")
+		}	
+				
+		let table = $('#myDataTalbe').DataTable({
+			dom: "<'row'<'col-sm-3'l><'col-sm-3'f><'col-sm-6'p>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
+			"stateSave" : true,
+			"iDisplayLength": 20,
+			"order": [ 0, "desc" ],
+			"searching" : false,
+			"info" : false,
+			"lengthChange" : false,
+			ajax : {
+				url : "/Course/getSubjectSetting",
+				data : function(d) {
+					d.category_id  = $("#category_id").val();
+					d.active  = $("#active").val();
+				},
+
+				dataSrc : function(data) {
+					return data;
+				}
+			},
+			//deferLoading : 0, //初始化DataTable時，不發出ajax
+			orderMulti : false,
+
+			"columns" : [
+			    {"data" : "subject_seq",
+				       "className" : "text-center",
+					   "render" : function(data, type, row, meta) {
+				 				return "<A href='javascript:void(0)'  onclick=subjectDisable("+data+")><img src='/images/delete5.png' height='11px'/></A>";
+					    }
+				},				
+				{"data" : "active","className":"text-center",
+					 "render" : function(data, type, row, meta) {
+						   if(data==1){
+								return "啟用";
+						   }else if(data==0){
+								return "停用";
+						   }
+					 }					
+				},
+				{"data" : "category_name","className":"text-center"}, 
+				{"data" : "name",
+				     "render" : function(data, type, row, meta) {
+			               return "<a href='javascript:void(0)'  onclick='subjectEdit("+row.subject_seq+")' style='color:blue;text-decoration:underline'>"+data+"</A><br><span style='color:#aaaaaa'>"+row.abbr+"</span>";
+		             }						
+				},
+				{"data" : "price","className":"text-right"},
+				{"data" : "subjectContent_name","className":"text-center"},	
+				{"data" : "subjectTeacherGrade",
+					 "render" : function(data, type, row, meta) {
+								return "<div style='padding:6px'>"+data.replace('&#10095;Add','')+"</div>";
+					 }					
+				} 
+
+			 ]
+		});
+		$("#btnQuery").click(function() {
+			table.ajax.reload();
+		});
+		$("#titleWidth").width(200+$("#myDataTalbe").width()<1400?1400:200+$("#myDataTalbe").width());	
+	});
+	
+	function teacherAndGradeEdit(subjectTeacher_seq,teacher_id,subject_id) {
+ 		var feature = "top=0,left=800,width=700,height=500";
+ 	    window.open("/Course/teacherAndGradeEdit?subjectTeacher_seq="+subjectTeacher_seq+"&teacher_id="+teacher_id+"&subject_id="+subject_id, "", feature);
+ 	}
+	
+	function subjectEdit(subject_seq){
+ 		var feature = "top=100,left=300,width=900,height=600";
+ 	    window.open("/Course/SubjectEdit?subject_seq="+subject_seq, "", feature);
+ 	}
+	
+	function subjectDisable(data){
+		if(confirm("確定刪除此科目?")){
+			$.ajax({
+				url : "/Course/subjectDisable",
+				data : {
+					subject_seq : data
+				},
+				dataType : "text",
+				success : function(data) {	
+					alert("取消完成, 此科目已不存在!");
+					window.location.reload(true);
+				}
+			});
+		}	
+	} 	
+</script>
+
+	

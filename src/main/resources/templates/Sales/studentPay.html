@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/top_header_noMenu"></head>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>  
+
+<form id='form1' action="#" th:action="@{/Sales/StudentPaySave}" method="post" style='font-size:medium'>
+ <input type='hidden' id='register_id' name='register_id' th:value="${register_id}">
+ <input type='hidden' id='totalPayMoney' name='totalPayMoney'> 
+ <input type='hidden' id='balanceTotal' th:value='${balanceTotal}'>
+    <div align=center> 
+      <div style='width:800px'>
+      	<span style='font-weight:bold'>已繳 /尚欠/總金額 :</span>
+      	<span id='takePerson' th:utext='${paidActual}' style='font-weight:bold'></span>
+      	<span style='font-weight:bold;margin-left:200px'>溢繳 :</span>
+      	<span id='balanceTotal' th:text='${balanceTotal}' style='font-weight:bold'></span>      	      	      	
+      </div> 	  
+	  <div class="css-table" style="border:1px solid #dddddd">
+		<div class="tr">
+			<div class="th2" style='width:150px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;height:40px;font-size:medium'>溢繳抵扣</div>
+			<div class="td2" style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left;vertical-align:bottom'>
+				<input type='text' id='payStyle_1_money' name='payStyle_1_money' maxlength="6" style='height:30px;width:100px;border:1px #cccccc solid' placeholder='$'></span>
+			</div>
+		</div>	  
+		<div class="tr">
+			<div class="th2" style='width:150px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;height:40px;font-size:medium'>現金</div>
+			<div class="td2" style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left;vertical-align:bottom'>
+				<input type='text' id='payStyle_2_money' name='payStyle_2_money' maxlength="6" style='height:30px;width:100px;border:1px #cccccc solid' placeholder='$'></span>
+			</div>
+		</div>
+		<div class="tr">
+				<div class="th2" style='width:150px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;font-size:medium'>
+					現金分期<br>
+					<select id='InstalNoSel' name='InstalNoSel' onchange="InstalNo()" style='color:blue;border-radius:5px;width:80px;padding:2px'>
+						<option value='0'>分期數</option>
+						<option value='1'>1 期</option>
+						<option value='2'>2 期</option>
+						<option value='3'>3 期</option>
+						<option value='4'>4 期</option>
+						<option value='5'>5 期</option>
+						<option value='6'>6 期</option>
+						<option value='7'>7 期</option>
+						<option value='8'>8 期</option>
+						<option value='9'>9 期</option>
+						<option value='10'>10 期</option>
+						<option value='11'>11 期</option>
+						<option value='12'>12 期</option>
+					</select>
+				</div>
+				<div id='InstalNoArea' class="td2" style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left'>
+<!--------------------------------------> 
+<!-------------------------------------->
+				</div>
+		</div>
+		<div class="tr">
+				<div class="th2" style='width:150px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;height:40px;font-size:medium'>禮券<br>
+				    <select id='payStyle_4_code' name='payStyle_4_code'  style='color:blue;border-radius:5px;width:95px;padding:2px'>
+						<option value='0'></option>
+						<option value='1'>優惠禮券</option>
+						<option value='2'>獎學金禮券</option>					    
+				    </select>									
+				</div>
+				<div class="td2" style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left;vertical-align:bottom'>
+					<input type='text' id='payStyle_4_money' name='payStyle_4_money' maxlength="6" style='height:30px;width:100px;border:1px #cccccc solid' placeholder='$'></span>
+				</div>
+		</div>
+		<div class="tr">
+			<div class="th2" style='width:100px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;height:40px;font-size:medium'>刷卡</div>
+			<div class="td2" id='payStyle_5_mix' style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left;vertical-align:bottom'>
+						<select id='payStyle_5_periods' name='payStyle_5_periods' style='color:darkblue;border-radius:5px;width:70px;padding:1px;margin-bottom:4px'>
+							<option value='0'>0期</option>
+							<option value='3'>3 期</option>
+							<option value='6'>6 期</option>
+							<option value='9'>9 期</option>
+							<option value='12'>12 期</option>
+						</select>
+				<span><input type='text' id='payStyle_5_code' name='payStyle_5_code' maxlength="4" style='height:30px;width:100px;border:1px #aaaaaa solid' placeholder='卡片後4碼'>-<input type='text' id='payStyle_5_money' name='payStyle_5_money'  maxlength="6" style='height:30px;width:100px;border:1px #aaaaaa solid' placeholder='$'></span>&nbsp;
+			</div>
+		</div>						
+		<div class="tr">
+			<div class="th2" style='width:100px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;height:40px;font-size:medium'>支票</div>
+			<div class="td2" style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left;vertical-align:bottom'>
+				<span><input type='text' id='payStyle_6_code' name='payStyle_6_code' maxlength="20" style='height:30px;width:150px;border:1px #aaaaaa solid' placeholder='支票號碼'>-<input type='text' id='payStyle_6_money' name='payStyle_6_money'  maxlength="6" style='height:30px;width:100px;border:1px #aaaaaa solid' placeholder='$'></span>&nbsp;
+			</div>
+		</div>	
+		<div class="tr">
+			<div class="th2" style='width:100px;vertical-align:bottom;background-color:#7ba6b6;color:white;border-bottom:1px solid #ffffff;font-weight:bold;height:40px;font-size:medium'>匯款</div>
+			<div class="td2" style='width:500px;padding:3px;background-color:#ffefff;border-bottom:1px solid #ffffff;text-align:left;vertical-align:bottom'>
+				<span><input type='text' id='payStyle_7_code' name='payStyle_7_code' maxlength="6" style='height:30px;width:120px;border:1px #aaaaaa solid' placeholder='後4碼 or 姓名'>-<input type='text' id='payStyle_7_money' name='payStyle_7_money'  maxlength="6" style='height:30px;width:100px;border:1px #aaaaaa solid' placeholder='$'></span>&nbsp;
+			</div>
+		</div>				
+		
+	  </div> 
+	</div> 
+  <div style='' align='center'>
+		<button type="button" id="btnSave" onclick='javascript:save()' class="btn btn-sm btn-primary">儲存</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="重設" />
+  </div>
+</form>
+
+<script th:inline="javascript" type="text/javascript">
+$(document).ready(function() {
+	if([[${periods_5}]]){
+		$('#payStyle_5_periods').val([[${periods_5}]]);
+	}
+	
+	if([[${periods_3}]]){
+		$('#InstalNoSel').val([[${periods_3}]]);
+		$("#InstalNoArea").html([[${selectStr3}]]);
+	}
+})
+    function save() {
+    	$('#btnSave').attr('disabled',true);
+		var z = $('#payStyle_1_money').val();
+		var z1 = $('#balanceTotal').val(); //所剩溢繳
+		if(z && z!=0){
+			if(z>z1 || isNaN(z) || z<1 || z>500000){		
+				alert("請填入正確[溢繳抵扣]!");
+				$('#btnSave').attr('disabled',false);
+				return;
+			}
+		}
+		var a = $('#payStyle_2_money').val();
+		if(a){
+			if(isNaN(a) || a<1 || a>500000){		
+				alert("請填入正確[現金]!");
+				$('#btnSave').attr('disabled',false);
+				return;
+			}
+		}
+		var c = $('#payStyle_4_money').val();
+		var c1 = $('#payStyle_4_code').val();
+		if(c){
+			if(isNaN(c) || c<1 || c>500000 || c1=='0'){		
+				alert("請填入正確[禮 券]或禮券類型!");
+				$('#btnSave').attr('disabled',false);
+				return;
+			}
+		}
+		var d = $('#payStyle_5_money').val();
+		var d1 = $('#payStyle_5_code').val();
+		if(d){
+			if(isNaN(d) || d<1 || d>500000 || d1==''){		
+				alert("請填入正確[刷卡]金額或後四碼!");
+				$('#btnSave').attr('disabled',false);
+				return;
+			}
+		}
+		var e = $('#payStyle_6_money').val();
+		var e1 = $('#payStyle_6_code').val();
+		if(e){
+			if(isNaN(e) || e<1 || e>500000 || e1==''){		
+				alert("請填入正確[支票]金額或號碼!");
+				$('#btnSave').attr('disabled',false);
+				return;
+			}
+		}
+		var f = $('#payStyle_7_money').val();
+		var f1 = $('#payStyle_7_code').val();
+		if(f){
+			if(isNaN(f) || f<1 || f>500000 || f1==''){		
+				alert("請填入正確[匯款]金額或後四碼!!");
+				$('#btnSave').attr('disabled',false);
+				return;
+			}
+		}
+        
+		var errorFlag = 0;
+		$('.payStyle_3_money').each(
+			   function(){ 
+				   if($(this).val()){
+				   	    if(!$(this).parent().find('.payStyle_3_date').val()){
+				   	    	alert("請輸入現金分期日期");
+							$('#btnSave').attr('disabled',false);
+							errorFlag = 1;
+							return;				   	    	
+				   	    }
+				   }	
+			   }
+		)		
+		if(errorFlag==0){
+	    	$("#form1").submit();
+		}				
+	}
+    
+    function InstalNo(){
+    	var InstalNoSel = $("#InstalNoSel").val();
+    	var Str = "";
+    	for(i=0;i<parseInt(InstalNoSel);i++){
+    		Str += 
+    		"<span><input type='text' class='payStyle_3_date' name='payStyle_3_date'  readonly onclick=\"$(this).datepicker({dateFormat:'yymmdd',});$(this).datepicker('show');\" style='background-color:#ffeeff;width:75px;border:1px #aaaaaa solid' placeholder='第 "+(i+1)+" 期'>-"+
+    		"<input type='text' class='payStyle_3_money' name='payStyle_3_money' style='width:65px;border:1px #aaaaaa solid' placeholder='$'></span>&nbsp;&nbsp;";
+    	}
+    	$("#InstalNoArea").html(Str);
+    }
+</script>     
